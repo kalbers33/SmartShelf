@@ -33,6 +33,30 @@ var configure = exports.configure = function(configuration) {
 				value : 0,
 				maxValue : 3000,
 				defaultControl : PinsSimulators.SLIDER
+			}),
+			new PinsSimulators.AnalogInputAxisDescription(
+			{
+				valueLabel : "2_1",
+				valueID : "Row2Column1",
+				value : 0,
+				maxValue : 3000,
+				defaultControl : PinsSimulators.SLIDER
+			}),
+			new PinsSimulators.AnalogInputAxisDescription(
+			{
+				valueLabel : "2_2",
+				valueID : "Row2Column2",
+				value : 0,
+				maxValue : 3000,
+				defaultControl : PinsSimulators.SLIDER
+			}),
+			new PinsSimulators.AnalogInputAxisDescription(
+			{
+				valueLabel : "2_3",
+				valueID : "Row2Column3",
+				value : 0,
+				maxValue : 3000,
+				defaultControl : PinsSimulators.SLIDER
 			})
 		]
 	});
@@ -49,6 +73,9 @@ var read = exports.read = function() {
 exports.pins = {
 	Row1Column1: {type: "A2D"},
 	Row1Column2: {type: "A2D"},
-	Row1Column3: {type: "A2D"}
+	Row1Column3: {type: "A2D"},
+	Row2Column1: {type: "A2D"},
+	Row2Column2: {type: "A2D"},
+	Row2Column3: {type: "A2D"}
 }
 				
