@@ -1,0 +1,134 @@
+var boxSkin = new Skin( { fill:"#CD853F" } );
+var whiteSkin = new Skin( { fill:"white" } );
+var blackSkin = new Skin( { fill:"black" } );
+var highlightSkin = new Skin( { fill:"white" } );
+var LEDSkin = new Skin( { fill:"blue" } );
+var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
+var stockStyle = new Style( { font: "bold 25px", color:"#778899" } );
+var titleStyle = new Style( { font: "bold 40px", color:"black" } );
+
+var mainShelf = new Container({
+  left:0, right:0, top:0, bottom:0,
+  skin: whiteSkin,
+  contents:[
+  	new Label({left:0, right:0, top:20, height: 40, string: "Smart Shelf", style: titleStyle}),
+    new Container({left:20, right:20, top: 180, height: 15, skin:blackSkin}),
+    new Container({left:20, right:20, top:300, height: 15, skin:blackSkin}),
+    new Container({left:20, right:20, top:420, height: 15, skin:blackSkin})
+  ]
+});
+
+var box1 = new Container({
+  left:20, width: 90, height: 80, top:100,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	//new Label({left:0, right:0, top:0, height: 20, string: "Hello World", style: labelStyle}),
+  	//new Container({left:15, width:70, top: 10, height: 70, skin:boxSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  	//new Content({left:0, right:0, top:0, bottom:0, skin: logoSkin})
+  ]
+}); 
+
+var box2 = new Container({
+  left:115, width: 90, height: 80, top:100,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box3 = new Container({
+  left:210, width: 90, height: 80, top:100,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box4 = new Container({
+  left:20, width: 90, height: 80, top:220,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box5 = new Container({
+  left:115, width: 90, height: 80, top:220,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box6 = new Container({
+  left:210, width: 90, height: 80, top:220,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box7 = new Container({
+  left:20, width: 90, height: 80, top:340,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box8 = new Container({
+  left:115, width: 90, height: 80, top:340,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box9 = new Container({
+  left:210, width: 90, height: 80, top:340,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+
+
+application.add(mainShelf);
+application.add(box1);
+application.add(box2);
+application.add(box3);
+application.add(box4);
+application.add(box5);
+application.add(box6);
+application.add(box7);
+application.add(box8);
+application.add(box9);
