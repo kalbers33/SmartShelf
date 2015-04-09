@@ -18,7 +18,11 @@
 var THEME = require("themes/flat/theme");
 var BUTTONS = require("controls/buttons");
 
-deviceURL = ""
+deviceURL_scanner = "";
+deviceURL = "";
+
+var itemType = -1;
+var itemValue = -1;
 
 var data = {
 	scannedValue: -1
@@ -85,8 +89,12 @@ var scanInventoryText = new Text({left: 0, right: 0, top: 10, height: 40, string
 								style: new Style({font:"30px", color:"black"}), name:"scanInventoryText"});
 var waitingforScannerText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Waiting for scanner...", skin: new Skin({fill: "#FFFFFF"}), 
 									style: new Style({font:"25px", color:"black"}), name:"waitingforScannerText"});
-var existingNewText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Existing or New?", skin: new Skin({fill: "#FFFFFF"}), 
-									style: new Style({font:"25px", color:"black"}), name:"existingNewText"});
+var itemTypeText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Item Type: ", skin: new Skin({fill: "#FFFFFF"}), 
+									style: new Style({font:"25px", color:"black"}), name:"itemTypeText"});
+var itemWeightText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Item Weight: ", skin: new Skin({fill: "#FFFFFF"}), 
+									style: new Style({font:"25px", color:"black"}), name:"itemWeightText"});
+var detectedText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Item detected", skin: new Skin({fill: "#FFFFFF"}), 
+									style: new Style({font:"25px", color:"black"}), name:"detectedText"});
 var placeItemText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Place item on shelf", skin: new Skin({fill: "#FFFFFF"}), 
 									style: new Style({font:"25px", color:"black"}), name:"placeItemText"});
 
@@ -104,36 +112,50 @@ var proceedToShowButton = new ProceedToShowButtonTemplate({textForLabel:"Proceed
 
 Handler.bind("/discover", Behavior({
 	onInvoke: function(handler, message){
-		deviceURL = JSON.parse(message.requestText).url;
+		if (JSON.parse(message.requestText).id == "bluetoothscanner") {
+			deviceURL_scanner = JSON.parse(message.requestText).url;
+		}
+		else if (JSON.parse(message.requestText).id == "smartshelfdevice") {
+			deviceURL = JSON.parse(message.requestText).url;
+		}
 	}
 }));
 
 Handler.bind("/forget", Behavior({
 	onInvoke: function(handler, message){
-		deviceURL = "";
+		if (JSON.parse(message.requestText).id == "bluetoothscanner") {
+			deviceURL_scanner = "";
+		}
+		else if (JSON.parse(message.requestText).id == "smartshelfdevice") {
+			deviceURL = "";
+		}
 	}
 }));
 
 Handler.bind("/getScannerData", {
     onInvoke: function(handler, message){
-    	handler.invoke(new Message(deviceURL + "getData"), Message.JSON);
+    	handler.invoke(new Message(deviceURL_scanner + "getData"), Message.JSON);
     },
     onComplete: function(handler, message, json){
-    	if (deviceURL != "") {
+    	if (deviceURL_scanner != "") {
 			data.scannedValue = json.value.toFixed(0);
 			if (data.scannedValue != 0) {
-				//trace(waitingforScannerText.string);
 				waitingforScannerText.string = "Value received";
+				var value = Math.floor(data.scannedValue/10);
+				itemType = Math.floor(value/1000);
+				itemWeight = value%1000;
+				itemTypeText.string = "Item Type: " + itemType;
+				itemWeightText.string = "Item Weight: " + itemWeight;
 			}
 			else {
 				waitingforScannerText.string += ".";
 			}
 		}
-		handler.invoke( new Message("/delay"));
+		handler.invoke( new Message("/delayScanner"));
     }
 });
 
-Handler.bind("/delay", {
+Handler.bind("/delayScanner", {
     onInvoke: function(handler, message){
         handler.wait(1000); //will call onComplete after 1 seconds
     },
@@ -176,7 +198,8 @@ var scanInventoryPlaceItem = new Container({
 				new smartShelfLogo(),
 				//scanInventoryText,
 				placeItemText,
-				proceedToShowButton,
+				itemTypeText,
+				itemWeightText,
 				new navigation()
 			]
 		}),
@@ -190,7 +213,7 @@ var scanInventoryShelfDisplay = new Container({
 			left: 0, right: 0, top: 5, bottom: 5,
 			contents: [
 				new smartShelfLogo(),
-				//scanInventoryText,
+				detectedText,
 				//shelfImage,
 				new navigation()
 			]
@@ -222,13 +245,16 @@ var mainContainer = new Container({
 var ApplicationBehavior = Behavior.template({
 	onDisplayed: function(application) {
 		application.discover("bluetoothscanner");
+		application.discover("smartshelfdevice");
 	},
 	onLaunch: function(application) {
 		application.shared = true;
 		application.invoke(new Message("/getScannerData"));
+		application.invoke(new Message("/getDeviceData"));
 	},
 	onQuit: function(application) {
 		application.forget("bluetoothscanner");
+		applicaiton.forget("smartshelfdevice");
 		application.shared = true;
 	},
 })
