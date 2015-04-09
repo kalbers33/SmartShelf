@@ -24,39 +24,6 @@ var data = {
 	scannedValue: -1
 };
 
-Handler.bind("/discover", Behavior({
-	onInvoke: function(handler, message){
-		deviceURL = JSON.parse(message.requestText).url;
-	}
-}));
-
-Handler.bind("/forget", Behavior({
-	onInvoke: function(handler, message){
-		deviceURL = "";
-	}
-}));
-
-Handler.bind("/getScannerData", {
-    onInvoke: function(handler, message){
-    	handler.invoke(new Message(deviceURL + "getData"), Message.JSON);
-    },
-    onComplete: function(handler, message, json){
-    	if (deviceURL != "") {
-			data.scannedValue = json.value.toFixed(0);		
-		}
-		handler.invoke( new Message("/delay"));
-    }
-});
-
-Handler.bind("/delay", {
-    onInvoke: function(handler, message){
-        handler.wait(1000); //will call onComplete after 1 seconds
-    },
-    onComplete: function(handler, message){
-        handler.invoke(new Message("/getScannerData"));
-    }
-});
-
 var BackButtonTemplate = BUTTONS.Button.template(function($){ return{
 	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
 	contents: [
@@ -84,19 +51,6 @@ var ScanButtonTemplate = BUTTONS.Button.template(function($){ return{
 }});
 
 var ProceedScanButtonTemplate = BUTTONS.Button.template(function($){ return{
-	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
-	contents: [
-		new Label({left:0, right:0, height:40, string:$.textForLabel, style: $.textFormat})
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(scanInventoryAddItem);
-		}}
-	})
-}});
-
-var ProceedToPlaceButtonTemplate = BUTTONS.Button.template(function($){ return{
 	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
 	contents: [
 		new Label({left:0, right:0, height:40, string:$.textForLabel, style: $.textFormat})
@@ -146,8 +100,47 @@ var backButton = new BackButtonTemplate({textForLabel:"Back", name: "backButton"
 var homeButton = new BackButtonTemplate({textForLabel:"Home", name: "homeButton", textFormat: bigText});
 var scanButton = new ScanButtonTemplate({textForLabel:"Scan", name: "scanButton", textFormat: bigText});
 var proceedScanButton = new ProceedScanButtonTemplate({textForLabel:"Proceed", name: "proceedScanButton", textFormat: bigText});
-var proceedToPlaceButton = new ProceedToPlaceButtonTemplate({textForLabel:"Proceed", name: "proceedToPlaceButton", textFormat: bigText});
 var proceedToShowButton = new ProceedToShowButtonTemplate({textForLabel:"Proceed", name: "proceedToShowButton", textFormat: bigText});
+
+Handler.bind("/discover", Behavior({
+	onInvoke: function(handler, message){
+		deviceURL = JSON.parse(message.requestText).url;
+	}
+}));
+
+Handler.bind("/forget", Behavior({
+	onInvoke: function(handler, message){
+		deviceURL = "";
+	}
+}));
+
+Handler.bind("/getScannerData", {
+    onInvoke: function(handler, message){
+    	handler.invoke(new Message(deviceURL + "getData"), Message.JSON);
+    },
+    onComplete: function(handler, message, json){
+    	if (deviceURL != "") {
+			data.scannedValue = json.value.toFixed(0);
+			if (data.scannedValue != 0) {
+				//trace(waitingforScannerText.string);
+				waitingforScannerText.string = "Value received";
+			}
+			else {
+				waitingforScannerText.string += ".";
+			}
+		}
+		handler.invoke( new Message("/delay"));
+    }
+});
+
+Handler.bind("/delay", {
+    onInvoke: function(handler, message){
+        handler.wait(1000); //will call onComplete after 1 seconds
+    },
+    onComplete: function(handler, message){
+        handler.invoke(new Message("/getScannerData"));
+    }
+});
 
 var navigation = Line.template(function($) { return{
 	left: 0, right: 0, top: 0, bottom: 0, height: 50,
@@ -168,22 +161,6 @@ var scanInventory = new Container({
 				scanInventoryText,
 				waitingforScannerText,
 				proceedScanButton,
-				new navigation()
-			]
-		}),
-	]
-});
-
-var scanInventoryAddItem = new Container({
-	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
-	contents: [
-		new Column({
-			left: 0, right: 0, top: 5, bottom: 5,
-			contents: [
-				new smartShelfLogo(),
-				//scanInventoryText,
-				existingNewText,
-				proceedToPlaceButton,
 				new navigation()
 			]
 		}),
