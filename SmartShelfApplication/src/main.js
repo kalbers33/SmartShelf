@@ -4,8 +4,6 @@
 
 
 
-/*******Tanisha**********/
-
 
 
 
@@ -50,6 +48,19 @@ var ScanButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(scanInventory);
+		}}
+	})
+}});
+
+var MainShelfButtonTemplate = BUTTONS.Button.template(function($){ return{
+	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
+	contents: [
+		new Label({left:0, right:0, height:40, string:$.textForLabel, style: $.textFormat})
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
 		}}
 	})
 }});
@@ -107,6 +118,7 @@ var backButton = new BackButtonTemplate({textForLabel:"Back", name: "backButton"
 //FIXME: back and home do the same thing now. Need to track previous screen to implement back correctly
 var homeButton = new BackButtonTemplate({textForLabel:"Home", name: "homeButton", textFormat: bigText});
 var scanButton = new ScanButtonTemplate({textForLabel:"Scan", name: "scanButton", textFormat: bigText});
+var mainShelfButton = new MainShelfButtonTemplate({textForLabel:"Main Shelf", name: "mainShelfButton", textFormat: bigText});
 var proceedScanButton = new ProceedScanButtonTemplate({textForLabel:"Proceed", name: "proceedScanButton", textFormat: bigText});
 var proceedToShowButton = new ProceedToShowButtonTemplate({textForLabel:"Proceed", name: "proceedToShowButton", textFormat: bigText});
 
@@ -229,16 +241,155 @@ var homeWidget = new Container({
 			left: 0, right: 0, top: 5, bottom: 5,
 			contents: [
 				new smartShelfLogo(),
-				scanButton
+				scanButton,
+				//FIXME: Dummy button. Should be accessible once Kevin implements changes
+				mainShelfButton
 			]
 		}),
 	]
 });
 
+/*******Tanisha**********/
+var boxSkin = new Skin( { fill:"#CD853F" } );
+var whiteSkin = new Skin( { fill:"white" } );
+var blackSkin = new Skin( { fill:"black" } );
+var highlightSkin = new Skin( { fill:"white" } );
+var LEDSkin = new Skin( { fill:"blue" } );
+var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
+var stockStyle = new Style( { font: "bold 25px", color:"#778899" } );
+var titleStyle = new Style( { font: "bold 40px", color:"black" } );
+
+var mainShelf = new Container({
+  left:0, right:0, top:0, bottom:0,
+  skin: whiteSkin,
+  contents:[
+  	new Label({left:0, right:0, top:20, height: 40, string: "Smart Shelf", style: titleStyle}),
+    new Container({left:20, right:20, top: 180, height: 15, skin:blackSkin}),
+    new Container({left:20, right:20, top:300, height: 15, skin:blackSkin}),
+    new Container({left:20, right:20, top:420, height: 15, skin:blackSkin}),
+    new navigation()
+  ]
+});
+
+var box1 = new Container({
+  left:20, width: 90, height: 80, top:100,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	//new Label({left:0, right:0, top:0, height: 20, string: "Hello World", style: labelStyle}),
+  	//new Container({left:15, width:70, top: 10, height: 70, skin:boxSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  	//new Content({left:0, right:0, top:0, bottom:0, skin: logoSkin})
+  ]
+}); 
+
+var box2 = new Container({
+  left:115, width: 90, height: 80, top:100,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box3 = new Container({
+  left:210, width: 90, height: 80, top:100,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box4 = new Container({
+  left:20, width: 90, height: 80, top:220,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box5 = new Container({
+  left:115, width: 90, height: 80, top:220,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box6 = new Container({
+  left:210, width: 90, height: 80, top:220,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box7 = new Container({
+  left:20, width: 90, height: 80, top:340,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box8 = new Container({
+  left:115, width: 90, height: 80, top:340,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box9 = new Container({
+  left:210, width: 90, height: 80, top:340,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+
+
+//application.add(mainShelf);
+mainShelf.add(box1);
+mainShelf.add(box2);
+mainShelf.add(box3);
+mainShelf.add(box4);
+mainShelf.add(box5);
+mainShelf.add(box6);
+mainShelf.add(box7);
+mainShelf.add(box8);
+mainShelf.add(box9);
+
 var mainContainer = new Container({
 	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
 	contents: [
-		scanInventory
+		homeWidget
 	],
 });
 
