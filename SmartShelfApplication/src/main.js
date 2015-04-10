@@ -25,7 +25,8 @@ var itemType = -1;
 var itemValue = -1;
 
 var data = {
-	scannedValue: -1
+	scannedValue: -1,
+	scannedWeight: -1
 };
 
 var BackButtonTemplate = BUTTONS.Button.template(function($){ return{
@@ -139,11 +140,11 @@ Handler.bind("/getScannerData", {
     onComplete: function(handler, message, json){
     	if (deviceURL_scanner != "") {
 			data.scannedValue = json.value.toFixed(0);
-			if (data.scannedValue != 0) {
+			data.scannedWeight = json.weight.toFixed(0);
+			if (data.scannedValue != 0 && data.scannedWeight != 0) {
 				waitingforScannerText.string = "Value received";
-				var value = Math.floor(data.scannedValue/10);
-				itemType = Math.floor(value/1000);
-				itemWeight = value%1000;
+				itemType = data.scannedValue
+				itemWeight = data.scannedWeight;
 				itemTypeText.string = "Item Type: " + itemType;
 				itemWeightText.string = "Item Weight: " + itemWeight;
 			}
