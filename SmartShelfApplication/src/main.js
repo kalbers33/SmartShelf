@@ -1,25 +1,20 @@
 
-/*******Jamie************/
-
-
-
-
-/*******Tanisha**********/
-
-
-
-
-/*******Ji-hern**********/
-
-
-
-
-/*******Naren************/
 var THEME = require("themes/flat/theme");
 var BUTTONS = require("controls/buttons");
 
+//current scanned item: name and weight
+var currScannedItem = {
+	name:"",
+	weight:0
+};
+
 deviceURL_scanner = "";
 deviceURL = "";
+
+/*******Jamie************/
+
+
+/*******Naren************/
 
 var itemType = -1;
 var itemValue = -1;
@@ -51,6 +46,19 @@ var ScanButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(scanInventory);
+		}}
+	})
+}});
+
+var MainShelfButtonTemplate = BUTTONS.Button.template(function($){ return{
+	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
+	contents: [
+		new Label({left:0, right:0, height:40, string:$.textForLabel, style: $.textFormat})
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(locateItemContainer);
 		}}
 	})
 }});
@@ -108,6 +116,7 @@ var backButton = new BackButtonTemplate({textForLabel:"Back", name: "backButton"
 //FIXME: back and home do the same thing now. Need to track previous screen to implement back correctly
 var homeButton = new BackButtonTemplate({textForLabel:"Home", name: "homeButton", textFormat: bigText});
 var scanButton = new ScanButtonTemplate({textForLabel:"Scan", name: "scanButton", textFormat: bigText});
+var mainShelfButton = new MainShelfButtonTemplate({textForLabel:"Main Shelf", name: "mainShelfButton", textFormat: bigText});
 var proceedScanButton = new ProceedScanButtonTemplate({textForLabel:"Proceed", name: "proceedScanButton", textFormat: bigText});
 var proceedToShowButton = new ProceedToShowButtonTemplate({textForLabel:"Proceed", name: "proceedToShowButton", textFormat: bigText});
 
@@ -145,11 +154,32 @@ Handler.bind("/getScannerData", {
 				waitingforScannerText.string = "Value received";
 				itemType = data.scannedValue
 				itemWeight = data.scannedWeight;
+				var value = itemType;
+				currScannedItem.weight = itemWeight;
+				if (value == 1) {
+					currScannedItem.name = "Apples"
+				}
+				if (value == 2) {
+					currScannedItem.name = "Oranges"
+				}
+				if (value == 3) {
+					currScannedItem.name = "Carrots"
+				}
+				if (value == 4) {
+					currScannedItem.name = "Bananas"
+				}
+				if (value == 5) {
+					currScannedItem.name = "Celery"
+				}
+				if (value == 6) {
+					currScannedItem.name = "Potatoes"
+				}
+
 				itemTypeText.string = "Item Type: " + itemType;
 				itemWeightText.string = "Item Weight: " + itemWeight;
 			}
 			else {
-				waitingforScannerText.string += ".";
+				waitingforScannerText.string = "Waiting for scanner...";
 			}
 		}
 		handler.invoke( new Message("/delayScanner"));
@@ -230,16 +260,348 @@ var homeWidget = new Container({
 			left: 0, right: 0, top: 5, bottom: 5,
 			contents: [
 				new smartShelfLogo(),
-				scanButton
+				scanButton,
+				//FIXME: Dummy button. Should be accessible once Kevin implements changes
+				mainShelfButton
 			]
 		}),
 	]
 });
 
+/*******Tanisha**********/
+var boxSkin = new Skin( { fill:"#CD853F" } );
+var whiteSkin = new Skin( { fill:"white" } );
+var blackSkin = new Skin( { fill:"black" } );
+var highlightSkin = new Skin( { fill:"white" } );
+var LEDSkin = new Skin( { fill:"blue" } );
+var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
+var stockStyle = new Style( { font: "bold 25px", color:"#778899" } );
+var titleStyle = new Style( { font: "bold 40px", color:"black" } );
+
+var mainShelf = new Container({
+  left:0, right:0, top:0, bottom:0,
+  skin: whiteSkin,
+  contents:[
+  	new Label({left:0, right:0, top:20, height: 40, string: "Smart Shelf", style: titleStyle}),
+    new Container({left:20, right:20, top: 180, height: 15, skin:blackSkin}),
+    new Container({left:20, right:20, top:300, height: 15, skin:blackSkin}),
+    new Container({left:20, right:20, top:420, height: 15, skin:blackSkin}),
+    new navigation()
+  ]
+});
+
+var box1 = new Container({
+  left:20, width: 90, height: 80, top:100,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	//new Label({left:0, right:0, top:0, height: 20, string: "Hello World", style: labelStyle}),
+  	//new Container({left:15, width:70, top: 10, height: 70, skin:boxSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  	//new Content({left:0, right:0, top:0, bottom:0, skin: logoSkin})
+  ]
+}); 
+
+var box2 = new Container({
+  left:115, width: 90, height: 80, top:100,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box3 = new Container({
+  left:210, width: 90, height: 80, top:100,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box4 = new Container({
+  left:20, width: 90, height: 80, top:220,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box5 = new Container({
+  left:115, width: 90, height: 80, top:220,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box6 = new Container({
+  left:210, width: 90, height: 80, top:220,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box7 = new Container({
+  left:20, width: 90, height: 80, top:340,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box8 = new Container({
+  left:115, width: 90, height: 80, top:340,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box9 = new Container({
+  left:210, width: 90, height: 80, top:340,
+  skin: highlightSkin,
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+
+
+//application.add(mainShelf);
+mainShelf.add(box1);
+mainShelf.add(box2);
+mainShelf.add(box3);
+mainShelf.add(box4);
+mainShelf.add(box5);
+mainShelf.add(box6);
+mainShelf.add(box7);
+mainShelf.add(box8);
+mainShelf.add(box9);
+
+/*******Ji-hern**********/
+//SmartShelfApplication
+
+var labelStyle = new Style({ font:"bold 20px", color:"white"});
+var whiteSkin = new Skin( { fill:"white" } );
+
+var apple = BUTTONS.Button.template(function($){ return{
+	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#CCFFCC" }),
+	contents: [
+		new Label({left:0, right:0, string:"A P P L E S", style: labelStyle}),
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+			if (deviceURL != ""){
+				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
+			}
+		}},
+		onComplete: { value: function(content, message, json){
+		
+		}}
+	})
+}});
+
+var orange = BUTTONS.Button.template(function($){ return{
+	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#FFCC66" }),
+	contents: [
+		new Label({left:0, right:0, string:"O R A N G E S", style: labelStyle}),
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+			if (deviceURL != ""){
+				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
+			}
+		}},
+		onComplete: { value: function(content, message, json){
+		}}
+	})
+}});
+
+var banana = BUTTONS.Button.template(function($){ return{
+	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#99CCFF" }),
+	contents: [
+		new Label({left:0, right:0, string:"B A N A N A S", style: labelStyle}),
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+			if (deviceURL != ""){
+				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
+			}
+		}},
+		onComplete: { value: function(content, message, json){
+		}}
+	})
+}});
+
+var potato = BUTTONS.Button.template(function($){ return{
+	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#ffc3a0" }),
+	contents: [
+		new Label({left:0, right:0, string:"P O T A T O E S", style: labelStyle}),
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+			if (deviceURL != ""){
+				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
+			}
+		}},
+		onComplete: { value: function(content, message, json){
+		}}
+	})
+}});
+
+var carrot = BUTTONS.Button.template(function($){ return{
+	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#fa877a" }),
+	contents: [
+		new Label({left:0, right:0, string:"C A R R O T S", style: labelStyle}),
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+			if (deviceURL != ""){
+				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
+			}
+		}},
+		onComplete: { value: function(content, message, json){
+		}}
+	})
+}});
+
+var celery = BUTTONS.Button.template(function($){ return{
+	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#7aedfa" }),
+	contents: [
+		new Label({left:0, right:0, string:"C E L E R Y", style: labelStyle}),
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+			if (deviceURL != ""){
+				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
+			}
+		}},
+		onComplete: { value: function(content, message, json){
+		}}
+	})
+}});
+
+var appleButton = new Container({
+  left:0, right:0, top:50, bottom:360,
+  skin: whiteSkin,
+  contents:[
+  	new apple(),
+  ]
+});
+
+var orangeButton = new Container({
+  left:0, right:0, top:101, bottom:310,
+  skin: whiteSkin,
+  contents:[
+  	new orange(),
+  ]
+});
+
+var bananaButton = new Container({
+  left:0, right:0, top:152, bottom:260,
+  skin: whiteSkin,
+  contents:[
+  	new banana(),
+  ]
+});
+
+var potatoButton = new Container({
+  left:0, right:0, top:201, bottom:212,
+  skin: whiteSkin,
+  contents:[
+  	new potato(),
+  ]
+});
+
+var carrotButton = new Container({
+  left:0, right:0, top:249, bottom:163,
+  skin: whiteSkin,
+  contents:[
+  	new carrot(),
+  ]
+});
+
+var celeryButton = new Container({
+  left:0, right:0, top:299, bottom:110,
+  skin: whiteSkin,
+  contents:[
+  	new celery(),
+  ]
+});
+/*
+var mainColumn = new Column({
+	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+	contents: [
+	],
+});
+*/
+//application.behavior = new ApplicationBehavior();
+//application.add(mainColumn);
+
+var locateItemContainer = new Container({
+	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+	contents: [
+		new Column({
+			left: 0, right: 0, top: 5, bottom: 5,
+			contents: [
+				new smartShelfLogo(),
+				new apple(),
+				new orange(),
+				new banana(),
+				new potato(),
+				new carrot(),
+				new celery(),
+				new navigation()
+			]
+		}),
+	]
+});
+
+
+
 var mainContainer = new Container({
 	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
 	contents: [
-		scanInventory
+		homeWidget
 	],
 });
 
