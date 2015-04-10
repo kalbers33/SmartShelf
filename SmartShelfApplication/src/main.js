@@ -1,23 +1,13 @@
-
-/*******Jamie************/
-
-
-
-
-
-
-
-/*******Ji-hern**********/
-
-
-
-
-/*******Naren************/
 var THEME = require("themes/flat/theme");
 var BUTTONS = require("controls/buttons");
 
 deviceURL_scanner = "";
 deviceURL = "";
+
+/*******Jamie************/
+
+
+/*******Naren************/
 
 var itemType = -1;
 var itemValue = -1;
@@ -60,7 +50,7 @@ var MainShelfButtonTemplate = BUTTONS.Button.template(function($){ return{
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
-			mainContainer.add(mainShelf);
+			mainContainer.add(locateItemContainer);
 		}}
 	})
 }});
@@ -385,6 +375,199 @@ mainShelf.add(box6);
 mainShelf.add(box7);
 mainShelf.add(box8);
 mainShelf.add(box9);
+
+/*******Ji-hern**********/
+//SmartShelfApplication
+
+var labelStyle = new Style({ font:"bold 20px", color:"white"});
+var whiteSkin = new Skin( { fill:"white" } );
+
+var apple = BUTTONS.Button.template(function($){ return{
+	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#CCFFCC" }),
+	contents: [
+		new Label({left:0, right:0, string:"A P P L E S", style: labelStyle}),
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+			if (deviceURL != ""){
+				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
+			}
+		}},
+		onComplete: { value: function(content, message, json){
+		
+		}}
+	})
+}});
+
+var orange = BUTTONS.Button.template(function($){ return{
+	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#FFCC66" }),
+	contents: [
+		new Label({left:0, right:0, string:"O R A N G E S", style: labelStyle}),
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+			if (deviceURL != ""){
+				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
+			}
+		}},
+		onComplete: { value: function(content, message, json){
+		}}
+	})
+}});
+
+var banana = BUTTONS.Button.template(function($){ return{
+	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#99CCFF" }),
+	contents: [
+		new Label({left:0, right:0, string:"B A N A N A S", style: labelStyle}),
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+			if (deviceURL != ""){
+				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
+			}
+		}},
+		onComplete: { value: function(content, message, json){
+		}}
+	})
+}});
+
+var potato = BUTTONS.Button.template(function($){ return{
+	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#ffc3a0" }),
+	contents: [
+		new Label({left:0, right:0, string:"P O T A T O E S", style: labelStyle}),
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+			if (deviceURL != ""){
+				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
+			}
+		}},
+		onComplete: { value: function(content, message, json){
+		}}
+	})
+}});
+
+var carrot = BUTTONS.Button.template(function($){ return{
+	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#fa877a" }),
+	contents: [
+		new Label({left:0, right:0, string:"C A R R O T S", style: labelStyle}),
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+			if (deviceURL != ""){
+				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
+			}
+		}},
+		onComplete: { value: function(content, message, json){
+		}}
+	})
+}});
+
+var celery = BUTTONS.Button.template(function($){ return{
+	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#7aedfa" }),
+	contents: [
+		new Label({left:0, right:0, string:"C E L E R Y", style: labelStyle}),
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+			if (deviceURL != ""){
+				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
+			}
+		}},
+		onComplete: { value: function(content, message, json){
+		}}
+	})
+}});
+
+var appleButton = new Container({
+  left:0, right:0, top:50, bottom:360,
+  skin: whiteSkin,
+  contents:[
+  	new apple(),
+  ]
+});
+
+var orangeButton = new Container({
+  left:0, right:0, top:101, bottom:310,
+  skin: whiteSkin,
+  contents:[
+  	new orange(),
+  ]
+});
+
+var bananaButton = new Container({
+  left:0, right:0, top:152, bottom:260,
+  skin: whiteSkin,
+  contents:[
+  	new banana(),
+  ]
+});
+
+var potatoButton = new Container({
+  left:0, right:0, top:201, bottom:212,
+  skin: whiteSkin,
+  contents:[
+  	new potato(),
+  ]
+});
+
+var carrotButton = new Container({
+  left:0, right:0, top:249, bottom:163,
+  skin: whiteSkin,
+  contents:[
+  	new carrot(),
+  ]
+});
+
+var celeryButton = new Container({
+  left:0, right:0, top:299, bottom:110,
+  skin: whiteSkin,
+  contents:[
+  	new celery(),
+  ]
+});
+/*
+var mainColumn = new Column({
+	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+	contents: [
+	],
+});
+*/
+//application.behavior = new ApplicationBehavior();
+//application.add(mainColumn);
+
+var locateItemContainer = new Container({
+	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+	contents: [
+		new Column({
+			left: 0, right: 0, top: 5, bottom: 5,
+			contents: [
+				new smartShelfLogo(),
+				new apple(),
+				new orange(),
+				new banana(),
+				new potato(),
+				new carrot(),
+				new celery(),
+				new navigation()
+			]
+		}),
+	]
+});
+
+
 
 var mainContainer = new Container({
 	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
