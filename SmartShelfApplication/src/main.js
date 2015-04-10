@@ -1,3 +1,16 @@
+//current scanned item: name and weight
+var currScannedItem = {
+	name:"",
+	weight:0
+};
+
+
+
+
+
+
+
+
 
 /*******Jamie************/
 
@@ -156,6 +169,26 @@ Handler.bind("/getScannerData", {
 				var value = Math.floor(data.scannedValue/10);
 				itemType = Math.floor(value/1000);
 				itemWeight = value%1000;
+				currScannedItem.weight = itemWeight;
+				if (value == 1) {
+					currScannedItem.name = "Apples"
+				}
+				if (value == 2) {
+					currScannedItem.name = "Oranges"
+				}
+				if (value == 3) {
+					currScannedItem.name = "Carrots"
+				}
+				if (value == 4) {
+					currScannedItem.name = "Bananas"
+				}
+				if (value == 5) {
+					currScannedItem.name = "Celery"
+				}
+				if (value == 6) {
+					currScannedItem.name = "Potatoes"
+				}
+				
 				itemTypeText.string = "Item Type: " + itemType;
 				itemWeightText.string = "Item Weight: " + itemWeight;
 			}
