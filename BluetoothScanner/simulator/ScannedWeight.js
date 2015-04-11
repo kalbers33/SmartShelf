@@ -20,24 +20,24 @@ var CONTROL = require ("mobile/control");
 var PinsSimulators = require ("PinsSimulators");
 
 exports.pins = {
-	scannedValue: {type: "I2C", address: 0x48}
+	scannedWeight: {type: "I2C", address: 0x52}
 };
 
 exports.configure = function() {
 	this.pinsSimulator = shell.delegate("addSimulatorPart", {
 		header : { 
-			label : "ScannedValue", 
-			name : "Scanned value by the device", 
+			label : "scannedWeight", 
+			name : "Scanned weight by the device", 
 			iconVariant : PinsSimulators.SENSOR_MODULE
 		},
 		axes : [
 			new PinsSimulators.AnalogInputAxisDescription(
 				{
 					valueLabel : "",
-					valueID : "scannedValue",
+					valueID : "scannedWeight",
 					defaultControl : PinsSimulators.SLIDER,
 					minValue : 0,
-					maxValue : 10,
+					maxValue : 1000,
 					value : 0
 				}
 			),
@@ -51,5 +51,5 @@ exports.close = function() {
 
 exports.read = function() {
 	var axes = this.pinsSimulator.delegate("getValue");
-	return axes.scannedValue;				
+	return axes.scannedWeight;				
 };

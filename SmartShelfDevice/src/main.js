@@ -7,28 +7,62 @@ var blueSkin = new Skin({fill: "blue"});
 var yellowSkin = new Skin({fill: "yellow"});
 var labelStyle = new Style({font:"bold 20px", color:"black"});
 
-var itemWeights = [];
+var itemInformationObjects = [];
+var itemToAdd;
 
-Handler.bind("/getParameters", Behavior({
+var ItemInformation = function($){
+	this.name = $.name;
+	if($.hasOwnProperty("count")){
+		this.count = $.count;
+	}else{
+		this.count = 0;
+	}
+	this.individualWeight = $.individualWeight;
+	this.totalWeight = 0;
+	this.maxWeight = 0;
+	this.lowThreshold = 0.25; //25% item is low!
+	this.outThreshold = 0.1; //10% is essentially out (empty box)
+	this.status = "out";
+}
+
+ItemInformation.prototype.updateItemWeight = function(weight){
+	this.totalWeight = weight;
+	if(this.maxWeight < weight) this.maxWeight = weight;
+	this.count = Math.round(weight/this.individualWeight);
+}
+
+Handler.bind("/getAllItemInformation", Behavior({
 	onInvoke: function(handler, message){
-		message.responseText = JSON.stringify({});
+		message.responseText = JSON.stringify(itemInformationObjects);
 		message.status = 200;
 	}
 }));
 
-Handler.bind("/getWeights", Behavior({
+
+Handler.bind("/newItem", Behavior({
 	onInvoke: function(handler, message){
-		message.responseText = JSON.stringify({itemWeights: itemWeights});
+		itemToAdd = new ItemInformation(JSON.parse(message.requestText));
+		message.responseText = -1;
 		message.status = 200;
 	}
 }));
 
-Handler.bind("/reset", Behavior({
+
+Handler.bind("/respond", Behavior({
 	onInvoke: function(handler, message){
-		message.responseText = JSON.stringify({});
+		message.responseText = "SmartShelf Device Found!";
 		message.status = 200;
 	}
 }));
+
+//Used by the simulator, don't delete.
+Handler.bind("/weightResults", Object.create(Behavior.prototype, {
+	onInvoke: { value: function( handler, message ){
+				application.distribute( "weightRecord", message.requestObject );
+			}}
+}));
+
+
 var Shelves = [];
 Shelves[0] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: greenSkin});
 Shelves[1] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: redSkin});
@@ -66,23 +100,15 @@ var mainColumn = new Column({
 	]
 });
 
-Handler.bind("/respond", Behavior({
-	onInvoke: function(handler, message){
-		message.responseText = "SmartShelf Device Found!";
-		message.status = 200;
-	}
-}));
 
-Handler.bind("/weightResults", Object.create(Behavior.prototype, {
-	onInvoke: { value: function( handler, message ){
-				application.distribute( "weightRecord", message.requestObject );
-			}}
-}));
 
 
 var ApplicationBehavior = Behavior.template({
 	onLaunch: function(application) {
 		application.shared = true;
+		for(i = 0; i < 6; i++){
+			itemInformationObjects[i] = new ItemInformation({name: "none", individualWeight: 50});
+		} 
 	},
 	onDisplaying : function(application){
 		application.invoke( new MessageWithObject( "pins:/itemWeights/read?repeat=on&callback=/weightResults&interval=70" ) );
@@ -98,12 +124,14 @@ var ApplicationBehavior = Behavior.template({
 		Shelves[3].string = data.Row2Column1;
 		Shelves[4].string = data.Row2Column2;
 		Shelves[5].string = data.Row2Column3;
-		itemWeights[0] = data.Row1Column1;
-		itemWeights[1] = data.Row1Column2;
-		itemWeights[2] = data.Row1Column3;
-		itemWeights[3] = data.Row2Column1;
-		itemWeights[4] = data.Row2Column2;
-		itemWeights[5] = data.Row2Column3;
+		
+		
+		itemInformationObjects[0].updateItemWeight(data.Row1Column1);
+		itemInformationObjects[1].updateItemWeight(data.Row1Column2);
+		itemInformationObjects[2].updateItemWeight(data.Row1Column3);
+		itemInformationObjects[3].updateItemWeight(data.Row2Column1);
+		itemInformationObjects[4].updateItemWeight(data.Row2Column2);
+		itemInformationObjects[5].updateItemWeight(data.Row2Column3); 
 	}
 })
 
