@@ -123,8 +123,8 @@ var LowItemsButtonTemplate = BUTTONS.Button.template(function($){ return{
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
-			//mainContainer.remove(mainContainer.last);
-			//mainContainer.add(scanInventory);
+			mainContainer.remove(mainContainer.last);
+			mainContainer.add(lowItemContainer);
 			//this should be adding a low items list container
 		}}
 	})
@@ -659,6 +659,38 @@ var locateItemContainer = new Container({
 		}),	
 	]
 });
+
+//Low Items
+var appleLabel = new Label({left:0, right:0, string:"Apples", style: labelStyle});
+var orangeLabel = new Label({left:0, right:0, string:"Oranges", style: labelStyle});
+var bananaLabel = new Label({left:0, right:0, string:"Bananas", style: labelStyle});
+var potatoLabel = new Label({left:0, right:0, string:"Potatoes", style: labelStyle});
+var carrotLabel = new Label({left:0, right:0, string:"Carrots", style: labelStyle});
+var celeryLabel = new Label({left:0, right:0, string:"Celery", style: labelStyle});
+
+var lowItemColumn = new Column({
+	left: 0, right: 0, top: 10, bottom: 0, active: true, skin: whiteSkin, name: "lowItemColumn",
+	contents: [
+		new navigation()
+	]
+});
+
+//DOuble check
+
+var lowItemContainer = new Container({
+	left: 0, right: 0, top: 5, bottom: 0, active: true, skin: whiteSkin,
+	contents: [
+		new Column({
+			left: 0, right: 0, top: 0, bottom: 0,
+			contents: [
+				new smartShelfLogo(),	
+				lowItemColumn,
+			]
+		}),	
+	]
+});
+
+/*******Ji-hern**********/
 
 var mainContainer = new Container({
 	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
