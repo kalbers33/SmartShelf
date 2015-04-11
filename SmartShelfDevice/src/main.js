@@ -9,6 +9,8 @@ var labelStyle = new Style({font:"bold 20px", color:"black"});
 
 var itemInformationObjects = [];
 var itemToAdd;
+var lastItemAdded = -1;
+var currentlyLookingForItem = false;
 
 var ItemInformation = function($){
 	this.name = $.name;
@@ -20,19 +22,27 @@ var ItemInformation = function($){
 	this.individualWeight = $.individualWeight;
 	this.totalWeight = 0;
 	this.maxWeight = 0;
+	this.lastWeight = this.totalWeight;
 	this.lowThreshold = 0.25; //25% item is low!
 	this.outThreshold = 0.1; //10% is essentially out (empty box)
 	this.status = "out";
 }
 
-ItemInformation.prototype.updateItemWeight = function(weight){
+ItemInformation.prototype.updateItemWeight = function(itemIndex, weight){
 	this.totalWeight = weight;
-	if(this.maxWeight < weight) this.maxWeight = weight;
+	if(this.maxWeight < weight){
+		this.maxWeight = weight;
+	}if(this.lastWeight < weight){
+		if(currentlyLookingForItem) lastItemAdded = itemIndex;
+		//TODO: Now Add the item!
+	}
+	this.lastWeight = weight;
 	this.count = Math.round(weight/this.individualWeight);
 }
 
 Handler.bind("/getAllItemInformation", Behavior({
 	onInvoke: function(handler, message){
+		//trace(itemInformationObjects[0].totalWeight.toString() + "\n");
 		message.responseText = JSON.stringify(itemInformationObjects);
 		message.status = 200;
 	}
@@ -42,7 +52,10 @@ Handler.bind("/getAllItemInformation", Behavior({
 Handler.bind("/newItem", Behavior({
 	onInvoke: function(handler, message){
 		itemToAdd = new ItemInformation(JSON.parse(message.requestText));
-		message.responseText = -1;
+		message.responseText = JSON.stringify({newShelf: lastItemAdded});
+		if(lastItemAdded != -1) currentlyLookingForItem = false;
+		else currentlyLookingForItem = true;
+		lastItemAdded = -1;
 		message.status = 200;
 	}
 }));
@@ -126,12 +139,12 @@ var ApplicationBehavior = Behavior.template({
 		Shelves[5].string = data.Row2Column3;
 		
 		
-		itemInformationObjects[0].updateItemWeight(data.Row1Column1);
-		itemInformationObjects[1].updateItemWeight(data.Row1Column2);
-		itemInformationObjects[2].updateItemWeight(data.Row1Column3);
-		itemInformationObjects[3].updateItemWeight(data.Row2Column1);
-		itemInformationObjects[4].updateItemWeight(data.Row2Column2);
-		itemInformationObjects[5].updateItemWeight(data.Row2Column3); 
+		itemInformationObjects[0].updateItemWeight(0, data.Row1Column1);
+		itemInformationObjects[1].updateItemWeight(1, data.Row1Column2);
+		itemInformationObjects[2].updateItemWeight(2, data.Row1Column3);
+		itemInformationObjects[3].updateItemWeight(3, data.Row2Column1);
+		itemInformationObjects[4].updateItemWeight(4, data.Row2Column2);
+		itemInformationObjects[5].updateItemWeight(5, data.Row2Column3); 
 	}
 })
 

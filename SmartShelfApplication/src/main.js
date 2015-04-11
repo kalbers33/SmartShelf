@@ -2,13 +2,18 @@
 var THEME = require("themes/flat/theme");
 var BUTTONS = require("controls/buttons");
 
+
 //dictionary: item --> shelf number
  
+
+var currentScreenName = "";
+var previousScreenName = "";
+
 
 //current scanned item: name and weight
 var currScannedItem = {
 	name:"",
-	weight:0
+	individualWeight:0
 };
 
 deviceURL_scanner = "";
@@ -36,6 +41,8 @@ var BackButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(homeWidget);
+			previousScreenName = currentScreenName;
+			currentScreenName = "homeWidget";
 		}}
 	})
 }});
@@ -49,6 +56,8 @@ var ScanButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(scanInventory);
+			previousScreenName = currentScreenName;
+			currentScreenName = "scanInventory";
 		}}
 	})
 }});
@@ -61,7 +70,23 @@ var MainShelfButtonTemplate = BUTTONS.Button.template(function($){ return{
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+		}}
+	})
+}});
+
+var locateItemButtonTemplate = BUTTONS.Button.template(function($){ return{
+	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
+	contents: [
+		new Label({left:0, right:0, height:40, string:$.textForLabel, style: $.textFormat})
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
 			mainContainer.add(locateItemContainer);
+			//locateItemColumn.insert(appleButton, locateItemColumn.last);			
+			previousScreenName = currentScreenName;
+			currentScreenName = "locateItemContainer";
 		}}
 	})
 }});
@@ -75,6 +100,8 @@ var ProceedScanButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(scanInventoryPlaceItem);
+			previousScreenName = currentScreenName;
+			currentScreenName = "scanInventoryPlaceItem";
 		}}
 	})
 }});
@@ -88,6 +115,8 @@ var ProceedToShowButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(scanInventoryShelfDisplay);
+			previousScreenName = currentScreenName;
+			currentScreenName = "scanInventoryShelfDisplay";
 		}}
 	})
 }});
@@ -100,7 +129,7 @@ var LowItemsButtonTemplate = BUTTONS.Button.template(function($){ return{
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
-			//mainContainer.add(scanInventory);
+			mainContainer.add(lowItemContainer);
 			//this should be adding a low items list container
 		}}
 	})
@@ -134,6 +163,7 @@ var backButton = new BackButtonTemplate({textForLabel:"Back", name: "backButton"
 var homeButton = new BackButtonTemplate({textForLabel:"Home", name: "homeButton", textFormat: bigText});
 var scanButton = new ScanButtonTemplate({textForLabel:"Scan", name: "scanButton", textFormat: bigText});
 var mainShelfButton = new MainShelfButtonTemplate({textForLabel:"Main Shelf", name: "mainShelfButton", textFormat: bigText});
+var locateItemButton = new locateItemButtonTemplate({textForLabel:"Locate Item", name: "locateItemButton", textFormat: bigText});
 var proceedScanButton = new ProceedScanButtonTemplate({textForLabel:"Proceed", name: "proceedScanButton", textFormat: bigText});
 var proceedToShowButton = new ProceedToShowButtonTemplate({textForLabel:"Proceed", name: "proceedToShowButton", textFormat: bigText});
 var lowItemsButton = new LowItemsButtonTemplate({textForLabel:"Low Items", name: "lowItemsButton", textFormat: bigText});
@@ -173,7 +203,7 @@ Handler.bind("/getScannerData", {
 				itemType = data.scannedValue
 				itemWeight = data.scannedWeight;
 				var value = itemType;
-				currScannedItem.weight = itemWeight;
+				currScannedItem.individualWeight = itemWeight;
 				if (value == 1) {
 					currScannedItem.name = "Apples"
 				}
@@ -204,12 +234,70 @@ Handler.bind("/getScannerData", {
     }
 });
 
+
 Handler.bind("/delayScanner", {
     onInvoke: function(handler, message){
         handler.wait(1000); //will call onComplete after 1 seconds
     },
     onComplete: function(handler, message){
         handler.invoke(new Message("/getScannerData"));
+    }
+});
+
+var itemInformationObjects = [];
+
+Handler.bind("/getItemData", {
+	onInvoke: function(handler, message){
+    	if(deviceURL != "") handler.invoke(new Message(deviceURL + "getAllItemInformation"), Message.JSON);
+    	else handler.invoke(new Message("/delayItemData"));
+	},
+	onComplete: function(handler, message, json){
+		itemInformationObjects = json;
+		trace("App Side: " + json[0].totalWeight.toString() + "\n" );
+        handler.invoke(new Message("/delayItemData"));
+	}
+});
+
+Handler.bind("/delayItemData", {
+    onInvoke: function(handler, message){
+        handler.wait(1000); //will call onComplete after 1 seconds
+    },
+    onComplete: function(handler, message){
+        handler.invoke(new Message("/getItemData"));
+    }
+});
+
+Handler.bind("/getNewItem", {
+    onInvoke: function(handler, message){
+    	if(deviceURL != "") {
+	    	var msg = new Message(deviceURL + "newItem");
+	    	msg.requestText = JSON.stringify(currScannedItem);
+	    	handler.invoke(msg, Message.JSON);
+	    }else handler.invoke( new Message("/delayNewItem"));
+    },
+    onComplete: function(handler, message, json){
+    	if (deviceURL != "") {
+			trace("Item detected on shelf: " +json.newShelf + "\n");
+			if (json.newShelf != -1) {
+				if (currentScreenName == "scanInventoryPlaceItem") {
+					trace("New item detected on ", json.newShelf);
+					mainContainer.remove(mainContainer.last);
+					mainContainer.add(mainShelf);
+					previousScreenName = currentScreenName;
+					currentScreenName = "mainShelf";
+				}
+			}
+		}
+		handler.invoke( new Message("/delayNewItem"));
+    }
+});
+
+Handler.bind("/delayNewItem", {
+    onInvoke: function(handler, message){
+        handler.wait(1000); //will call onComplete after 1 seconds
+    },
+    onComplete: function(handler, message){
+        handler.invoke(new Message("/getNewItem"));
     }
 });
 
@@ -280,7 +368,8 @@ var homeWidget = new Container({
 				new smartShelfLogo(),
 				scanButton,
 				//FIXME: Dummy button. Should be accessible once Kevin implements changes
-				mainShelfButton,
+				mainShelfButton,				
+				locateItemButton,
 				lowItemsButton
 			]
 		}),
@@ -439,7 +528,7 @@ var labelStyle = new Style({ font:"bold 20px", color:"white"});
 var whiteSkin = new Skin( { fill:"white" } );
 
 var apple = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, top: 10, bottom:0, skin: new Skin({ fill: "#CCFFCC" }),
+	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
 	contents: [
 		new Label({left:0, right:0, string:"A P P L E S", style: labelStyle}),
 	],
@@ -447,6 +536,8 @@ var apple = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 			if (deviceURL != ""){
 				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
 			}
@@ -458,7 +549,7 @@ var apple = BUTTONS.Button.template(function($){ return{
 }});
 
 var orange = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#FFCC66" }),
+	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#FFCC66" }),
 	contents: [
 		new Label({left:0, right:0, string:"O R A N G E S", style: labelStyle}),
 	],
@@ -466,6 +557,8 @@ var orange = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 			if (deviceURL != ""){
 				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
 			}
@@ -476,7 +569,7 @@ var orange = BUTTONS.Button.template(function($){ return{
 }});
 
 var banana = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#99CCFF" }),
+	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#99CCFF" }),
 	contents: [
 		new Label({left:0, right:0, string:"B A N A N A S", style: labelStyle}),
 	],
@@ -484,6 +577,8 @@ var banana = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 			if (deviceURL != ""){
 				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
 			}
@@ -494,7 +589,7 @@ var banana = BUTTONS.Button.template(function($){ return{
 }});
 
 var potato = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#ffc3a0" }),
+	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#ffc3a0" }),
 	contents: [
 		new Label({left:0, right:0, string:"P O T A T O E S", style: labelStyle}),
 	],
@@ -502,6 +597,8 @@ var potato = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 			if (deviceURL != ""){
 				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
 			}
@@ -512,7 +609,7 @@ var potato = BUTTONS.Button.template(function($){ return{
 }});
 
 var carrot = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#fa877a" }),
+	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#fa877a" }),
 	contents: [
 		new Label({left:0, right:0, string:"C A R R O T S", style: labelStyle}),
 	],
@@ -520,6 +617,8 @@ var carrot = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 			if (deviceURL != ""){
 				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
 			}
@@ -530,7 +629,7 @@ var carrot = BUTTONS.Button.template(function($){ return{
 }});
 
 var celery = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#7aedfa" }),
+	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#7aedfa" }),
 	contents: [
 		new Label({left:0, right:0, string:"C E L E R Y", style: labelStyle}),
 	],
@@ -538,6 +637,8 @@ var celery = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 			if (deviceURL != ""){
 				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
 			}
@@ -547,26 +648,64 @@ var celery = BUTTONS.Button.template(function($){ return{
 	})
 }});
 
-var locateItemContainer = new Container({
-	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+var appleButton = new apple();
+var orangeButton = new orange();
+var bananaButton = new banana();
+var potatoButton = new potato();
+var carrotButton = new carrot();
+var celeryButton = new celery();
+
+var locateItemColumn = new Column({
+	left: 0, right: 0, top: 10, bottom: 0, active: true, skin: whiteSkin, name: "locateItemColumn",
 	contents: [
-		new Column({
-			left: 0, right: 0, top: 5, bottom: 5,
-			contents: [
-				new smartShelfLogo(),
-				new apple(),
-				new orange(),
-				new banana(),
-				new potato(),
-				new carrot(),
-				new celery(),
-				new navigation()
-			]
-		}),
+		new navigation()
 	]
 });
 
+var locateItemContainer = new Container({
+	left: 0, right: 0, top: 5, bottom: 0, active: true, skin: whiteSkin,
+	contents: [
+		new Column({
+			left: 0, right: 0, top: 0, bottom: 0,
+			contents: [
+				new smartShelfLogo(),	
+				locateItemColumn,
+			]
+		}),	
+	]
+});
 
+//Low Items
+var appleLabel = new Label({left:0, right:0, string:"Apples", style: labelStyle});
+var orangeLabel = new Label({left:0, right:0, string:"Oranges", style: labelStyle});
+var bananaLabel = new Label({left:0, right:0, string:"Bananas", style: labelStyle});
+var potatoLabel = new Label({left:0, right:0, string:"Potatoes", style: labelStyle});
+var carrotLabel = new Label({left:0, right:0, string:"Carrots", style: labelStyle});
+var celeryLabel = new Label({left:0, right:0, string:"Celery", style: labelStyle});
+
+var lowItemColumn = new Column({
+	left: 0, right: 0, top: 10, bottom: 0, active: true, skin: whiteSkin, name: "lowItemColumn",
+	contents: [
+		new navigation()
+	]
+});
+
+//DOuble check
+
+var lowItemContainer = new Container({
+	left: 0, right: 0, top: 5, bottom: 0, active: true, skin: whiteSkin,
+	contents: [
+		new Column({
+			left: 0, right: 0, top: 0, bottom: 0,
+			contents: [
+				new smartShelfLogo(),	
+				lowItemColumn,
+			]
+		}),	
+	]
+});
+
+/*******Ji-hern**********/
 
 var mainContainer = new Container({
 	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
@@ -583,7 +722,8 @@ var ApplicationBehavior = Behavior.template({
 	onLaunch: function(application) {
 		application.shared = true;
 		application.invoke(new Message("/getScannerData"));
-		application.invoke(new Message("/getDeviceData"));
+		application.invoke(new Message("/getNewItem"));
+		application.invoke(new Message("/getItemData"));
 	},
 	onQuit: function(application) {
 		application.forget("bluetoothscanner");
