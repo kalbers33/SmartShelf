@@ -16,6 +16,8 @@ var currScannedItem = {
 	individualWeight:0
 };
 
+var itemDetectedShelfNumber = -1;
+
 deviceURL_scanner = "";
 deviceURL = "";
 
@@ -286,11 +288,46 @@ Handler.bind("/getNewItem", {
 			trace("Item detected on shelf: " +json.newShelf + "\n");
 			if (json.newShelf != -1) {
 				if (currentScreenName == "scanInventoryPlaceItem") {
+					itemDetectedShelfNumber = json.newShelf;
 					trace("New item detected on ", json.newShelf);
+					switch (itemDetectedShelfNumber) {
+						case 0: box0.first.next.skin = itemDetectedSkin;
+								break;
+						case 1: box1.first.next.skin = itemDetectedSkin;
+								break;
+						case 2: box2.first.next.skin = itemDetectedSkin;
+								break;
+						case 3: box3.first.next.skin = itemDetectedSkin;
+								break;
+						case 4: box4.first.next.skin = itemDetectedSkin;
+								break;
+						case 5: box5.first.next.skin = itemDetectedSkin;
+								break;
+					}
 					mainContainer.remove(mainContainer.last);
 					mainContainer.add(mainShelf);
 					previousScreenName = currentScreenName;
 					currentScreenName = "mainShelf";
+				}
+			}
+			else {
+				if (currentScreenName != "mainShelf" && itemDetectedShelfNumber != -1) {
+					box1.first.next.skin = boxSkin;
+					switch (itemDetectedShelfNumber) {
+						case 0: box0.first.next.skin = boxSkin;
+								break;
+						case 1: box1.first.next.skin = boxSkin;
+								break;
+						case 2: box2.first.next.skin = boxSkin;
+								break;
+						case 3: box3.first.next.skin = boxSkin;
+								break;
+						case 4: box4.first.next.skin = boxSkin;
+								break;
+						case 5: box5.first.next.skin = boxSkin;
+								break;
+					}
+					itemDetectedShelfNumber = -1;
 				}
 			}
 		}
@@ -387,6 +424,7 @@ var boxSkin = new Skin( { fill:"#CD853F" } );
 var whiteSkin = new Skin( { fill:"white" } );
 var blackSkin = new Skin( { fill:"black" } );
 var highlightSkin = new Skin( { fill:"red" } );
+var itemDetectedSkin = new Skin( { fill:"green" } );
 var LEDSkin = new Skin( { fill:"blue" } );
 var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
 var stockStyle = new Style( { font: "bold 25px", color:"#778899" } );
