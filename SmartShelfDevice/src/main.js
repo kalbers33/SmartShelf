@@ -25,7 +25,7 @@ var ItemInformation = function($){
 	this.lastWeight = this.totalWeight;
 	this.lowThreshold = 0.25; //25% item is low!
 	this.outThreshold = 0.1; //10% is essentially out (empty box)
-	this.status = "out";
+	this.status = "out"; //"out", "low", "ok"
 }
 
 ItemInformation.prototype.updateItemWeight = function(itemIndex, weight){
@@ -33,11 +33,22 @@ ItemInformation.prototype.updateItemWeight = function(itemIndex, weight){
 	if(this.maxWeight < weight){
 		this.maxWeight = weight;
 	}if(this.lastWeight < weight){
-		if(currentlyLookingForItem) lastItemAdded = itemIndex;
-		//TODO: Now Add the item!
+		if(currentlyLookingForItem) {
+			currentlyLookingForItem = false;
+			lastItemAdded = itemIndex;
+			//TODO: Now Add the item!
+			this.name = itemToAdd.name;
+			this.individualWeight = itemToAdd.individualWeight;
+			this.maxWeight = weight;
+			//trace("New Item Named: " + this.name + " to shelf "+ itemIndex.toString() +  "\n");
+		}
 	}
 	this.lastWeight = weight;
-	this.count = Math.round(weight/this.individualWeight);
+	if(this.individualWeight > 0) this.count = Math.round(weight/this.individualWeight);
+	if(weight < this.maxWeight*this.lowThreshold) this.status = "low";
+	else this.status = "ok";
+	if(weight < this.maxWeight*this.outThreshold) this.status = "out";
+	
 }
 
 Handler.bind("/getAllItemInformation", Behavior({

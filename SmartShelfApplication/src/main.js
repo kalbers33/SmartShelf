@@ -248,7 +248,8 @@ Handler.bind("/getItemData", {
 	},
 	onComplete: function(handler, message, json){
 		itemInformationObjects = json;
-		trace("App Side: " + json[0].totalWeight.toString() + "\n" );
+		//trace("App Side: " + json[0].totalWeight.toString() + "\n" );
+        trace("App Side: " + json[0].status + "\n" );
         handler.invoke(new Message("/delayItemData"));
 	}
 });
@@ -272,7 +273,7 @@ Handler.bind("/getNewItem", {
     },
     onComplete: function(handler, message, json){
     	if (deviceURL != "") {
-			trace("Item detected on shelf: " +json.newShelf + "\n");
+			//trace("Item detected on shelf: " +json.newShelf + "\n");
 			if (json.newShelf == -1) {
 				if (currentScreenName == "scanInventoryPlaceItem") {
 					mainContainer.remove(mainContainer.last);
