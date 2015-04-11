@@ -2,6 +2,9 @@
 var THEME = require("themes/flat/theme");
 var BUTTONS = require("controls/buttons");
 
+var currentScreenName = "";
+var previousScreenName = "";
+
 //current scanned item: name and weight
 var currScannedItem = {
 	name:"",
@@ -33,6 +36,8 @@ var BackButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(homeWidget);
+			previousScreenName = currentScreenName;
+			currentScreenName = "homeWidget";
 		}}
 	})
 }});
@@ -46,6 +51,8 @@ var ScanButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(scanInventory);
+			previousScreenName = currentScreenName;
+			currentScreenName = "scanInventory";
 		}}
 	})
 }});
@@ -59,6 +66,8 @@ var MainShelfButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(locateItemContainer);
+			previousScreenName = currentScreenName;
+			currentScreenName = "locateItemContainer";
 		}}
 	})
 }});
@@ -72,6 +81,8 @@ var ProceedScanButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(scanInventoryPlaceItem);
+			previousScreenName = currentScreenName;
+			currentScreenName = "scanInventoryPlaceItem";
 		}}
 	})
 }});
@@ -85,6 +96,8 @@ var ProceedToShowButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(scanInventoryShelfDisplay);
+			previousScreenName = currentScreenName;
+			currentScreenName = "scanInventoryShelfDisplay";
 		}}
 	})
 }});
@@ -96,7 +109,7 @@ var LowItemsButtonTemplate = BUTTONS.Button.template(function($){ return{
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
-			mainContainer.remove(mainContainer.last);
+			//mainContainer.remove(mainContainer.last);
 			//mainContainer.add(scanInventory);
 			//this should be adding a low items list container
 		}}
@@ -246,6 +259,12 @@ Handler.bind("/getNewItem", {
     	if (deviceURL != "") {
 			if (json.newShelf == -1) {
 				trace("Item detected on shelf: " +json.newShelf + "\n");
+				if (currentScreenName == "scanInventoryPlaceItem") {
+					mainContainer.remove(mainContainer.last);
+					mainContainer.add(mainShelf);
+					previousScreenName = currentScreenName;
+					currentScreenName = "mainShelf";
+				}
 			}
 		}
 		handler.invoke( new Message("/delayNewItem"));
@@ -486,6 +505,8 @@ var apple = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 			if (deviceURL != ""){
 				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
 			}
@@ -505,6 +526,8 @@ var orange = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 			if (deviceURL != ""){
 				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
 			}
@@ -523,6 +546,8 @@ var banana = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 			if (deviceURL != ""){
 				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
 			}
@@ -541,6 +566,8 @@ var potato = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 			if (deviceURL != ""){
 				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
 			}
@@ -559,6 +586,8 @@ var carrot = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 			if (deviceURL != ""){
 				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
 			}
@@ -577,6 +606,8 @@ var celery = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 			if (deviceURL != ""){
 				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
 			}
