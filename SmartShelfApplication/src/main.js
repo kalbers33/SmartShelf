@@ -65,7 +65,21 @@ var MainShelfButtonTemplate = BUTTONS.Button.template(function($){ return{
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
+			mainContainer.add(mainShelf);
+		}}
+	})
+}});
+
+var locateItemButtonTemplate = BUTTONS.Button.template(function($){ return{
+	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
+	contents: [
+		new Label({left:0, right:0, height:40, string:$.textForLabel, style: $.textFormat})
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
 			mainContainer.add(locateItemContainer);
+			//locateItemColumn.insert(appleButton, locateItemColumn.last);			
 			previousScreenName = currentScreenName;
 			currentScreenName = "locateItemContainer";
 		}}
@@ -144,6 +158,7 @@ var backButton = new BackButtonTemplate({textForLabel:"Back", name: "backButton"
 var homeButton = new BackButtonTemplate({textForLabel:"Home", name: "homeButton", textFormat: bigText});
 var scanButton = new ScanButtonTemplate({textForLabel:"Scan", name: "scanButton", textFormat: bigText});
 var mainShelfButton = new MainShelfButtonTemplate({textForLabel:"Main Shelf", name: "mainShelfButton", textFormat: bigText});
+var locateItemButton = new locateItemButtonTemplate({textForLabel:"Locate Item", name: "locateItemButton", textFormat: bigText});
 var proceedScanButton = new ProceedScanButtonTemplate({textForLabel:"Proceed", name: "proceedScanButton", textFormat: bigText});
 var proceedToShowButton = new ProceedToShowButtonTemplate({textForLabel:"Proceed", name: "proceedToShowButton", textFormat: bigText});
 var lowItemsButton = new LowItemsButtonTemplate({textForLabel:"Low Items", name: "lowItemsButton", textFormat: bigText});
@@ -347,7 +362,8 @@ var homeWidget = new Container({
 				new smartShelfLogo(),
 				scanButton,
 				//FIXME: Dummy button. Should be accessible once Kevin implements changes
-				mainShelfButton,
+				mainShelfButton,				
+				locateItemButton,
 				lowItemsButton
 			]
 		}),
@@ -497,7 +513,7 @@ var labelStyle = new Style({ font:"bold 20px", color:"white"});
 var whiteSkin = new Skin( { fill:"white" } );
 
 var apple = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, top: 10, bottom:0, skin: new Skin({ fill: "#CCFFCC" }),
+	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
 	contents: [
 		new Label({left:0, right:0, string:"A P P L E S", style: labelStyle}),
 	],
@@ -518,7 +534,7 @@ var apple = BUTTONS.Button.template(function($){ return{
 }});
 
 var orange = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#FFCC66" }),
+	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#FFCC66" }),
 	contents: [
 		new Label({left:0, right:0, string:"O R A N G E S", style: labelStyle}),
 	],
@@ -538,7 +554,7 @@ var orange = BUTTONS.Button.template(function($){ return{
 }});
 
 var banana = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#99CCFF" }),
+	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#99CCFF" }),
 	contents: [
 		new Label({left:0, right:0, string:"B A N A N A S", style: labelStyle}),
 	],
@@ -558,7 +574,7 @@ var banana = BUTTONS.Button.template(function($){ return{
 }});
 
 var potato = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#ffc3a0" }),
+	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#ffc3a0" }),
 	contents: [
 		new Label({left:0, right:0, string:"P O T A T O E S", style: labelStyle}),
 	],
@@ -578,7 +594,7 @@ var potato = BUTTONS.Button.template(function($){ return{
 }});
 
 var carrot = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#fa877a" }),
+	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#fa877a" }),
 	contents: [
 		new Label({left:0, right:0, string:"C A R R O T S", style: labelStyle}),
 	],
@@ -598,7 +614,7 @@ var carrot = BUTTONS.Button.template(function($){ return{
 }});
 
 var celery = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, top: 0, bottom:0, skin: new Skin({ fill: "#7aedfa" }),
+	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#7aedfa" }),
 	contents: [
 		new Label({left:0, right:0, string:"C E L E R Y", style: labelStyle}),
 	],
@@ -617,26 +633,32 @@ var celery = BUTTONS.Button.template(function($){ return{
 	})
 }});
 
-var locateItemContainer = new Container({
-	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+var appleButton = new apple();
+var orangeButton = new orange();
+var bananaButton = new banana();
+var potatoButton = new potato();
+var carrotButton = new carrot();
+var celeryButton = new celery();
+
+var locateItemColumn = new Column({
+	left: 0, right: 0, top: 10, bottom: 0, active: true, skin: whiteSkin, name: "locateItemColumn",
 	contents: [
-		new Column({
-			left: 0, right: 0, top: 5, bottom: 5,
-			contents: [
-				new smartShelfLogo(),
-				new apple(),
-				new orange(),
-				new banana(),
-				new potato(),
-				new carrot(),
-				new celery(),
-				new navigation()
-			]
-		}),
+		new navigation()
 	]
 });
 
-
+var locateItemContainer = new Container({
+	left: 0, right: 0, top: 5, bottom: 0, active: true, skin: whiteSkin,
+	contents: [
+		new Column({
+			left: 0, right: 0, top: 0, bottom: 0,
+			contents: [
+				new smartShelfLogo(),	
+				locateItemColumn,
+			]
+		}),	
+	]
+});
 
 var mainContainer = new Container({
 	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
