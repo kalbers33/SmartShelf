@@ -272,8 +272,8 @@ Handler.bind("/getNewItem", {
     },
     onComplete: function(handler, message, json){
     	if (deviceURL != "") {
+			trace("Item detected on shelf: " +json.newShelf + "\n");
 			if (json.newShelf == -1) {
-				trace("Item detected on shelf: " +json.newShelf + "\n");
 				if (currentScreenName == "scanInventoryPlaceItem") {
 					mainContainer.remove(mainContainer.last);
 					mainContainer.add(mainShelf);
