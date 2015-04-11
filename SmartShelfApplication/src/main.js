@@ -234,6 +234,28 @@ Handler.bind("/delayItemData", {
     }
 });
 
+Handler.bind("/getNewItem", {
+    onInvoke: function(handler, message){
+    	handler.invoke(new Message(deviceURL_scanner + "getData"), Message.JSON);
+    },
+    onComplete: function(handler, message, json){
+    	if (deviceURL_scanner != "") {
+			if (json.value == -1) {
+				printf("Item detected on shelf", json.value);
+			}
+		}
+		handler.invoke( new Message("/delayNewItem"));
+    }
+});
+
+Handler.bind("/delayNewItem", {
+    onInvoke: function(handler, message){
+        handler.wait(1000); //will call onComplete after 1 seconds
+    },
+    onComplete: function(handler, message){
+        handler.invoke(new Message("/getNewItem"));
+    }
+});
 
 var navigation = Line.template(function($) { return{
 	left: 0, right: 0, top: 0, bottom: 0, height: 50,
@@ -596,7 +618,7 @@ var ApplicationBehavior = Behavior.template({
 	onLaunch: function(application) {
 		application.shared = true;
 		application.invoke(new Message("/getScannerData"));
-		application.invoke(new Message("/getDeviceData"));
+		application.invoke(new Message("/getNewItem"));
 		application.invoke(new Message("/getItemData"));
 	},
 	onQuit: function(application) {
