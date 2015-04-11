@@ -236,10 +236,10 @@ Handler.bind("/delayItemData", {
 
 Handler.bind("/getNewItem", {
     onInvoke: function(handler, message){
-    	handler.invoke(new Message(deviceURL_scanner + "getData"), Message.JSON);
+    	handler.invoke(new Message(deviceURL + "newItem"), Message.JSON);
     },
     onComplete: function(handler, message, json){
-    	if (deviceURL_scanner != "") {
+    	if (deviceURL != "") {
 			if (json.value == -1) {
 				printf("Item detected on shelf", json.value);
 			}
