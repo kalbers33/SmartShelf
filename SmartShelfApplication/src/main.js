@@ -88,6 +88,20 @@ var ProceedToShowButtonTemplate = BUTTONS.Button.template(function($){ return{
 	})
 }});
 
+var LowItemsButtonTemplate = BUTTONS.Button.template(function($){ return{
+	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
+	contents: [
+		new Label({left:0, right:0, height:40, string:$.textForLabel, style: $.textFormat})
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
+			//mainContainer.add(scanInventory);
+			//this should be adding a low items list container
+		}}
+	})
+}});
+
 var smartShelfLogo = Picture.template(function($){ return {
 	height: 100, name:"smartShelfLogo", url:"../../SmartShelfLogo.png"
 };
@@ -118,6 +132,7 @@ var scanButton = new ScanButtonTemplate({textForLabel:"Scan", name: "scanButton"
 var mainShelfButton = new MainShelfButtonTemplate({textForLabel:"Main Shelf", name: "mainShelfButton", textFormat: bigText});
 var proceedScanButton = new ProceedScanButtonTemplate({textForLabel:"Proceed", name: "proceedScanButton", textFormat: bigText});
 var proceedToShowButton = new ProceedToShowButtonTemplate({textForLabel:"Proceed", name: "proceedToShowButton", textFormat: bigText});
+var lowItemsButton = new LowItemsButtonTemplate({textForLabel:"Low Items", name: "lowItemsButton", textFormat: bigText});
 
 Handler.bind("/discover", Behavior({
 	onInvoke: function(handler, message){
@@ -260,7 +275,8 @@ var homeWidget = new Container({
 				new smartShelfLogo(),
 				scanButton,
 				//FIXME: Dummy button. Should be accessible once Kevin implements changes
-				mainShelfButton
+				mainShelfButton,
+				lowItemsButton
 			]
 		}),
 	]
