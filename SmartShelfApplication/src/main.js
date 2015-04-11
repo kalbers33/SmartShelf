@@ -4,7 +4,8 @@ var BUTTONS = require("controls/buttons");
 
 
 //dictionary: item --> shelf number
- 
+var shelfDic = {};
+var lowDic = {};
 
 var currentScreenName = "";
 var previousScreenName = "";
@@ -261,7 +262,8 @@ Handler.bind("/getItemData", {
 	},
 	onComplete: function(handler, message, json){
 		itemInformationObjects = json;
-		trace("App Side: " + json[0].totalWeight.toString() + "\n" );
+		//trace("App Side: " + json[0].totalWeight.toString() + "\n" );
+        trace("App Side: " + json[0].status + "\n" );
         handler.invoke(new Message("/delayItemData"));
 	}
 });
@@ -308,6 +310,11 @@ Handler.bind("/getNewItem", {
 					mainContainer.add(mainShelf);
 					previousScreenName = currentScreenName;
 					currentScreenName = "mainShelf";
+					
+					//added code
+					if (json.newShelf == 0) {
+					
+					} 
 				}
 			}
 			else {
