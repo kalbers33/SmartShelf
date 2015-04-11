@@ -58,6 +58,19 @@ var MainShelfButtonTemplate = BUTTONS.Button.template(function($){ return{
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
+			/*mainContainer.add(locateItemContainer);*/
+		}}
+	})
+}});
+
+var locateItemButtonTemplate = BUTTONS.Button.template(function($){ return{
+	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
+	contents: [
+		new Label({left:0, right:0, height:40, string:$.textForLabel, style: $.textFormat})
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			mainContainer.remove(mainContainer.last);
 			mainContainer.add(locateItemContainer);
 		}}
 	})
@@ -117,6 +130,7 @@ var backButton = new BackButtonTemplate({textForLabel:"Back", name: "backButton"
 var homeButton = new BackButtonTemplate({textForLabel:"Home", name: "homeButton", textFormat: bigText});
 var scanButton = new ScanButtonTemplate({textForLabel:"Scan", name: "scanButton", textFormat: bigText});
 var mainShelfButton = new MainShelfButtonTemplate({textForLabel:"Main Shelf", name: "mainShelfButton", textFormat: bigText});
+var locateItemButton = new locateItemButtonTemplate({textForLabel:"Locate Item", name: "locateItemButton", textFormat: bigText});
 var proceedScanButton = new ProceedScanButtonTemplate({textForLabel:"Proceed", name: "proceedScanButton", textFormat: bigText});
 var proceedToShowButton = new ProceedToShowButtonTemplate({textForLabel:"Proceed", name: "proceedToShowButton", textFormat: bigText});
 
@@ -262,7 +276,8 @@ var homeWidget = new Container({
 				new smartShelfLogo(),
 				scanButton,
 				//FIXME: Dummy button. Should be accessible once Kevin implements changes
-				mainShelfButton
+				mainShelfButton,				
+				locateItemButton,
 			]
 		}),
 	]
