@@ -2,8 +2,13 @@
 var THEME = require("themes/flat/theme");
 var BUTTONS = require("controls/buttons");
 
+
+//dictionary: item --> shelf number
+ 
+
 var currentScreenName = "";
 var previousScreenName = "";
+
 
 //current scanned item: name and weight
 var currScannedItem = {
@@ -381,7 +386,7 @@ var homeWidget = new Container({
 var boxSkin = new Skin( { fill:"#CD853F" } );
 var whiteSkin = new Skin( { fill:"white" } );
 var blackSkin = new Skin( { fill:"black" } );
-var highlightSkin = new Skin( { fill:"white" } );
+var highlightSkin = new Skin( { fill:"red" } );
 var LEDSkin = new Skin( { fill:"blue" } );
 var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
 var stockStyle = new Style( { font: "bold 25px", color:"#778899" } );
@@ -399,9 +404,10 @@ var mainShelf = new Container({
   ]
 });
 
-var box1 = new Container({
+var box0 = new Container({
   left:20, width: 90, height: 80, top:100,
   skin: highlightSkin,
+  name: "box0",
   contents: [
   	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
   	//new Label({left:0, right:0, top:0, height: 20, string: "Hello World", style: labelStyle}),
@@ -413,9 +419,22 @@ var box1 = new Container({
   ]
 }); 
 
-var box2 = new Container({
+var box1 = new Container({
   left:115, width: 90, height: 80, top:100,
   skin: highlightSkin,
+  name: "box1",
+  contents: [
+  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
+  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
+  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
+  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+  ]
+}); 
+
+var box2 = new Container({
+  left:210, width: 90, height: 80, top:100,
+  skin: highlightSkin,
+  name: "box2",
   contents: [
   	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
   	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
@@ -425,8 +444,9 @@ var box2 = new Container({
 }); 
 
 var box3 = new Container({
-  left:210, width: 90, height: 80, top:100,
+  left:20, width: 90, height: 80, top:220,
   skin: highlightSkin,
+  name: "box3",
   contents: [
   	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
   	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
@@ -436,8 +456,9 @@ var box3 = new Container({
 }); 
 
 var box4 = new Container({
-  left:20, width: 90, height: 80, top:220,
+  left:115, width: 90, height: 80, top:220,
   skin: highlightSkin,
+  name: "box4",
   contents: [
   	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
   	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
@@ -447,8 +468,9 @@ var box4 = new Container({
 }); 
 
 var box5 = new Container({
-  left:115, width: 90, height: 80, top:220,
+  left:210, width: 90, height: 80, top:220,
   skin: highlightSkin,
+  name: "box5",
   contents: [
   	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
   	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
@@ -458,8 +480,9 @@ var box5 = new Container({
 }); 
 
 var box6 = new Container({
-  left:210, width: 90, height: 80, top:220,
+  left:20, width: 90, height: 80, top:340,
   skin: highlightSkin,
+  name: "box6",
   contents: [
   	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
   	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
@@ -469,8 +492,9 @@ var box6 = new Container({
 }); 
 
 var box7 = new Container({
-  left:20, width: 90, height: 80, top:340,
+  left:115, width: 90, height: 80, top:340,
   skin: highlightSkin,
+  name: "box7",
   contents: [
   	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
   	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
@@ -480,19 +504,9 @@ var box7 = new Container({
 }); 
 
 var box8 = new Container({
-  left:115, width: 90, height: 80, top:340,
-  skin: highlightSkin,
-  contents: [
-  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
-  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
-  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
-  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
-  ]
-}); 
-
-var box9 = new Container({
   left:210, width: 90, height: 80, top:340,
   skin: highlightSkin,
+  name: "box8",
   contents: [
   	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
   	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
@@ -504,6 +518,7 @@ var box9 = new Container({
 
 
 //application.add(mainShelf);
+mainShelf.add(box0);
 mainShelf.add(box1);
 mainShelf.add(box2);
 mainShelf.add(box3);
@@ -512,7 +527,6 @@ mainShelf.add(box5);
 mainShelf.add(box6);
 mainShelf.add(box7);
 mainShelf.add(box8);
-mainShelf.add(box9);
 
 /*******Ji-hern**********/
 //Locate Item
