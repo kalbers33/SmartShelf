@@ -20,6 +20,8 @@ var currScannedItem = {
 deviceURL_scanner = "";
 deviceURL = "";
 
+var valueReceived = false;
+
 /*******Jamie************/
 
 
@@ -99,10 +101,12 @@ var ProceedScanButtonTemplate = BUTTONS.Button.template(function($){ return{
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(scanInventoryPlaceItem);
-			previousScreenName = currentScreenName;
-			currentScreenName = "scanInventoryPlaceItem";
+			if (valueReceived == true) {
+				mainContainer.remove(mainContainer.last);
+				mainContainer.add(scanInventoryPlaceItem);
+				previousScreenName = currentScreenName;
+				currentScreenName = "scanInventoryPlaceItem";
+			}
 		}}
 	})
 }});
@@ -200,6 +204,7 @@ Handler.bind("/getScannerData", {
 			data.scannedValue = json.value.toFixed(0);
 			data.scannedWeight = json.weight.toFixed(0);
 			if (data.scannedValue != 0 && data.scannedWeight != 0) {
+				valueReceived = true;
 				waitingforScannerText.string = "Value received";
 				itemType = data.scannedValue
 				itemWeight = data.scannedWeight;
@@ -224,11 +229,12 @@ Handler.bind("/getScannerData", {
 					currScannedItem.name = "Potatoes"
 				}
 
-				itemTypeText.string = "Item Type: " + itemType;
-				itemWeightText.string = "Item Weight: " + itemWeight;
+				itemTypeText.string = "Item Type: " + currScannedItem.name;
+				itemWeightText.string = "Item Weight: " + currScannedItem.individualWeight + "g";
 			}
 			else {
 				waitingforScannerText.string = "Waiting for scanner...";
+				valueReceived = false;
 			}
 		}
 		handler.invoke( new Message("/delayScanner"));
