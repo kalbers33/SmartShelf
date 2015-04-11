@@ -5,7 +5,7 @@ var BUTTONS = require("controls/buttons");
 //current scanned item: name and weight
 var currScannedItem = {
 	name:"",
-	weight:0
+	individualWeight:0
 };
 
 deviceURL_scanner = "";
@@ -170,7 +170,7 @@ Handler.bind("/getScannerData", {
 				itemType = data.scannedValue
 				itemWeight = data.scannedWeight;
 				var value = itemType;
-				currScannedItem.weight = itemWeight;
+				currScannedItem.individualWeight = itemWeight;
 				if (value == 1) {
 					currScannedItem.name = "Apples"
 				}
