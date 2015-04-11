@@ -186,6 +186,7 @@ Handler.bind("/getScannerData", {
     }
 });
 
+
 Handler.bind("/delayScanner", {
     onInvoke: function(handler, message){
         handler.wait(1000); //will call onComplete after 1 seconds
@@ -194,6 +195,30 @@ Handler.bind("/delayScanner", {
         handler.invoke(new Message("/getScannerData"));
     }
 });
+
+var itemInformationObjects = [];
+
+Handler.bind("/getItemData", {
+	onInvoke: function(handler, message){
+    	if(deviceURL != "") handler.invoke(new Message(deviceURL + "getAllItemInformation"), Message.JSON);
+    	else handler.invoke(new Message("/delayItemData"));
+	},
+	onComplete: function(handler, message, json){
+		itemInformationObjects = json;
+		trace("App Side: " + json[0].totalWeight.toString() + "\n" );
+        handler.invoke(new Message("/delayItemData"));
+	}
+});
+
+Handler.bind("/delayItemData", {
+    onInvoke: function(handler, message){
+        handler.wait(1000); //will call onComplete after 1 seconds
+    },
+    onComplete: function(handler, message){
+        handler.invoke(new Message("/getItemData"));
+    }
+});
+
 
 var navigation = Line.template(function($) { return{
 	left: 0, right: 0, top: 0, bottom: 0, height: 50,
@@ -614,6 +639,7 @@ var ApplicationBehavior = Behavior.template({
 		application.shared = true;
 		application.invoke(new Message("/getScannerData"));
 		application.invoke(new Message("/getDeviceData"));
+		application.invoke(new Message("/getItemData"));
 	},
 	onQuit: function(application) {
 		application.forget("bluetoothscanner");

@@ -33,7 +33,7 @@ ItemInformation.prototype.updateItemWeight = function(weight){
 
 Handler.bind("/getAllItemInformation", Behavior({
 	onInvoke: function(handler, message){
-		trace(itemInformationObjects[0].totalWeight.toString() + "\n");
+		//trace(itemInformationObjects[0].totalWeight.toString() + "\n");
 		message.responseText = JSON.stringify(itemInformationObjects);
 		message.status = 200;
 	}
