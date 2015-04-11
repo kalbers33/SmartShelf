@@ -228,8 +228,8 @@ Handler.bind("/getScannerData", {
 					currScannedItem.name = "Potatoes"
 				}
 
-				itemTypeText.string = "Item Type: " + itemType;
-				itemWeightText.string = "Item Weight: " + itemWeight;
+				itemTypeText.string = "Item Type: " + currScannedItem.name;
+				itemWeightText.string = "Item Weight: " + currScannedItem.individualWeight + "g";
 			}
 			else {
 				waitingforScannerText.string = "Waiting for scanner...";
