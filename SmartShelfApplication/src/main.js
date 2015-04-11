@@ -4,7 +4,8 @@ var BUTTONS = require("controls/buttons");
 
 
 //dictionary: item --> shelf number
- 
+var shelfDic = {};
+var lowDic = {};
 
 var currentScreenName = "";
 var previousScreenName = "";
@@ -285,6 +286,11 @@ Handler.bind("/getNewItem", {
 					mainContainer.add(mainShelf);
 					previousScreenName = currentScreenName;
 					currentScreenName = "mainShelf";
+					
+					//added code
+					if (json.newShelf == 0) {
+					
+					} 
 				}
 			}
 		}
