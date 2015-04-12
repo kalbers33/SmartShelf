@@ -296,7 +296,6 @@ Handler.bind("/getItemData", {
 	onComplete: function(handler, message, json){
 		itemInformationObjects = json;
 		//trace("App Side: " + json[0].totalWeight.toString() + "\n" );
-<<<<<<< HEAD
 		for (i = 0; i < itemInformationObjects.length; i++) {
 			var lowCount = false;
 			if ((itemInformationObjects[i].lastWeight/itemInformationObjects[i].totalWeight) < itemInformationObjects[i].lowThreshold){
