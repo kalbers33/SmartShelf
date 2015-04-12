@@ -7,6 +7,18 @@ var blueSkin = new Skin({fill: "blue"});
 var yellowSkin = new Skin({fill: "yellow"});
 var labelStyle = new Style({font:"bold 20px", color:"black"});
 
+var okSkin = new Skin({fill: "white"});
+var lowSkin = new Skin({fill: "yellow"});
+var outSkin = new Skin({fill: "red"});
+var addShelfSkin = new Skin({fill: "blue"});
+
+var numberOfShelves = 6;
+var Shelves = [];
+for(i = 0; i <numberOfShelves; i++)
+{
+	Shelves[i] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: outSkin});
+}
+
 var itemInformationObjects = [];
 var itemToAdd;
 var lastItemAdded = -1;
@@ -22,6 +34,7 @@ var ItemInformation = function($){
 	this.individualWeight = $.individualWeight;
 	this.totalWeight = 0;
 	this.maxWeight = 0;
+	this.percentFull = 0.0;
 	this.lastWeight = this.totalWeight;
 	this.lowThreshold = 0.25; //25% item is low!
 	this.outThreshold = 0.1; //10% is essentially out (empty box)
@@ -45,9 +58,19 @@ ItemInformation.prototype.updateItemWeight = function(itemIndex, weight){
 	}
 	this.lastWeight = weight;
 	if(this.individualWeight > 0) this.count = Math.round(weight/this.individualWeight);
-	if(weight < this.maxWeight*this.lowThreshold) this.status = "low";
-	else this.status = "ok";
-	if(weight < this.maxWeight*this.outThreshold) this.status = "out";
+	if(this.maxWeight > 0) this.percentFull = this.totalWeight/this.maxWeight;
+	if(this.percentFull < this.lowThreshold) {
+		this.status = "low";
+		Shelves[itemIndex].skin = lowSkin;
+	}
+	else {
+		this.status = "ok";
+		Shelves[itemIndex].skin = okSkin;
+	}
+	if(this.percentFull < this.outThreshold) {
+		this.status = "out";
+		Shelves[itemIndex].skin = outSkin;
+	}
 	
 }
 
@@ -87,14 +110,14 @@ Handler.bind("/weightResults", Object.create(Behavior.prototype, {
 }));
 
 
-var Shelves = [];
-Shelves[0] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: greenSkin});
+
+/*Shelves[0] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: greenSkin});
 Shelves[1] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: redSkin});
 Shelves[2] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: blueSkin});
 
 Shelves[3] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: greenSkin});
 Shelves[4] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: redSkin});
-Shelves[5] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: blueSkin});
+Shelves[5] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: blueSkin}); //*/
 
 var topShelf = new Line({
 	left:0, right:0, top: 0, bottom: 0, skin: whiteSkin,
@@ -142,22 +165,20 @@ var ApplicationBehavior = Behavior.template({
 		application.shared = false;
 	},
 	weightRecord : function(params, data) {
-		Shelves[0].string = data.Row1Column1;
-		Shelves[1].string = data.Row1Column2;
-		Shelves[2].string = data.Row1Column3;
-		Shelves[3].string = data.Row2Column1;
-		Shelves[4].string = data.Row2Column2;
-		Shelves[5].string = data.Row2Column3;
-		
-		
-		itemInformationObjects[0].updateItemWeight(0, data.Row1Column1);
-		itemInformationObjects[1].updateItemWeight(1, data.Row1Column2);
-		itemInformationObjects[2].updateItemWeight(2, data.Row1Column3);
-		itemInformationObjects[3].updateItemWeight(3, data.Row2Column1);
-		itemInformationObjects[4].updateItemWeight(4, data.Row2Column2);
-		itemInformationObjects[5].updateItemWeight(5, data.Row2Column3); 
+		for(i = 0; i < numberOfShelves; i++)
+		{
+			Shelves[i].string = data["Shelf"+i.toString()];
+			itemInformationObjects[i].updateItemWeight(i, data["Shelf"+i.toString()]);
+		}
 	}
 })
+
+var applicationPins = {};
+
+for(i = 0; i < numberOfShelves; i++)
+{
+	applicationPins["Shelf"+i.toString()] = {pin: i};
+}
 
 
 application.add(mainColumn);
@@ -165,13 +186,6 @@ application.behavior = new ApplicationBehavior();
 application.invoke( new MessageWithObject( "pins:configure", {
 	itemWeights: {
 		require: "weightSensors",
-			pins: {
-				Row1Column1: { pin: 60 },
-				Row1Column2: { pin: 53 },
-				Row1Column3: { pin: 50},
-				Row2Column1: { pin: 62 },
-				Row2Column2: { pin: 63 },
-				Row2Column3: { pin: 64},
-	        }
+			pins: applicationPins
 	 }
 }));
