@@ -59,7 +59,7 @@ ItemInformation.prototype.updateItemWeight = function(itemIndex, weight){
 	this.lastWeight = weight;
 	if(this.individualWeight > 0) this.count = Math.round(weight/this.individualWeight);
 	if(this.maxWeight > 0) this.percentFull = this.totalWeight/this.maxWeight;
-	if(weight < this.maxWeight*this.lowThreshold) {
+	if(this.percentFull < this.lowThreshold) {
 		this.status = "low";
 		Shelves[itemIndex].skin = lowSkin;
 	}
@@ -67,10 +67,9 @@ ItemInformation.prototype.updateItemWeight = function(itemIndex, weight){
 		this.status = "ok";
 		Shelves[itemIndex].skin = okSkin;
 	}
-	if(weight < this.maxWeight*this.outThreshold) {
+	if(this.percentFull < this.outThreshold) {
 		this.status = "out";
 		Shelves[itemIndex].skin = outSkin;
-		trace("Out! \n");
 	}
 	
 }
