@@ -137,6 +137,39 @@ var LowItemsButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(lowItemContainer);
+			var keyNames = Object.keys(lowDic);
+			for (i = 0; i < keyNames.length; i++) {
+				if (keyNames[i] == "Apples"){
+					if (lowDic["Apples"] == true){
+						locateItemColumn.insert(appleLabel, locateItemColumn.last);		
+					}
+				}
+				if (keyNames[i] == "Bananas"){
+					if (lowDic["Bananas"] == true){
+						locateItemColumn.insert(bananaLabel, locateItemColumn.last);		
+					}				
+				}
+				if (keyNames[i] == "Carrots"){
+					if (lowDic["Carrots"] == true){
+						locateItemColumn.insert(carrotLabel, locateItemColumn.last);		
+					}				
+				}
+				if (keyNames[i] == "Potatoes"){
+					if (lowDic["Potatoes"] == true){
+						locateItemColumn.insert(potatoLabel, locateItemColumn.last);		
+					}				
+				}		
+				if (keyNames[i] == "Celery"){
+					if (lowDic["Celery"] == true){
+						locateItemColumn.insert(celeryLabel, locateItemColumn.last);		
+					}				
+				}
+				if (keyNames[i] == "Oranges"){
+					if (lowDic["Oranges"] == true){
+						locateItemColumn.insert(orangeLabel, locateItemColumn.last);		
+					}				
+				}																														
+			}		
 			//this should be adding a low items list container
 		}}
 	})
@@ -263,6 +296,13 @@ Handler.bind("/getItemData", {
 	onComplete: function(handler, message, json){
 		itemInformationObjects = json;
 		//trace("App Side: " + json[0].totalWeight.toString() + "\n" );
+		for (i = 0; i < itemInformationObjects.length; i++) {
+			var lowCount = false;
+			if ((itemInformationObjects[i].lastWeight/itemInformationObjects[i].totalWeight) < itemInformationObjects[i].lowThreshold){
+				lowCount = true;
+			}
+			lowDic[itemInformationObjects[i].name, lowCount];			
+		}			
         trace("App Side: " + json[0].status + "\n" );
         handler.invoke(new Message("/delayItemData"));
 	}
