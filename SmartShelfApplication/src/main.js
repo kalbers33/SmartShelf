@@ -277,79 +277,6 @@ Handler.bind("/delayItemData", {
     }
 });
 
-Handler.bind("/getNewItem", {
-    onInvoke: function(handler, message){
-    	if(deviceURL != "") {
-	    	var msg = new Message(deviceURL + "newItem");
-	    	msg.requestText = JSON.stringify(currScannedItem);
-	    	handler.invoke(msg, Message.JSON);
-	    }else handler.invoke( new Message("/delayNewItem"));
-    },
-    onComplete: function(handler, message, json){
-    	if (deviceURL != "") {
-			trace("Item detected on shelf: " +json.newShelf + "\n");
-			if (json.newShelf != -1) {
-				if (currentScreenName == "scanInventoryPlaceItem") {
-					itemDetectedShelfNumber = json.newShelf;
-					trace("New item detected on ", json.newShelf);
-					switch (itemDetectedShelfNumber) {
-						case 0: box0.first.next.skin = itemDetectedSkin;
-								break;
-						case 1: box1.first.next.skin = itemDetectedSkin;
-								break;
-						case 2: box2.first.next.skin = itemDetectedSkin;
-								break;
-						case 3: box3.first.next.skin = itemDetectedSkin;
-								break;
-						case 4: box4.first.next.skin = itemDetectedSkin;
-								break;
-						case 5: box5.first.next.skin = itemDetectedSkin;
-								break;
-					}
-					mainContainer.remove(mainContainer.last);
-					mainContainer.add(mainShelf);
-					previousScreenName = currentScreenName;
-					currentScreenName = "mainShelf";
-					
-					//added code
-					if (json.newShelf == 0) {
-					
-					} 
-				}
-			}
-			else {
-				if (currentScreenName != "mainShelf" && itemDetectedShelfNumber != -1) {
-					box1.first.next.skin = boxSkin;
-					switch (itemDetectedShelfNumber) {
-						case 0: box0.first.next.skin = boxSkin;
-								break;
-						case 1: box1.first.next.skin = boxSkin;
-								break;
-						case 2: box2.first.next.skin = boxSkin;
-								break;
-						case 3: box3.first.next.skin = boxSkin;
-								break;
-						case 4: box4.first.next.skin = boxSkin;
-								break;
-						case 5: box5.first.next.skin = boxSkin;
-								break;
-					}
-					itemDetectedShelfNumber = -1;
-				}
-			}
-		}
-		handler.invoke( new Message("/delayNewItem"));
-    }
-});
-
-Handler.bind("/delayNewItem", {
-    onInvoke: function(handler, message){
-        handler.wait(1000); //will call onComplete after 1 seconds
-    },
-    onComplete: function(handler, message){
-        handler.invoke(new Message("/getNewItem"));
-    }
-});
 
 var navigation = Line.template(function($) { return{
 	left: 0, right: 0, bottom: 10, height: 50,
@@ -430,7 +357,7 @@ var homeWidget = new Container({
 var boxSkin = new Skin( { fill:"#CD853F" } );
 var whiteSkin = new Skin( { fill:"white" } );
 var blackSkin = new Skin( { fill:"black" } );
-var highlightSkin = new Skin( { fill:"red" } );
+var highlightSkin = new Skin( { fill:"white" } );
 var itemDetectedSkin = new Skin( { fill:"green" } );
 var LEDSkin = new Skin( { fill:"blue" } );
 var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
@@ -563,15 +490,100 @@ var box8 = new Container({
 
 
 //application.add(mainShelf);
-mainShelf.add(box0);
-mainShelf.add(box1);
-mainShelf.add(box2);
-mainShelf.add(box3);
-mainShelf.add(box4);
-mainShelf.add(box5);
-mainShelf.add(box6);
-mainShelf.add(box7);
-mainShelf.add(box8);
+
+//mainShelf.add(box6);
+//mainShelf.add(box7);
+//mainShelf.add(box8);
+
+/************Handler: get new item*************/
+Handler.bind("/getNewItem", {
+    onInvoke: function(handler, message){
+    	if(deviceURL != "") {
+	    	var msg = new Message(deviceURL + "newItem");
+	    	msg.requestText = JSON.stringify(currScannedItem);
+	    	handler.invoke(msg, Message.JSON);
+	    }else handler.invoke( new Message("/delayNewItem"));
+    },
+    onComplete: function(handler, message, json){
+    	if (deviceURL != "") {
+			trace("Item detected on shelf: " +json.newShelf + "\n");
+			if (json.newShelf != -1) {
+				if (currentScreenName == "scanInventoryPlaceItem") {
+					itemDetectedShelfNumber = json.newShelf;
+					trace("New item detected on ", json.newShelf);
+					switch (itemDetectedShelfNumber) {
+						case 0: box0.first.next.skin = itemDetectedSkin;
+								mainShelf.add(box0);
+								box0[2].string = currScannedItem.name;
+								box0[3].string = currScannedItem.individualWeight;
+								break;
+						case 1: box1.first.next.skin = itemDetectedSkin;
+								mainShelf.add(box1);
+								box1[2].string = currScannedItem.name;
+								box1[3].string = currScannedItem.individualWeight;
+								break;
+						case 2: box2.first.next.skin = itemDetectedSkin;
+								mainShelf.add(box2);
+								box2[2].string = currScannedItem.name;
+								box2[3].string = currScannedItem.individualWeight;
+								break;
+						case 3: box3.first.next.skin = itemDetectedSkin;
+								mainShelf.add(box3);
+								box3[2].string = currScannedItem.name;
+								box3[3].string = currScannedItem.individualWeight;
+								break;
+						case 4: box4.first.next.skin = itemDetectedSkin;
+								mainShelf.add(box4);
+								box4[2].string = currScannedItem.name;
+								box4[3].string = currScannedItem.individualWeight;
+								break;
+						case 5: box5.first.next.skin = itemDetectedSkin;
+								mainShelf.add(box5);
+								box5[2].string = currScannedItem.name;
+								box5[3].string = currScannedItem.individualWeight;
+								break;
+					}
+
+					mainContainer.remove(mainContainer.last);
+					mainContainer.add(mainShelf);
+					previousScreenName = currentScreenName;
+					currentScreenName = "mainShelf";
+				}
+			}
+			else {
+				if (currentScreenName != "mainShelf" && itemDetectedShelfNumber != -1) {
+					box1.first.next.skin = boxSkin;
+					switch (itemDetectedShelfNumber) {
+						case 0: box0.first.next.skin = boxSkin;
+								break;
+						case 1: box1.first.next.skin = boxSkin;
+								break;
+						case 2: box2.first.next.skin = boxSkin;
+								break;
+						case 3: box3.first.next.skin = boxSkin;
+								break;
+						case 4: box4.first.next.skin = boxSkin;
+								break;
+						case 5: box5.first.next.skin = boxSkin;
+								break;
+					}
+					itemDetectedShelfNumber = -1;
+				}
+			}
+		}
+		handler.invoke( new Message("/delayNewItem"));
+    }
+});
+
+Handler.bind("/delayNewItem", {
+    onInvoke: function(handler, message){
+        handler.wait(1000); //will call onComplete after 1 seconds
+    },
+    onComplete: function(handler, message){
+        handler.invoke(new Message("/getNewItem"));
+    }
+});
+
 
 /*******Ji-hern**********/
 //Locate Item
