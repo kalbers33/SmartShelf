@@ -352,7 +352,7 @@ Handler.bind("/delayNewItem", {
 });
 
 var navigation = Line.template(function($) { return{
-	left: 0, right: 0, top: 0, bottom: 0, height: 50,
+	left: 0, right: 0, bottom: 10, height: 50,
 	skin: whiteSkin,
 	contents:[
 		new BackButtonTemplate({textForLabel:"Back", name: "backButton", textFormat: bigText}),
@@ -369,10 +369,10 @@ var scanInventory = new Container({
 				new smartShelfLogo(),
 				scanInventoryText,
 				waitingforScannerText,
-				proceedScanButton,
-				new navigation()
+				proceedScanButton
 			]
 		}),
+	new navigation()
 	]
 });
 
