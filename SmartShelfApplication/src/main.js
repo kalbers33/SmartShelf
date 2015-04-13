@@ -341,55 +341,6 @@ var ProceedScanButtonTemplate = BUTTONS.Button.template(function($){ return{
 	})
 }});
 
-var LowItemsButtonTemplate = BUTTONS.Button.template(function($){ return{
-	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
-	contents: [
-		new Label({left:0, right:0, height:40, string:$.textForLabel, style: $.textFormat})
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(lowItemContainer);
-			previousScreenName = currentScreenName;
-			currentScreenName = "lowItemContainer";
-			var keyNames = Object.keys(lowDic);
-			for (i = 0; i < keyNames.length; i++) {
-				if (keyNames[i] == "Apples"){
-					if (lowDic["Apples"] == true){
-						locateItemColumn.insert(appleLabel, locateItemColumn.last);		
-					}
-				}
-				if (keyNames[i] == "Bananas"){
-					if (lowDic["Bananas"] == true){
-						locateItemColumn.insert(bananaLabel, locateItemColumn.last);		
-					}				
-				}
-				if (keyNames[i] == "Carrots"){
-					if (lowDic["Carrots"] == true){
-						locateItemColumn.insert(carrotLabel, locateItemColumn.last);		
-					}				
-				}
-				if (keyNames[i] == "Potatoes"){
-					if (lowDic["Potatoes"] == true){
-						locateItemColumn.insert(potatoLabel, locateItemColumn.last);		
-					}				
-				}		
-				if (keyNames[i] == "Celery"){
-					if (lowDic["Celery"] == true){
-						locateItemColumn.insert(celeryLabel, locateItemColumn.last);		
-					}				
-				}
-				if (keyNames[i] == "Oranges"){
-					if (lowDic["Oranges"] == true){
-						locateItemColumn.insert(orangeLabel, locateItemColumn.last);		
-					}				
-				}																														
-			}		
-			//this should be adding a low items list container
-		}}
-	})
-}});
-
 var smartShelfLogo = Picture.template(function($){ return {
 	height: 100, name:"smartShelfLogo", url:"../../SmartShelfLogo.png"
 };
@@ -416,7 +367,6 @@ var scanButton = new ScanButtonTemplate({textForLabel:"Scan", name: "scanButton"
 var mainShelfButton = new MainShelfButtonTemplate({textForLabel:"Main Shelf", name: "mainShelfButton", textFormat: bigText});
 var locateItemButton = new locateItemButtonTemplate({textForLabel:"Locate Item", name: "locateItemButton", textFormat: bigText});
 var proceedScanButton = new ProceedScanButtonTemplate({textForLabel:"Proceed", name: "proceedScanButton", textFormat: bigText});
-var lowItemsButton = new LowItemsButtonTemplate({textForLabel:"Low Items", name: "lowItemsButton", textFormat: bigText});
 
 Handler.bind("/discover", Behavior({
 	onInvoke: function(handler, message){
@@ -509,7 +459,7 @@ Handler.bind("/getItemData", {
                         if (itemInformationObjects[i].status === "low"){
                                 lowCount = true;
                         }
-                        lowDic[itemInformationObjects[i].name] = lowCount;
+                        lowDic[itemInformationObjects[i].name] = [lowCount, itemInformationObjects[i].count];
                 }                      
                 for (var i = 0; i < 6; i++) {
                         //var count = json[i].count;
@@ -721,7 +671,7 @@ var carrotButton = new carrot();
 var celeryButton = new celery();
  
 var locateItemColumn = new Column({
-        left: 0, right: 0, top: 0, active: true, skin: whiteSkin, name: "locateItemColumn",
+        left: 0, right: 0, top: 10, active: true, skin: whiteSkin, name: "locateItemColumn",
         contents: [
                 //new navigation()
         ]
@@ -731,7 +681,7 @@ var locateItemContainer = new Container({
         left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
         contents: [
                 new Column({
-                        left: 0, right: 0, top: 0, bottom: 0,
+                        left: 0, right: 0, top: 5, bottom: 0,
                         contents: [
                                 new smartShelfLogo(),  
                                 locateItemColumn,
@@ -900,37 +850,43 @@ var LowItemsButtonTemplate = BUTTONS.Button.template(function($){ return{
                         var keyNames = Object.keys(lowDic);
                         //lowItemColumn.add(appleLabel);        
                         //lowItemColumn.add(orangeLabel);
-                        lowItemColumn.empty(0);            
+                        lowItemColumn.empty(0);                                
                         for (i = 0; i < keyNames.length; i++) {
                                         trace("My Key Name: " + keyNames[i] + "\n");
                                 if (keyNames[i] == "Apples"){
-                                        if (lowDic["Apples"] == true){
+                                        if (lowDic["Apples"][0] == true){
                                                         trace("GOT HERE\n");
+                                                appleLabel.string = "Apples left: " + lowDic["Apples"][1];        
                                                 lowItemColumn.add(appleLabel);        
                                         }
                                 }
                                 if (keyNames[i] == "Bananas"){
-                                        if (lowDic["Bananas"] == true){
+                                        if (lowDic["Bananas"][0] == true){
+                                                bananaLabel.string = "Bananas left: " + lowDic["Bananas"][1];        
                                                 lowItemColumn.add(bananaLabel);        
                                         }                              
                                 }
                                 if (keyNames[i] == "Carrots"){
-                                        if (lowDic["Carrots"] == true){
+                                        if (lowDic["Carrots"][0] == true){
+                                                carrotLabel.string = "Carrots left: " + lowDic["Carrots"][1];        
                                                 lowItemColumn.add(carrotLabel);        
                                         }                              
                                 }
                                 if (keyNames[i] == "Potatoes"){
-                                        if (lowDic["Potatoes"] == true){
+                                        if (lowDic["Potatoes"][0] == true){
+                                                potatoLabel.string = "Potatoes left: " + lowDic["Potatoes"][1];        
                                                 lowItemColumn.add(potatoLabel);        
                                         }                              
                                 }              
                                 if (keyNames[i] == "Celery"){
-                                        if (lowDic["Celery"] == true){
+                                        if (lowDic["Celery"][0] == true){
+                                                celeryLabel.string = "Celery left: " + lowDic["Celery"][1];        
                                                 lowItemColumn.add(celeryLabel);        
                                         }                              
                                 }
                                 if (keyNames[i] == "Oranges"){
-                                        if (lowDic["Oranges"] == true){
+                                        if (lowDic["Oranges"][0] == true){
+                                                orangeLabel.string = "Oranges left: " + lowDic["Oranges"][1];        
                                                 lowItemColumn.add(orangeLabel);        
                                         }                              
                                 }                                                                                                                                                                                                                                              
