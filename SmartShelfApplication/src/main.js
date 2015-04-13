@@ -206,6 +206,65 @@ var BackButtonTemplate = BUTTONS.Button.template(function($){ return{
 				trace("MY BOX NAME IS: " + item[2].string + "\n");
 				item.skin = noHighlight;
 			} */
+			switch(previousScreenName) {
+				case "scanInventory":
+						mainContainer.remove(mainContainer.last);
+						mainContainer.add(scanInventory);
+						previousScreenName = "homeWidget";
+						currentScreenName = "scanInventory";
+						break;
+				case "scanInventoryPlaceItem":
+						mainContainer.remove(mainContainer.last);
+						mainContainer.add(scanInventoryPlaceItem);
+						previousScreenName = "scanInventory";
+						currentScreenName = "scanInventoryPlaceItem";
+						break;
+				case "locateItemContainer":
+						mainContainer.remove(mainContainer.last);
+						mainContainer.add(locateItemContainer);
+						previousScreenName = "homeWidget";
+						currentScreenName = "locateItemContainer";
+						break;
+				case "lowItemContainer":
+						mainContainer.remove(mainContainer.last);
+						mainContainer.add(lowItemContainer);
+						previousScreenName = currentScreenName;
+						currentScreenName = "lowItemContainer";
+						break;
+				case "mainShelf":
+						mainContainer.remove(mainContainer.last);
+						mainContainer.add(mainShelf);
+						previousScreenName = currentScreenName;
+						currentScreenName = "mainShelf";
+						break;
+				default:
+						mainContainer.remove(mainContainer.last);
+						mainContainer.add(homeWidget);
+						previousScreenName = currentScreenName;
+						currentScreenName = "homeWidget";
+			}
+		}}
+	})
+}});
+
+var HomeButtonTemplate = BUTTONS.Button.template(function($){ return{
+	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
+	contents: [
+		new Label({left:0, right:0, height:40, string:$.textForLabel, style: $.textFormat})
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			box0.skin = noHighlight;
+			box1.skin = noHighlight;
+			box2.skin = noHighlight;
+			box3.skin = noHighlight;
+			box4.skin = noHighlight;
+			box5.skin = noHighlight;
+			/*trace("LENNNNNNNNNNNNNNNNN: " + boxList.length + "\n");
+			for (var item in boxList) {
+				trace("MY BOX NAME IS: " + item[2].string + "\n");
+				item.skin = noHighlight;
+			} */
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(homeWidget);
 			previousScreenName = currentScreenName;
@@ -238,6 +297,8 @@ var MainShelfButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
+			previousScreenName = currentScreenName;
+			currentScreenName = "mainShelf";
 		}}
 	})
 }});
@@ -275,21 +336,6 @@ var ProceedScanButtonTemplate = BUTTONS.Button.template(function($){ return{
 	})
 }});
 
-var ProceedToShowButtonTemplate = BUTTONS.Button.template(function($){ return{
-	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
-	contents: [
-		new Label({left:0, right:0, height:40, string:$.textForLabel, style: $.textFormat})
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(scanInventoryShelfDisplay);
-			previousScreenName = currentScreenName;
-			currentScreenName = "scanInventoryShelfDisplay";
-		}}
-	})
-}});
-
 var LowItemsButtonTemplate = BUTTONS.Button.template(function($){ return{
 	left: 10, right: 10, top:10, height:50, skin: buttonSkin,
 	contents: [
@@ -299,6 +345,8 @@ var LowItemsButtonTemplate = BUTTONS.Button.template(function($){ return{
 		onTap: { value: function(content){
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(lowItemContainer);
+			previousScreenName = currentScreenName;
+			currentScreenName = "lowItemContainer";
 			var keyNames = Object.keys(lowDic);
 			for (i = 0; i < keyNames.length; i++) {
 				if (keyNames[i] == "Apples"){
@@ -360,14 +408,10 @@ var buttonSkin = new Skin({fill:"#00AA44"});
 var greySkin = new Skin({fill:"#AAAAAA"});
 var whiteSkin = new Skin({fill:"white"});
 
-var backButton = new BackButtonTemplate({textForLabel:"Back", name: "backButton", textFormat: bigText});
-//FIXME: back and home do the same thing now. Need to track previous screen to implement back correctly
-var homeButton = new BackButtonTemplate({textForLabel:"Home", name: "homeButton", textFormat: bigText});
 var scanButton = new ScanButtonTemplate({textForLabel:"Scan", name: "scanButton", textFormat: bigText});
 var mainShelfButton = new MainShelfButtonTemplate({textForLabel:"Main Shelf", name: "mainShelfButton", textFormat: bigText});
 var locateItemButton = new locateItemButtonTemplate({textForLabel:"Locate Item", name: "locateItemButton", textFormat: bigText});
 var proceedScanButton = new ProceedScanButtonTemplate({textForLabel:"Proceed", name: "proceedScanButton", textFormat: bigText});
-var proceedToShowButton = new ProceedToShowButtonTemplate({textForLabel:"Proceed", name: "proceedToShowButton", textFormat: bigText});
 var lowItemsButton = new LowItemsButtonTemplate({textForLabel:"Low Items", name: "lowItemsButton", textFormat: bigText});
 
 Handler.bind("/discover", Behavior({
@@ -501,7 +545,7 @@ var navigation = Line.template(function($) { return{
 	skin: whiteSkin,
 	contents:[
 		new BackButtonTemplate({textForLabel:"Back", name: "backButton", textFormat: bigText}),
-		new BackButtonTemplate({textForLabel:"Home", name: "homeButton", textFormat: bigText})
+		new HomeButtonTemplate({textForLabel:"Home", name: "homeButton", textFormat: bigText})
 	]
 }});
 
@@ -534,21 +578,6 @@ var scanInventoryPlaceItem = new Container({
 				placeItemText,
 				itemTypeText,
 				itemWeightText,
-				new navigation()
-			]
-		}),
-	]
-});
-
-var scanInventoryShelfDisplay = new Container({
-	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
-	contents: [
-		new Column({
-			left: 0, right: 0, top: 5, bottom: 5,
-			contents: [
-				new smartShelfLogo(),
-				detectedText,
-				//shelfImage,
 				new navigation()
 			]
 		}),
@@ -867,14 +896,6 @@ Handler.bind("/delayNewItem", {
         handler.invoke(new Message("/getNewItem"));
     }
 });
-
-
-
-
-
-
-
-
 
 //DOuble check
 
