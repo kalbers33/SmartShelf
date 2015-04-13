@@ -895,6 +895,8 @@ var LowItemsButtonTemplate = BUTTONS.Button.template(function($){ return{
                 onTap: { value: function(content){
                         mainContainer.remove(mainContainer.last);
                         mainContainer.add(lowItemContainer);
+						previousScreenName = currentScreenName;
+						currentScreenName = "lowItemContainer";
                         var keyNames = Object.keys(lowDic);
                         //lowItemColumn.add(appleLabel);        
                         //lowItemColumn.add(orangeLabel);
