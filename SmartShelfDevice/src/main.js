@@ -119,6 +119,23 @@ Shelves[3] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style
 Shelves[4] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: redSkin});
 Shelves[5] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: blueSkin}); //*/
 
+var topContents = new Line({
+	left:0, right:0, top: 0, bottom: 0, skin: whiteSkin,
+	contents: [
+	]
+});
+
+var middleContents = new Line({
+	left:0, right:0, top: 0, bottom: 0, skin: whiteSkin,
+	contents: [
+	]
+});
+
+var bottomContents = new Line({
+	left:0, right:0, top: 0, bottom: 0, skin: whiteSkin,
+	contents: [
+	]
+});
 var topShelf = new Line({
 	left:0, right:0, top: 0, bottom: 0, skin: whiteSkin,
 	contents: [
