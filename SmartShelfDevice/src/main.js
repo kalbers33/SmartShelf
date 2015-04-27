@@ -12,11 +12,11 @@ var lowSkin = new Skin({fill: "yellow"});
 var outSkin = new Skin({fill: "red"});
 var addShelfSkin = new Skin({fill: "blue"});
 
-var numberOfShelves = 6;
+var numberOfShelves = 9;
 var Shelves = [];
 for(i = 0; i <numberOfShelves; i++)
 {
-	Shelves[i] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: outSkin});
+	Shelves[i] = new Label({left:0, right:0, bottom: 0, height:20, string:"0", style: labelStyle, skin: outSkin});
 }
 
 var itemInformationObjects = [];
@@ -128,7 +128,7 @@ var topShelf = new Line({
 	]
 });
 
-var bottomShelf = new Line({
+var middleShelf = new Line({
 	left:0, right:0, top: 0, bottom: 0, skin: whiteSkin,
 	contents: [
 	Shelves[3],
@@ -137,12 +137,24 @@ var bottomShelf = new Line({
 	]
 });
 
+var bottomShelf = new Line({
+	left:0, right:0, top: 0, bottom: 0, skin: whiteSkin,
+	contents: [
+	Shelves[6],
+	Shelves[7],
+	Shelves[8],
+	]
+});
+
 var mainColumn = new Column({
 	left:0, right:0, top: 0, bottom: 0, skin: whiteSkin,
 	contents: [
-	new  Label({left:0, right:0, height:40, string:"", style: labelStyle}),
+	new Picture({left:0, right:0, height: 60,  url: "./box/GIF/256_581949.gif"}),
+	//new  Label({left:0, right:0, height:40, string:"", style: labelStyle}),
 	topShelf,
-	new  Label({left:0, right:0, height:40, string:"", style: labelStyle}),
+	new  Label({left:0, right:0, height:60, string:"", style: labelStyle}),
+	middleShelf,
+	new  Label({left:0, right:0, height:60, string:"", style: labelStyle}),
 	bottomShelf
 	]
 });
@@ -153,7 +165,7 @@ var mainColumn = new Column({
 var ApplicationBehavior = Behavior.template({
 	onLaunch: function(application) {
 		application.shared = true;
-		for(i = 0; i < 6; i++){
+		for(i = 0; i < numberOfShelves; i++){
 			itemInformationObjects[i] = new ItemInformation({name: "none", individualWeight: 50});
 		} 
 	},
