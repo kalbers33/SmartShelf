@@ -897,19 +897,149 @@ var LowItemsButtonTemplate = BUTTONS.Button.template(function($){ return{
 }});
  
 var lowItemsButton = new LowItemsButtonTemplate({textForLabel:"Low Items", name: "lowItemsButton", textFormat: bigText});
+
+var buttonLogoTemplate = Picture.template(function($){ return {
+						height: 100, name:$.name, url:$.url
+					};
+				});
+
+var newButtonTemplate = BUTTONS.Button.template(function($){ return{
+        left: 0, right: 0, top:0, bottom:0, skin: $.buttonSkin,
+        contents: [
+        		new buttonLogoTemplate({name:$.name, url:$.imageurl}),
+		        new Label({left:0, right:0, bottom: 10, string:$.textForLabel, style: $.textFormat})
+        ],
+        behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+                onTap: {
+                		value: function(content) {
+                			$.buttonFunc(content)
+                }}
+        })
+}});
+
+var newScanFunc = function(content) {
+	trace('newScanFunc');
+	mainContainer.remove(mainContainer.last);
+	mainContainer.add(scanInventory);
+	previousScreenName = currentScreenName;
+	currentScreenName = "scanInventory";
+}
+
+var newMainShelfFunc = function(content) {
+	trace('newMainShelfFunc');
+	mainContainer.remove(mainContainer.last);
+	mainContainer.add(mainShelf);
+	previousScreenName = currentScreenName;
+	currentScreenName = "mainShelf";
+}
+
+var newLocateFunc = function(content) {
+	trace('newLocateFunc');
+	mainContainer.remove(mainContainer.last);
+	mainContainer.add(locateItemContainer);		
+	previousScreenName = currentScreenName;
+	currentScreenName = "locateItemContainer";
+}
+
+var newLowFunc = function(content) {
+	trace('newLowFunc');
+	mainContainer.remove(mainContainer.last);
+    mainContainer.add(lowItemContainer);
+	previousScreenName = currentScreenName;
+	currentScreenName = "lowItemContainer";
+    var keyNames = Object.keys(lowDic);
+    lowItemColumn.empty(0);                                
+    for (i = 0; i < keyNames.length; i++) {
+	    trace("My Key Name: " + keyNames[i] + "\n");
+	    if (keyNames[i] == "Apples"){
+            if (lowDic["Apples"][0] == true){
+                appleLabel.string = "Apples left: " + lowDic["Apples"][1];        
+                lowItemColumn.add(appleLabel);        
+            }
+	    }
+	    if (keyNames[i] == "Bananas"){
+            if (lowDic["Bananas"][0] == true){
+                bananaLabel.string = "Bananas left: " + lowDic["Bananas"][1];        
+                lowItemColumn.add(bananaLabel);        
+            }                              
+	    }
+	    if (keyNames[i] == "Carrots"){
+            if (lowDic["Carrots"][0] == true){
+                carrotLabel.string = "Carrots left: " + lowDic["Carrots"][1];        
+                lowItemColumn.add(carrotLabel);        
+            }                              
+	    }
+	    if (keyNames[i] == "Potatoes"){
+            if (lowDic["Potatoes"][0] == true){
+                potatoLabel.string = "Potatoes left: " + lowDic["Potatoes"][1];        
+                lowItemColumn.add(potatoLabel);        
+            }                              
+	    }              
+	    if (keyNames[i] == "Celery"){
+            if (lowDic["Celery"][0] == true){
+                celeryLabel.string = "Celery left: " + lowDic["Celery"][1];        
+                lowItemColumn.add(celeryLabel);        
+            }                              
+	    }
+	    if (keyNames[i] == "Oranges"){
+            if (lowDic["Oranges"][0] == true){
+                orangeLabel.string = "Oranges left: " + lowDic["Oranges"][1];        
+                lowItemColumn.add(orangeLabel);        
+            }                              
+	    }                                                                                                                                                                                                                                              
+	}
+    //this should be adding a low items list container
+}
+
+var skinType = new Array(10);
+skinType[0] = new Skin({fill:"#5856d6"});
+skinType[1] = new Skin({fill:"#007aff"});
+skinType[2] = new Skin({fill:"#34aadc"});
+skinType[3] = new Skin({fill:"#5ac8fa"});
+skinType[4] = new Skin({fill:"#4cd964"});
+skinType[5] = new Skin({fill:"#ff2d55"});
+skinType[6] = new Skin({fill:"#ff3b30"});
+skinType[7] = new Skin({fill:"#ff9500"});
+skinType[8] = new Skin({fill:"#ffcc00"});
+skinType[9] = new Skin({fill:"#8e8e93"});
+
+var appStyle = new Style({color:"#FFFFFF", font:"25px"});
+
+newScanButton = new newButtonTemplate({textForLabel:"Scan Item", name: "newScanButton", textFormat: appStyle, 
+					buttonSkin:skinType[8], imageurl: "scan_white.png", buttonFunc: newScanFunc});
+newMainShelfButton = new newButtonTemplate({textForLabel:"Shelf View", name: "newMainShelfButton", textFormat: appStyle, 
+					buttonSkin:skinType[3], imageurl: "shelf_white.png", buttonFunc: newMainShelfFunc});
+newLocateButton = new newButtonTemplate({textForLabel:"Locate Item", name: "newLocateButton", textFormat: appStyle, 
+					buttonSkin:skinType[4], imageurl: "locate_white.png", buttonFunc: newLocateFunc});
+newLowButton = new newButtonTemplate({textForLabel:"Low Items", name: "newLowButton", textFormat: appStyle, 
+					buttonSkin:skinType[5], imageurl: "low_white.png", buttonFunc: newLowFunc});
  
 var homeWidget = new Container({
         left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
         contents: [
                 new Column({
-                        left: 0, right: 0, top: 5, bottom: 5,
+                        left: 0, right: 0, top: 0, bottom: 0,
                         contents: [
                                 new smartShelfLogo(),
-                                scanButton,
-                                //FIXME: Dummy button. Should be accessible once Kevin implements changes
-                                mainShelfButton,                              
-                                locateItemButton,
-                                lowItemsButton
+                                new Column({
+                                	left:0, right:0, top:0, bottom:0,
+                                	contents: [
+                                		new Line({
+                                			left:0, right:0, top:0, bottom:0,
+                                			contents: [
+		                                		newScanButton,
+		                                		newMainShelfButton,
+		                                	]
+                                		}),
+                                		new Line({
+                                			left:0, right:0, top:0, bottom:0,
+                                			contents: [
+	                                			newLocateButton,
+	                                			newLowButton
+	                                		]
+                                		})
+                                	]
+                                })
                         ]
                 }),
         ]
