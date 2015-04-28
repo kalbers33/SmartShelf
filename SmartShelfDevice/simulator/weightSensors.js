@@ -4,7 +4,7 @@ var PinsSimulators = require('PinsSimulators');
 
 var PinSimulatorArray = [];
 var pinExport = {};
-var numberOfShelves = 6;
+var numberOfShelves = 9;
 
 for( i = 0; i < numberOfShelves; i++)
 {
