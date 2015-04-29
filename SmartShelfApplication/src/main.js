@@ -14,10 +14,10 @@ skinType[6] = new Skin({fill:"#ff3b30"});
 skinType[7] = new Skin({fill:"#ff9500"});
 skinType[8] = new Skin({fill:"#ffcc00"});
 skinType[9] = new Skin({fill:"#8e8e93"});
-skinType[10] = new Skin({fill:"#0097a7"});
-skinType[11] = new Skin({fill:"#00bcd4"});
-skinType[12] = new Skin({fill:"#b2ebf2"});
-skinType[13] = new Skin({fill:"#009688"});
+skinType[10] = new Skin({fill:"#00796b"});
+skinType[11] = new Skin({fill:"#009688"});
+skinType[12] = new Skin({fill:"#b2dfdb"});
+skinType[13] = new Skin({fill:"#cddc39"});
 
 var appStyle = new Style({color:"#FFFFFF", font:"25px Roboto"});
  
