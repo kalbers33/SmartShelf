@@ -30,7 +30,8 @@ var carrotLabel = new Label({left:0, right:0, string:"Carrots", style: labelStyl
 var celeryLabel = new Label({left:0, right:0, string:"Celery", style: labelStyle2});
  
 //list of box containers
-var boxList = [];
+var box = [];
+
 //dictionary: item --> shelf number
 var shelfDic = {};
 var lowDic = {};
@@ -88,7 +89,7 @@ var newButtonTemplate = BUTTONS.Button.template(function($){ return{
 }});
 
 var newButtonOnlyTemplate = BUTTONS.Button.template(function($){ return{
-    top:0, bottom:0, width: 50, skin: $.buttonSkin,
+    top:0, bottom:0, width: 50, skin: $.buttonSkin, left: $.left,
     contents: [
 		new buttonLogoTemplate({name:$.name, url:$.imageurl, imageSize:$.imageSize}),
     ],
@@ -111,6 +112,7 @@ var mainShelf = new Container({
   ]
 });
 
+//Creating box objects
 var newBoxTemplate = Container.template(function($){ return{
     left:$.left, width: $.width, height: $.height, top:$.top,
 	  skin: noHighlight,
@@ -126,118 +128,14 @@ var newBoxTemplate = Container.template(function($){ return{
 var box = new Array(10);
 
 box[0] = new newBoxTemplate({left:20, width: 90, height: 80, top:100, name: "box0"})
-
-/*
-var box0 = new Container({
-  left:20, width: 90, height: 80, top:100,
-  skin: noHighlight,
-  name: "box0",
-  contents: [
-  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
-  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
-  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
-  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
-  ]
-});*/ 
-
-var box1 = new Container({
-  left:115, width: 90, height: 80, top:100,
-  skin: noHighlight,
-  name: "box1",
-  contents: [
-        new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
-        new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
-        new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
-        new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
-  ]
-});
- 
-var box2 = new Container({
-  left:210, width: 90, height: 80, top:100,
-  skin: noHighlight,
-  name: "box2",
-  contents: [
-        new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
-        new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
-        new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
-        new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
-  ]
-});
-var box3 = new Container({
-  left:20, width: 90, height: 80, top:220,
-  skin: noHighlight,
-  name: "box3",
-  contents: [
-        new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
-        new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
-        new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
-        new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
-  ]
-});
- 
-var box4 = new Container({
-  left:115, width: 90, height: 80, top:220,
-  skin: noHighlight,
-  name: "box4",
-  contents: [
-        new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
-        new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
-        new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
-        new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
-  ]
-});
- 
-var box5 = new Container({
-  left:210, width: 90, height: 80, top:220,
-  skin: noHighlight,
-  name: "box5",
-  contents: [
-        new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
-        new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
-        new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
-        new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
-  ]
-});
- 
-var box6 = new Container({
-  left:20, width: 90, height: 80, top:340,
-  skin: noHighlight,
-  name: "box6",
-  contents: [
-        new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
-        new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
-        new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
-        new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
-  ]
-});
- 
-var box7 = new Container({
-  left:115, width: 90, height: 80, top:340,
-  skin: noHighlight,
-  name: "box7",
-  contents: [
-        new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
-        new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
-        new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
-        new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
-  ]
-});
- 
-var box8 = new Container({
-  left:210, width: 90, height: 80, top:340,
-  skin: noHighlight,
-  name: "box8",
-  contents: [
-  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
-  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
-  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
-  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
-  ]
-}); 
-
-// List of all box containers
-boxList.push(box[0], box1, box2, box3, box4, box5);
-
+box[1] = new newBoxTemplate({left:115, width: 90, height: 80, top:100, name: "box[1]"})
+box[2] = new newBoxTemplate({left:210, width: 90, height: 80, top:100, name: "box[2]"})
+box[3] = new newBoxTemplate({left:20, width: 90, height: 80, top:220, name: "box[3]"})
+box[4] = new newBoxTemplate({left:115, width: 90, height: 80, top:220, name: "box[4]"})
+box[5] = new newBoxTemplate({left:210, width: 90, height: 80, top:220, name: "box[5]"})
+box[6] = new newBoxTemplate({left:20, width: 90, height: 80, top:340, name: "box[6]"})
+box[7] = new newBoxTemplate({left:115, width: 90, height: 80, top:340, name: "box[7]"})
+box[8] = new newBoxTemplate({left:210, width: 90, height: 80, top:340, name: "box[8]"})
 
 /*******Naren************/
 
@@ -373,13 +271,13 @@ Handler.bind("/getItemData", {
                 }                      
                 for (var i = 0; i < 6; i++) {
                         //var count = json[i].count;
-                        boxList[i][3].string = json[i].count;
+                        box[i][3].string = json[i].count;
                         if (itemInformationObjects[i].status === "low") {
-                                boxList[i][0].skin = highlightSkin;
+                                box[i][0].skin = highlightSkin;
                         } else if (itemInformationObjects[i].status === "out") {
-                                boxList[i][0].skin = redSkin
+                                box[i][0].skin = redSkin
                         } else {
-                                boxList[i][0].skin = LEDSkin
+                                box[i][0].skin = LEDSkin
                         }
                 }
         trace("App Side: " + json[0].status + "\n" );
@@ -399,11 +297,11 @@ Handler.bind("/delayItemData", {
 var newBackFunc = function(content) {
 	trace("in back function");
 	box[0].skin = noHighlight;
-	box1.skin = noHighlight;
-	box2.skin = noHighlight;
-	box3.skin = noHighlight;
-	box4.skin = noHighlight;
-	box5.skin = noHighlight;
+	box[1].skin = noHighlight;
+	box[2].skin = noHighlight;
+	box[3].skin = noHighlight;
+	box[4].skin = noHighlight;
+	box[5].skin = noHighlight;
 	switch(previousScreenName) {
 		case "scanInventory":
 			mainContainer.remove(mainContainer.last);
@@ -446,30 +344,76 @@ var newBackFunc = function(content) {
 var newHomeFunc = function(content) {
 	trace("in home function");
 	box[0].skin = noHighlight;
-	box1.skin = noHighlight;
-	box2.skin = noHighlight;
-	box3.skin = noHighlight;
-	box4.skin = noHighlight;
-	box5.skin = noHighlight;
+	box[1].skin = noHighlight;
+	box[2].skin = noHighlight;
+	box[3].skin = noHighlight;
+	box[4].skin = noHighlight;
+	box[5].skin = noHighlight;
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(homeWidget);
 	previousScreenName = currentScreenName;
 	currentScreenName = "homeWidget";
 }
 
+//Bottom navigation bar: skins, logo template, botton template
+var nav_skin = new Skin({fill:"black"});
+
+var nav_shelf_skin = new Skin({fill:"#5AC8FB", 
+	//borders:{left:2, right:2, top:2, bottom:2}, stroke:"white"
+  });
+var nav_scan_skin = new Skin({fill:"#FFCD02", 
+	//borders:{left:2, right:2, top:2, bottom:2}, stroke:"white"
+  });
+var nav_low_skin = new Skin({fill:"#007AFF", 
+	//borders:{left:2, right:2, top:2, bottom:2}, stroke:"white"
+  });
+var nav_search_skin = new Skin({fill:"#4CD964", 
+	//borders:{left:2, right:2, top:2, bottom:2}, stroke:"white"
+  });
+
+var name_to_skin = {"shelf": nav_shelf_skin, "scan": nav_scan_skin, "low": nav_low_skin, "search": nav_search_skin};
+
+var navLogoTemplate = Picture.template(function($){ return {
+						bottom: $.bottom, left: $.left_logo, right:0, name:$.name, url:$.url, height: $.size
+					};
+				});
+
+var newButtonBottomNavTemplate = BUTTONS.Button.template(function($){ return{
+    left:$.left, width:82, height:50, bottom:0, skin: nav_skin, name:$.name,
+    contents: [
+    	new navLogoTemplate({bottom: $.bottom, left_logo: $.left_logo, name: $.name_logo, url: $.url, size: $.size})
+    
+    ],
+    behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+        onTouchEnded: {
+          value: function(content) {
+            trace("CONTENT NAME:" + content.name + '\n');
+            for (var key in name_to_skin) {
+              nav = content.container
+              if (key != content.name) {
+                //nav[key].skin = nav_skin;
+            }}
+            //content.skin = name_to_skin[content.name];
+            $.buttonFunc(content)
+        }}
+
+    })
+}});
+
 var navigation = Line.template(function($) { return{
-	height: 50,
+	height: 50, left: 0, right: 0, top:0,
 	skin: skinType[2],
 	contents:[
 		new newButtonOnlyTemplate({textForLabel:"", name: "back", textFormat: appStyle, 
-					buttonSkin:skinType[2], imageurl: "back_white.png", buttonFunc: newBackFunc, imageSize:20}),
+					buttonSkin:skinType[2], imageurl: "back_white.png", buttonFunc: newBackFunc, imageSize:20, left: 0 }),
 		new newButtonOnlyTemplate({textForLabel:"", name: "home", textFormat: appStyle, 
-					buttonSkin:skinType[2], imageurl: "home_white.png", buttonFunc: newHomeFunc, imageSize:20})
+					buttonSkin:skinType[2], imageurl: "home_white.png", buttonFunc: newHomeFunc, imageSize:20, left: 220})
 	]
 }});
 
 var shelfNavigationButton = new navigation();
 mainShelf.add(shelfNavigationButton);
+
 var scanInventory = new Container({
 	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
 	contents: [
@@ -489,7 +433,7 @@ var scanInventoryPlaceItem = new Container({
 	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
 	contents: [
 		new Column({
-			left: 0, right: 0, top: 5, bottom: 5,
+			left: 0, right: 0, top: 0, bottom: 5,
 			contents: [
 				new navigation(),
 				new smartShelfLogo(),
@@ -497,6 +441,7 @@ var scanInventoryPlaceItem = new Container({
 				placeItemText,
 				itemTypeText,
 				itemWeightText,
+				
 			]
 		}),
 	]
@@ -515,7 +460,7 @@ var apple = BUTTONS.Button.template(function($){ return{
         ],
         behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
                 onTap: { value: function(content){
-                        boxList[shelfDic["Apples"]].skin = highlightSkin;
+                        box[shelfDic["Apples"]].skin = highlightSkin;
                         mainContainer.remove(mainContainer.last);
                         mainContainer.add(mainShelf);
                         previousScreenName = currentScreenName;
@@ -537,7 +482,7 @@ var orange = BUTTONS.Button.template(function($){ return{
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
-			boxList[shelfDic["Oranges"]].skin = highlightSkin;
+			box[shelfDic["Oranges"]].skin = highlightSkin;
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
 			previousScreenName = currentScreenName;
@@ -558,7 +503,7 @@ var banana = BUTTONS.Button.template(function($){ return{
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
-			boxList[shelfDic["Bananas"]].skin = highlightSkin;
+			box[shelfDic["Bananas"]].skin = highlightSkin;
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
 			previousScreenName = currentScreenName;
@@ -579,7 +524,7 @@ var potato = BUTTONS.Button.template(function($){ return{
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
-			boxList[shelfDic["Potatoes"]].skin = highlightSkin;
+			box[shelfDic["Potatoes"]].skin = highlightSkin;
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
 			previousScreenName = currentScreenName;
@@ -600,7 +545,7 @@ var carrot = BUTTONS.Button.template(function($){ return{
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
-			boxList[shelfDic["Carrots"]].skin = highlightSkin;
+			box[shelfDic["Carrots"]].skin = highlightSkin;
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
 			previousScreenName = currentScreenName;
@@ -621,7 +566,7 @@ var celery = BUTTONS.Button.template(function($){ return{
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
-			boxList[shelfDic["Celery"]].skin = highlightSkin;
+			box[shelfDic["Celery"]].skin = highlightSkin;
 			mainContainer.remove(mainContainer.last);
 			mainContainer.add(mainShelf);
 			previousScreenName = currentScreenName;
@@ -653,7 +598,8 @@ var locateItemContainer = new Container({
         left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
         contents: [
                 new Column({
-                        left: 0, right: 0, top: 5, bottom: 0,
+                        //left: 0, right: 0, top: 5, bottom: 0,
+                        left: 0, right: 0, top: 0, bottom: 0,
                         contents: [
                 				new navigation(),
                                 new smartShelfLogo(),  
@@ -692,39 +638,39 @@ Handler.bind("/getNewItem", {
 					trace("New item detected on ", json.newShelf);
 					switch (itemDetectedShelfNumber) {
 						case 0: box[0].first.next.skin = itemDetectedSkin;
-								mainShelf.add(box[0]);
+								mainShelf.insert(box[0], mainShelf.last);
 								box[0][2].string = currScannedItem.name;
 								box[0][3].string = currScannedItem.individualWeight;
 								shelfDic[currScannedItem.name] = 0;
 								break;
-						case 1: box1.first.next.skin = itemDetectedSkin;
-								mainShelf.add(box1);
-								box1[2].string = currScannedItem.name;
-								box1[3].string = currScannedItem.individualWeight;
+						case 1: box[1].first.next.skin = itemDetectedSkin;
+								mainShelf.insert(box[1], mainShelf.last);
+								box[1][2].string = currScannedItem.name;
+								box[1][3].string = currScannedItem.individualWeight;
 								shelfDic[currScannedItem.name] = 1;
 								break;
-						case 2: box2.first.next.skin = itemDetectedSkin;
-								mainShelf.add(box2);
-								box2[2].string = currScannedItem.name;
-								box2[3].string = currScannedItem.individualWeight;
+						case 2: box[2].first.next.skin = itemDetectedSkin;
+								mainShelf.insert(box[2], mainShelf.last);
+								box[2][2].string = currScannedItem.name;
+								box[2][3].string = currScannedItem.individualWeight;
 								shelfDic[currScannedItem.name] = 2;
 								break;
-						case 3: box3.first.next.skin = itemDetectedSkin;
-								mainShelf.add(box3);
-								box3[2].string = currScannedItem.name;
-								box3[3].string = currScannedItem.individualWeight;
+						case 3: box[3].first.next.skin = itemDetectedSkin;
+								mainShelf.insert(box[3], mainShelf.last);
+								box[3][2].string = currScannedItem.name;
+								box[3][3].string = currScannedItem.individualWeight;
 								shelfDic[currScannedItem.name] = 3;
 								break;
-						case 4: box4.first.next.skin = itemDetectedSkin;
-								mainShelf.add(box4);
-								box4[2].string = currScannedItem.name;
-								box4[3].string = currScannedItem.individualWeight;
+						case 4: box[4].first.next.skin = itemDetectedSkin;
+								mainShelf.insert(box[4], mainShelf.last);
+								box[4][2].string = currScannedItem.name;
+								box[4][3].string = currScannedItem.individualWeight;
 								shelfDic[currScannedItem.name] = 4;
 								break;
-						case 5: box5.first.next.skin = itemDetectedSkin;
-								mainShelf.add(box5);
-								box5[2].string = currScannedItem.name;
-								box5[3].string = currScannedItem.individualWeight;
+						case 5: box[5].first.next.skin = itemDetectedSkin;
+								mainShelf.insert(box[5], mainShelf.last);
+								box[5][2].string = currScannedItem.name;
+								box[5][3].string = currScannedItem.individualWeight;
 								shelfDic[currScannedItem.name] = 5;
 								break;
 					}
@@ -759,19 +705,19 @@ Handler.bind("/getNewItem", {
 			}
 			else {
 				if (currentScreenName != "mainShelf" && itemDetectedShelfNumber != -1) {
-					box1.first.next.skin = boxSkin;
+					box[1].first.next.skin = boxSkin;
 					switch (itemDetectedShelfNumber) {
 						case 0: box[0].first.next.skin = boxSkin;
 								break;
-						case 1: box1.first.next.skin = boxSkin;
+						case 1: box[1].first.next.skin = boxSkin;
 								break;
-						case 2: box2.first.next.skin = boxSkin;
+						case 2: box[2].first.next.skin = boxSkin;
 								break;
-						case 3: box3.first.next.skin = boxSkin;
+						case 3: box[3].first.next.skin = boxSkin;
 								break;
-						case 4: box4.first.next.skin = boxSkin;
+						case 4: box[4].first.next.skin = boxSkin;
 								break;
-						case 5: box5.first.next.skin = boxSkin;
+						case 5: box[5].first.next.skin = boxSkin;
 								break;
 					}
 					itemDetectedShelfNumber = -1;
@@ -794,7 +740,8 @@ Handler.bind("/delayNewItem", {
 //DOuble check
  
 var lowItemContainer = new Container({
-    left: 0, right: 0, top: 5, bottom: 0, active: true, skin: whiteSkin,
+    //left: 0, right: 0, top: 5, bottom: 0, active: true, skin: whiteSkin,
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
     contents: [
         new Column({
             left: 0, right: 0, top: 0, bottom: 0,
@@ -808,36 +755,39 @@ var lowItemContainer = new Container({
 });
 
 var newScanFunc = function(content) {
-	trace('newScanFunc');
+	trace('newScanFunc\n');
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(scanInventory);
 	previousScreenName = currentScreenName;
 	currentScreenName = "scanInventory";
+	scanInventory.last[1].skin = nav_scan_skin
 }
 
 var newMainShelfFunc = function(content) {
-	trace('newMainShelfFunc');
+	trace('newMainShelfFunc\n');
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(mainShelf);
 	previousScreenName = currentScreenName;
 	currentScreenName = "mainShelf";
+	mainShelf.last[0].skin = nav_shelf_skin
 }
 
 var newLocateFunc = function(content) {
-	trace('newLocateFunc');
+	trace('newLocateFunc\n');
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(locateItemContainer);		
 	previousScreenName = currentScreenName;
 	currentScreenName = "locateItemContainer";
+	locateItemContainer.last[3].skin = nav_search_skin
 }
 
 var newBackFunc = function(content) {
 	box[0].skin = noHighlight;
-	box1.skin = noHighlight;
-	box2.skin = noHighlight;
-	box3.skin = noHighlight;
-	box4.skin = noHighlight;
-	box5.skin = noHighlight;
+	box[1].skin = noHighlight;
+	box[2].skin = noHighlight;
+	box[3].skin = noHighlight;
+	box[4].skin = noHighlight;
+	box[5].skin = noHighlight;
 	switch(previousScreenName) {
 		case "scanInventory":
 			mainContainer.remove(mainContainer.last);
@@ -878,7 +828,8 @@ var newBackFunc = function(content) {
 }
 
 var newLowFunc = function(content) {
-	trace('newLowFunc');
+	trace('newLowFunc\n');
+	lowItemContainer.last[2].skin = nav_low_skin
 	mainContainer.remove(mainContainer.last);
     mainContainer.add(lowItemContainer);
 	previousScreenName = currentScreenName;
@@ -935,6 +886,30 @@ var newLocateButton = new newButtonTemplate({textForLabel:"Locate Item", name: "
 					buttonSkin:skinType[12], imageurl: "locate_white.png", buttonFunc: newLocateFunc, imageSize:100});
 var newLowButton = new newButtonTemplate({textForLabel:"Low Items", name: "newLowButton", textFormat: appStyle, 
 					buttonSkin:skinType[13], imageurl: "low_white.png", buttonFunc: newLowFunc, imageSize:100});
+					
+//CHANGES -TANISHA (NAV BAR TEMPLATE)					
+var bottom_navigation =  Container.template(function($) { return{
+  left:0, right:0, height:50, bottom:0, name: "navBar",
+  skin: redSkin,
+  contents: [
+    new newButtonBottomNavTemplate({left:0, buttonFunc: newMainShelfFunc, name:"shelf", bottom:0, left_logo: 0, url:"storage.png", name_logo:'shelf_icon', size: 45}),
+    new newButtonBottomNavTemplate({left:80, buttonFunc: newScanFunc, name:"scan", bottom: 0, left_logo:0,  url:"scan.png", name_logo: 'scan_icon', size: 50}),
+    new newButtonBottomNavTemplate({left:160, buttonFunc:newLowFunc, name:"low", bottom:0, left_logo: 0, url:"low.png", name_logo:'low_icon', size: 50}),
+    new newButtonBottomNavTemplate({left:240, buttonFunc: newLocateFunc, name:"search", bottom:5, left_logo: 5, url:"locate.png", name_logo:'locate_icon', size: 40}),
+	]
+}});
+
+
+//adding to all screens
+scanInventory.add(new bottom_navigation());
+scanInventoryPlaceItem.add(new bottom_navigation());
+locateItemContainer.add(new bottom_navigation());
+lowItemContainer.add(new bottom_navigation());
+mainShelf.add(new bottom_navigation());
+mainShelf.last[0].skin = nav_shelf_skin;
+scanInventoryPlaceItem.add(new bottom_navigation());
+scanInventoryPlaceItem.last[1].skin = nav_scan_skin;
+
 
 var homeWidget = new Container({
     left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
