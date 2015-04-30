@@ -449,6 +449,9 @@ var inventoryTemplate = BUTTONS.Button.template(function($){ return{
         ],
         behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
                 onTap: { value: function(content){
+                		for (var key in shelfDic) {
+                			box[shelfDic[key]].skin = whiteSkin;
+                		}
                         box[shelfDic[$.itemName]].skin = highlightSkin;
                         mainContainer.remove(mainContainer.last);
                         mainContainer.add(mainShelf);
