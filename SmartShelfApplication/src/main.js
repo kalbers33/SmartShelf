@@ -159,7 +159,7 @@ var data = {
 };
 
 var smartShelfLogo = Picture.template(function($){ return {
-	height:200, name:"smartShelfLogo", url:"app_home1.png"
+	height:500, name:"smartShelfLogo", url:"app_home2.png"
 };
 });
 
