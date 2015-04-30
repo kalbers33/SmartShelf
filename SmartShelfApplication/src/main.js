@@ -21,14 +21,20 @@ skinType[13] = new Skin({fill:"#009688"});
 
 var appStyle = new Style({color:"#FFFFFF", font:"25px Roboto"});
  
+var items = ["Bar Soap", "Coca Cola", "Pringles Original", "Lays Sweet Onion", 
+			"Whole Milk", "Low Fat Milk", "Sugar 500g", "Sugar 1kg", "Oats",
+			"Cereal", "Olive Oil", "Sunflower Oil", "Charmin Toilet Paper",
+			"Bounty Paper Towels", "Cascade Dish Detergent", "Downy Fabric Softner",
+			"Vitamin C Tablets", "Pita Chips", "Salter Butter", "Plain Butter"];
+/*var items = ["Apple", "Orange", "Banana", "Potato", 
+			"Carrot", "Celery"];*/
+
 //Low Items
-var appleLabel = new Label({left:0, right:0, string:"Apples", style: labelStyle2});
-var orangeLabel = new Label({left:0, right:0, string:"Oranges", style: labelStyle2});
-var bananaLabel = new Label({left:0, right:0, string:"Bananas", style: labelStyle2});
-var potatoLabel = new Label({left:0, right:0, string:"Potatoes", style: labelStyle2});
-var carrotLabel = new Label({left:0, right:0, string:"Carrots", style: labelStyle2});
-var celeryLabel = new Label({left:0, right:0, string:"Celery", style: labelStyle2});
- 
+var itemLabels = new Array(items.length)
+for (var i = 0; i < itemLabels.length; i++) {
+	itemLabels[i] = new Label({left:0, right:0, string: items[i], style: labelStyle2});
+} 
+
 //list of box containers
 var box = [];
 
@@ -41,7 +47,6 @@ var noHighlight = new Skin( { fill:"white" } );
  
 var currentScreenName = "";
 var previousScreenName = "";
- 
  
 //current scanned item: name and weight
 var currScannedItem = {
@@ -206,24 +211,8 @@ Handler.bind("/getScannerData", {
 				itemWeight = data.scannedWeight;
 				var value = itemType;
 				currScannedItem.individualWeight = itemWeight;
-				if (value == 1) {
-					currScannedItem.name = "Apples"
-				}
-				if (value == 2) {
-					currScannedItem.name = "Oranges"
-				}
-				if (value == 3) {
-					currScannedItem.name = "Carrots"
-				}
-				if (value == 4) {
-					currScannedItem.name = "Bananas"
-				}
-				if (value == 5) {
-					currScannedItem.name = "Celery"
-				}
-				if (value == 6) {
-					currScannedItem.name = "Potatoes"
-				}
+				
+				currScannedItem.name = items[value];
 
 				itemTypeText.string = "Item Type: " + currScannedItem.name;
 				itemWeightText.string = "Item Weight: " + currScannedItem.individualWeight + "g";
@@ -452,140 +441,31 @@ var scanInventoryPlaceItem = new Container({
 var labelStyle = new Style({ font:"bold 20px", color:"white"});
  
 var whiteSkin = new Skin( { fill:"white" } );
- 
-var apple = BUTTONS.Button.template(function($){ return{
+
+var inventoryTemplate = BUTTONS.Button.template(function($){ return{
         left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
         contents: [
-                new Label({left:0, right:0, string:"A P P L E S", style: labelStyle}),
+                new Label({left:0, right:0, string:$.displayName, style: labelStyle}),
         ],
         behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
                 onTap: { value: function(content){
-                        box[shelfDic["Apples"]].skin = highlightSkin;
+                        box[shelfDic[$.itemName]].skin = highlightSkin;
                         mainContainer.remove(mainContainer.last);
                         mainContainer.add(mainShelf);
                         previousScreenName = currentScreenName;
                         currentScreenName = "mainShelf";
-                        if (deviceURL != ""){
-                                //if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
-                        }
                 }},
                 onComplete: { value: function(content, message, json){
                
                 }}
         })
 }});
- 
-var orange = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#FFCC66" }),
-	contents: [
-		new Label({left:0, right:0, string:"O R A N G E S", style: labelStyle}),
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			box[shelfDic["Oranges"]].skin = highlightSkin;
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(mainShelf);
-			previousScreenName = currentScreenName;
-			currentScreenName = "mainShelf";
-			if (deviceURL != ""){
-				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
-			}
-		}},
-		onComplete: { value: function(content, message, json){
-		}}
-	})
-}});
- 
-var banana = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#99CCFF" }),
-	contents: [
-		new Label({left:0, right:0, string:"B A N A N A S", style: labelStyle}),
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			box[shelfDic["Bananas"]].skin = highlightSkin;
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(mainShelf);
-			previousScreenName = currentScreenName;
-			currentScreenName = "mainShelf";
-			if (deviceURL != ""){
-				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
-			}
-		}},
-		onComplete: { value: function(content, message, json){
-		}}
-	})
-}});
- 
-var potato = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#ffc3a0" }),
-	contents: [
-		new Label({left:0, right:0, string:"P O T A T O E S", style: labelStyle}),
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			box[shelfDic["Potatoes"]].skin = highlightSkin;
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(mainShelf);
-			previousScreenName = currentScreenName;
-			currentScreenName = "mainShelf";
-			if (deviceURL != ""){
-				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
-			}
-		}},
-		onComplete: { value: function(content, message, json){
-		}}
-	})
-}});
- 
-var carrot = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#fa877a" }),
-	contents: [
-		new Label({left:0, right:0, string:"C A R R O T S", style: labelStyle}),
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			box[shelfDic["Carrots"]].skin = highlightSkin;
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(mainShelf);
-			previousScreenName = currentScreenName;
-			currentScreenName = "mainShelf";
-			if (deviceURL != ""){
-				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
-			}
-		}},
-		onComplete: { value: function(content, message, json){
-		}}
-	})
-}});
- 
-var celery = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#7aedfa" }),
-	contents: [
-		new Label({left:0, right:0, string:"C E L E R Y", style: labelStyle}),
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			box[shelfDic["Celery"]].skin = highlightSkin;
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(mainShelf);
-			previousScreenName = currentScreenName;
-			currentScreenName = "mainShelf";
-			if (deviceURL != ""){
-				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
-			}
-		}},
-		onComplete: { value: function(content, message, json){
-		}}
-	})
-}});
- 
-var appleButton = new apple();
-var orangeButton = new orange();
-var bananaButton = new banana();
-var potatoButton = new potato();
-var carrotButton = new carrot();
-var celeryButton = new celery();
+
+var itemButtons = new Array(items.length);
+
+for (i = 0; i < itemButtons.length; i++) {
+	itemButtons[i] = new inventoryTemplate({itemName:items[i], displayName: items[i]});
+}
  
 var locateItemColumn = new Column({
         left: 0, right: 0, top: 10, active: true, skin: whiteSkin, name: "locateItemColumn",
@@ -675,28 +555,13 @@ Handler.bind("/getNewItem", {
 								break;
 					}
 					
-					switch(currScannedItem.name) {
-						case "Apples":
-									locateItemColumn.add(appleButton);
-									break;
-						case "Bananas":
-									locateItemColumn.add(bananaButton);
-									break;
-						case "Carrots":
-									locateItemColumn.add(carrotButton);
-									break;
-						case "Potatoes":
-									locateItemColumn.add(potatoButton);
-									break;
-						case "Celery":
-									locateItemColumn.add(celeryButton);
-									break;
-						case "Oranges":
-									locateItemColumn.add(orangeButton);
-									break;
+					for (i = 0; i < items.length; i++) {
+						if (items[i] == currScannedItem.name) {
+							locateItemColumn.add(itemButtons[i]);
+							break;
+						}
 					}
 					
-
 					mainContainer.remove(mainContainer.last);
 					mainContainer.add(mainShelf);
 					previousScreenName = currentScreenName;
@@ -838,42 +703,15 @@ var newLowFunc = function(content) {
     lowItemColumn.empty(0);                                
     for (i = 0; i < keyNames.length; i++) {
 	    trace("My Key Name: " + keyNames[i] + "\n");
-	    if (keyNames[i] == "Apples"){
-            if (lowDic["Apples"][0] == true){
-                appleLabel.string = "Apples left: " + lowDic["Apples"][1];        
-                lowItemColumn.add(appleLabel);        
-            }
-	    }
-	    if (keyNames[i] == "Bananas"){
-            if (lowDic["Bananas"][0] == true){
-                bananaLabel.string = "Bananas left: " + lowDic["Bananas"][1];        
-                lowItemColumn.add(bananaLabel);        
-            }                              
-	    }
-	    if (keyNames[i] == "Carrots"){
-            if (lowDic["Carrots"][0] == true){
-                carrotLabel.string = "Carrots left: " + lowDic["Carrots"][1];        
-                lowItemColumn.add(carrotLabel);        
-            }                              
-	    }
-	    if (keyNames[i] == "Potatoes"){
-            if (lowDic["Potatoes"][0] == true){
-                potatoLabel.string = "Potatoes left: " + lowDic["Potatoes"][1];        
-                lowItemColumn.add(potatoLabel);        
-            }                              
-	    }              
-	    if (keyNames[i] == "Celery"){
-            if (lowDic["Celery"][0] == true){
-                celeryLabel.string = "Celery left: " + lowDic["Celery"][1];        
-                lowItemColumn.add(celeryLabel);        
-            }                              
-	    }
-	    if (keyNames[i] == "Oranges"){
-            if (lowDic["Oranges"][0] == true){
-                orangeLabel.string = "Oranges left: " + lowDic["Oranges"][1];        
-                lowItemColumn.add(orangeLabel);        
-            }                              
-	    }                                                                                                                                                                                                                                              
+	    
+	    for (var j = 0; j < items.length; j++) {
+	    	if (keyNames[i] == items[j]){
+	            if (lowDic[items[j]][0] == true){
+	                itemLabels[j].string = items[j] + " left: " + lowDic[items[j]][1];        
+	                lowItemColumn.add(itemLabels[j]);        
+	            }
+		    }
+		}                                                                                                                                                                                                                             
 	}
     //this should be adding a low items list container
 }
