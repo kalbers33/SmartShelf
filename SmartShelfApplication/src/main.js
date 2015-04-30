@@ -19,7 +19,7 @@ skinType[11] = new Skin({fill:"#00bcd4"});
 skinType[12] = new Skin({fill:"#b2ebf2"});
 skinType[13] = new Skin({fill:"#009688"});
 
-var appStyle = new Style({color:"#FFFFFF", font:"25px Roboto"});
+var appStyle = new Style({color:"#FFFFFF", font:"20px Roboto"});
  
 var items = ["Bar Soap", "Coca Cola", "Pringles Original", "Lays Sweet Onion", 
 			"Whole Milk", "Low Fat Milk", "Sugar 500g", "Sugar 1kg", "Oats",
@@ -75,7 +75,7 @@ var stockStyle = new Style( { font: "bold 25px", color:"#778899" } );
 var titleStyle = new Style( { font: "bold 40px", color:"black" } );
 
 var buttonLogoTemplate = Picture.template(function($){ return {
-						height: $.imageSize, name:$.name, url:$.url
+						top: 5, height: $.imageSize, name:$.name, url:$.url
 					};
 				});
 				
@@ -87,10 +87,10 @@ var loadingImageTemplate = Picture.template(function($){ return {
 var loadingImageWidget = new loadingImageTemplate({url: "barcode_0.png"});
 
 var newButtonTemplate = BUTTONS.Button.template(function($){ return{
-    left: 0, right: 0, top:0, bottom:0, skin: $.buttonSkin,
+    left: 10, right: 10, top:10, bottom:10, skin: $.buttonSkin,
     contents: [
 		new buttonLogoTemplate({name:$.name, url:$.imageurl, imageSize:$.imageSize}),
-        new Label({left:0, right:0, bottom: 10, string:$.textForLabel, style: $.textFormat})
+        new Label({left:0, right:0, bottom: 5, string:$.textForLabel, style: $.textFormat})
     ],
     behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
         onTap: {
@@ -671,13 +671,13 @@ var newLowFunc = function(content) {
 }
 
 var newScanButton = new newButtonTemplate({textForLabel:"Add Item", name: "newScanButton", textFormat: appStyle, 
-					buttonSkin:skinType[10], imageurl: "scan_white.png", buttonFunc: newScanFunc, imageSize:100});
+					buttonSkin:skinType[10], imageurl: "scan_white.png", buttonFunc: newScanFunc, imageSize:70});
 var newMainShelfButton = new newButtonTemplate({textForLabel:"Shelf View", name: "newMainShelfButton", textFormat: appStyle, 
-					buttonSkin:skinType[11], imageurl: "shelf_white.png", buttonFunc: newMainShelfFunc, imageSize:100});
+					buttonSkin:skinType[11], imageurl: "shelf_white.png", buttonFunc: newMainShelfFunc, imageSize:70});
 var newLocateButton = new newButtonTemplate({textForLabel:"Locate Item", name: "newLocateButton", textFormat: appStyle, 
-					buttonSkin:skinType[12], imageurl: "locate_white.png", buttonFunc: newLocateFunc, imageSize:100});
+					buttonSkin:skinType[12], imageurl: "locate_white.png", buttonFunc: newLocateFunc, imageSize:70});
 var newLowButton = new newButtonTemplate({textForLabel:"Low Items", name: "newLowButton", textFormat: appStyle, 
-					buttonSkin:skinType[13], imageurl: "low_white.png", buttonFunc: newLowFunc, imageSize:100});
+					buttonSkin:skinType[13], imageurl: "low_white.png", buttonFunc: newLowFunc, imageSize:70});
 					
 //CHANGES -TANISHA (NAV BAR TEMPLATE)					
 var bottom_navigation =  Container.template(function($) { return{
@@ -714,14 +714,14 @@ var homeWidget = new Container({
                 	left:0, right:0, top:0, bottom:0,
                 	contents: [
                 		new Line({
-                			left:0, right:0, top:0, bottom:0,
+                			left:40, right:40, top:40, bottom:0,
                 			contents: [
                         		newScanButton,
                         		newMainShelfButton,
                         	]
                 		}),
                 		new Line({
-                			left:0, right:0, top:0, bottom:0,
+                			left:40, right:40, top:0, bottom:40,
                 			contents: [
                     			newLocateButton,
                     			newLowButton
