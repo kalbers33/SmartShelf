@@ -78,6 +78,13 @@ var buttonLogoTemplate = Picture.template(function($){ return {
 						height: $.imageSize, name:$.name, url:$.url
 					};
 				});
+				
+var loadingImageTemplate = Picture.template(function($){ return {
+						height: 50, url:$.url
+					};
+				});
+
+var loadingImageWidget = new loadingImageTemplate({url: "barcode_0.png"});
 
 var newButtonTemplate = BUTTONS.Button.template(function($){ return{
     left: 0, right: 0, top:0, bottom:0, skin: $.buttonSkin,
@@ -195,6 +202,10 @@ Handler.bind("/forget", Behavior({
 	}
 }));
 
+var loadingIter = 0;
+var loadingImages = ["barcode_0.png", "barcode_1.png", "barcode_2.png", "barcode_3.png",
+					"barcode_4.png", "barcode_5.png", "barcode_6.png"];
+
 Handler.bind("/getScannerData", {
     onInvoke: function(handler, message){
     	handler.invoke(new Message(deviceURL_scanner + "getData"), Message.JSON);
@@ -204,6 +215,7 @@ Handler.bind("/getScannerData", {
 			data.scannedValue = json.value.toFixed(0);
 			data.scannedWeight = json.weight.toFixed(0);
 			if (data.scannedValue != 0 && data.scannedWeight != 0) {
+				loadingIter = 0;
 				valueReceived = true;
 				waitingforScannerText.string = "Value received";
 				itemType = data.scannedValue
@@ -225,6 +237,11 @@ Handler.bind("/getScannerData", {
 			}
 			else {
 				waitingforScannerText.string = "Waiting for scanner...";
+				loadingImageWidget.url = loadingImages[loadingIter];
+				loadingIter += 1;
+				if (loadingIter == 7) {
+					loadingIter = 0;
+				}
 				valueReceived = false;
 			}
 		}
@@ -403,6 +420,7 @@ var scanInventory = new Container({
 				new smartShelfLogo(),
 				scanInventoryText,
 				waitingforScannerText,
+				loadingImageWidget
 			]
 		}),
 	]
