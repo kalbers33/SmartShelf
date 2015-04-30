@@ -21,14 +21,20 @@ skinType[13] = new Skin({fill:"#cddc39"});
 
 var appStyle = new Style({color:"#FFFFFF", font:"25px Roboto"});
  
+var items = ["Bar Soap", "Coca Cola", "Pringles Original", "Lays Sweet Onion", 
+			"Whole Milk", "Low Fat Milk", "Sugar 500g", "Sugar 1kg", "Oats",
+			"Cereal", "Olive Oil", "Sunflower Oil", "Charmin Toilet Paper",
+			"Bounty Paper Towels", "Cascade Dish Detergent", "Downy Fabric Softner",
+			"Vitamin C Tablets", "Pita Chips", "Salter Butter", "Plain Butter"];
+/*var items = ["Apple", "Orange", "Banana", "Potato", 
+			"Carrot", "Celery"];*/
+
 //Low Items
-var appleLabel = new Label({left:0, right:0, string:"Apples", style: labelStyle2});
-var orangeLabel = new Label({left:0, right:0, string:"Oranges", style: labelStyle2});
-var bananaLabel = new Label({left:0, right:0, string:"Bananas", style: labelStyle2});
-var potatoLabel = new Label({left:0, right:0, string:"Potatoes", style: labelStyle2});
-var carrotLabel = new Label({left:0, right:0, string:"Carrots", style: labelStyle2});
-var celeryLabel = new Label({left:0, right:0, string:"Celery", style: labelStyle2});
- 
+var itemLabels = new Array(items.length)
+for (var i = 0; i < itemLabels.length; i++) {
+	itemLabels[i] = new Label({left:0, right:0, string: items[i], style: labelStyle2});
+} 
+
 //list of box containers
 var box = [];
 
@@ -41,7 +47,6 @@ var noHighlight = new Skin( { fill:"white" } );
  
 var currentScreenName = "";
 var previousScreenName = "";
- 
  
 //current scanned item: name and weight
 var currScannedItem = {
@@ -73,6 +78,13 @@ var buttonLogoTemplate = Picture.template(function($){ return {
 						height: $.imageSize, name:$.name, url:$.url
 					};
 				});
+				
+var loadingImageTemplate = Picture.template(function($){ return {
+						height: 50, url:$.url
+					};
+				});
+
+var loadingImageWidget = new loadingImageTemplate({url: "barcode_0.png"});
 
 var newButtonTemplate = BUTTONS.Button.template(function($){ return{
     left: 0, right: 0, top:0, bottom:0, skin: $.buttonSkin,
@@ -108,7 +120,6 @@ var mainShelf = new Container({
 	    new Container({left:20, right:20, top: 180, height: 15, skin:blackSkin}),
 	    new Container({left:20, right:20, top:300, height: 15, skin:blackSkin}),
 	    new Container({left:20, right:20, top:420, height: 15, skin:blackSkin}),
-    //
   ]
 });
 
@@ -127,7 +138,7 @@ var newBoxTemplate = Container.template(function($){ return{
 
 var box = new Array(10);
 
-box[0] = new newBoxTemplate({left:20, width: 90, height: 80, top:100, name: "box0"})
+box[0] = new newBoxTemplate({left:20, width: 90, height: 80, top:100, name: "box[0]"})
 box[1] = new newBoxTemplate({left:115, width: 90, height: 80, top:100, name: "box[1]"})
 box[2] = new newBoxTemplate({left:210, width: 90, height: 80, top:100, name: "box[2]"})
 box[3] = new newBoxTemplate({left:20, width: 90, height: 80, top:220, name: "box[3]"})
@@ -152,7 +163,7 @@ var smartShelfLogo = Picture.template(function($){ return {
 };
 });
 
-var scanInventoryText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Scan Inventory", 
+var scanInventoryText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Scan Item", 
 								style: new Style({font:"30px", color:"black"}), name:"scanInventoryText"});
 var waitingforScannerText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Waiting for scanner...", skin: new Skin({fill: "#FFFFFF"}), 
 									style: new Style({font:"25px", color:"black"}), name:"waitingforScannerText"});
@@ -191,6 +202,10 @@ Handler.bind("/forget", Behavior({
 	}
 }));
 
+var loadingIter = 0;
+var loadingImages = ["barcode_0.png", "barcode_1.png", "barcode_2.png", "barcode_3.png",
+					"barcode_4.png", "barcode_5.png", "barcode_6.png"];
+
 Handler.bind("/getScannerData", {
     onInvoke: function(handler, message){
     	handler.invoke(new Message(deviceURL_scanner + "getData"), Message.JSON);
@@ -200,30 +215,15 @@ Handler.bind("/getScannerData", {
 			data.scannedValue = json.value.toFixed(0);
 			data.scannedWeight = json.weight.toFixed(0);
 			if (data.scannedValue != 0 && data.scannedWeight != 0) {
+				loadingIter = 0;
 				valueReceived = true;
 				waitingforScannerText.string = "Value received";
 				itemType = data.scannedValue
 				itemWeight = data.scannedWeight;
 				var value = itemType;
 				currScannedItem.individualWeight = itemWeight;
-				if (value == 1) {
-					currScannedItem.name = "Apples"
-				}
-				if (value == 2) {
-					currScannedItem.name = "Oranges"
-				}
-				if (value == 3) {
-					currScannedItem.name = "Carrots"
-				}
-				if (value == 4) {
-					currScannedItem.name = "Bananas"
-				}
-				if (value == 5) {
-					currScannedItem.name = "Celery"
-				}
-				if (value == 6) {
-					currScannedItem.name = "Potatoes"
-				}
+				
+				currScannedItem.name = items[value];
 
 				itemTypeText.string = "Item Type: " + currScannedItem.name;
 				itemWeightText.string = "Item Weight: " + currScannedItem.individualWeight + "g";
@@ -237,6 +237,11 @@ Handler.bind("/getScannerData", {
 			}
 			else {
 				waitingforScannerText.string = "Waiting for scanner...";
+				loadingImageWidget.url = loadingImages[loadingIter];
+				loadingIter += 1;
+				if (loadingIter == 7) {
+					loadingIter = 0;
+				}
 				valueReceived = false;
 			}
 		}
@@ -295,13 +300,9 @@ Handler.bind("/delayItemData", {
 });
 
 var newBackFunc = function(content) {
-	trace("in back function");
-	box[0].skin = noHighlight;
-	box[1].skin = noHighlight;
-	box[2].skin = noHighlight;
-	box[3].skin = noHighlight;
-	box[4].skin = noHighlight;
-	box[5].skin = noHighlight;
+	for (i = 0; i < 6; i++) {
+		box[i].skin = noHighlight;
+	}
 	switch(previousScreenName) {
 		case "scanInventory":
 			mainContainer.remove(mainContainer.last);
@@ -342,13 +343,9 @@ var newBackFunc = function(content) {
 }
 
 var newHomeFunc = function(content) {
-	trace("in home function");
-	box[0].skin = noHighlight;
-	box[1].skin = noHighlight;
-	box[2].skin = noHighlight;
-	box[3].skin = noHighlight;
-	box[4].skin = noHighlight;
-	box[5].skin = noHighlight;
+	for (i = 0; i < 6; i++) {
+		box[i].skin = noHighlight;
+	}
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(homeWidget);
 	previousScreenName = currentScreenName;
@@ -396,7 +393,6 @@ var newButtonBottomNavTemplate = BUTTONS.Button.template(function($){ return{
             //content.skin = name_to_skin[content.name];
             $.buttonFunc(content)
         }}
-
     })
 }});
 
@@ -424,6 +420,7 @@ var scanInventory = new Container({
 				new smartShelfLogo(),
 				scanInventoryText,
 				waitingforScannerText,
+				loadingImageWidget
 			]
 		}),
 	]
@@ -437,7 +434,6 @@ var scanInventoryPlaceItem = new Container({
 			contents: [
 				new navigation(),
 				new smartShelfLogo(),
-				//scanInventoryText,
 				placeItemText,
 				itemTypeText,
 				itemWeightText,
@@ -447,175 +443,61 @@ var scanInventoryPlaceItem = new Container({
 	]
 });
 
-/*******Ji-hern**********/
-//Locate Item
 var labelStyle = new Style({ font:"bold 20px", color:"white"});
  
 var whiteSkin = new Skin( { fill:"white" } );
- 
-var apple = BUTTONS.Button.template(function($){ return{
-        left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
-        contents: [
-                new Label({left:0, right:0, string:"A P P L E S", style: labelStyle}),
-        ],
-        behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-                onTap: { value: function(content){
-                        box[shelfDic["Apples"]].skin = highlightSkin;
-                        mainContainer.remove(mainContainer.last);
-                        mainContainer.add(mainShelf);
-                        previousScreenName = currentScreenName;
-                        currentScreenName = "mainShelf";
-                        if (deviceURL != ""){
-                                //if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
-                        }
-                }},
-                onComplete: { value: function(content, message, json){
-               
-                }}
-        })
+
+var inventoryTemplate = BUTTONS.Button.template(function($){ return{
+    left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
+    contents: [
+    	new Label({left:0, right:0, string:$.displayName, style: labelStyle}),
+    ],
+    behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+        onTap: { value: function(content){
+        		for (var key in shelfDic) {
+        			box[shelfDic[key]].skin = whiteSkin;
+        		}
+                box[shelfDic[$.itemName]].skin = highlightSkin;
+                mainContainer.remove(mainContainer.last);
+                mainContainer.add(mainShelf);
+                previousScreenName = currentScreenName;
+                currentScreenName = "mainShelf";
+        }},
+        onComplete: { value: function(content, message, json){
+       
+        }}
+    })
 }});
- 
-var orange = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#FFCC66" }),
-	contents: [
-		new Label({left:0, right:0, string:"O R A N G E S", style: labelStyle}),
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			box[shelfDic["Oranges"]].skin = highlightSkin;
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(mainShelf);
-			previousScreenName = currentScreenName;
-			currentScreenName = "mainShelf";
-			if (deviceURL != ""){
-				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
-			}
-		}},
-		onComplete: { value: function(content, message, json){
-		}}
-	})
-}});
- 
-var banana = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#99CCFF" }),
-	contents: [
-		new Label({left:0, right:0, string:"B A N A N A S", style: labelStyle}),
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			box[shelfDic["Bananas"]].skin = highlightSkin;
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(mainShelf);
-			previousScreenName = currentScreenName;
-			currentScreenName = "mainShelf";
-			if (deviceURL != ""){
-				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
-			}
-		}},
-		onComplete: { value: function(content, message, json){
-		}}
-	})
-}});
- 
-var potato = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#ffc3a0" }),
-	contents: [
-		new Label({left:0, right:0, string:"P O T A T O E S", style: labelStyle}),
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			box[shelfDic["Potatoes"]].skin = highlightSkin;
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(mainShelf);
-			previousScreenName = currentScreenName;
-			currentScreenName = "mainShelf";
-			if (deviceURL != ""){
-				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
-			}
-		}},
-		onComplete: { value: function(content, message, json){
-		}}
-	})
-}});
- 
-var carrot = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#fa877a" }),
-	contents: [
-		new Label({left:0, right:0, string:"C A R R O T S", style: labelStyle}),
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			box[shelfDic["Carrots"]].skin = highlightSkin;
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(mainShelf);
-			previousScreenName = currentScreenName;
-			currentScreenName = "mainShelf";
-			if (deviceURL != ""){
-				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
-			}
-		}},
-		onComplete: { value: function(content, message, json){
-		}}
-	})
-}});
- 
-var celery = BUTTONS.Button.template(function($){ return{
-	left: 20, right: 20, height: 50, skin: new Skin({ fill: "#7aedfa" }),
-	contents: [
-		new Label({left:0, right:0, string:"C E L E R Y", style: labelStyle}),
-	],
-	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-		onTap: { value: function(content){
-			box[shelfDic["Celery"]].skin = highlightSkin;
-			mainContainer.remove(mainContainer.last);
-			mainContainer.add(mainShelf);
-			previousScreenName = currentScreenName;
-			currentScreenName = "mainShelf";
-			if (deviceURL != ""){
-				//if (deviceURL != "") content.invoke(new Message(deviceURL + "getFoodCount"), Message.JSON);
-			}
-		}},
-		onComplete: { value: function(content, message, json){
-		}}
-	})
-}});
- 
-var appleButton = new apple();
-var orangeButton = new orange();
-var bananaButton = new banana();
-var potatoButton = new potato();
-var carrotButton = new carrot();
-var celeryButton = new celery();
+
+var itemButtons = new Array(items.length);
+
+for (i = 0; i < itemButtons.length; i++) {
+	itemButtons[i] = new inventoryTemplate({itemName:items[i], displayName: items[i]});
+}
  
 var locateItemColumn = new Column({
         left: 0, right: 0, top: 10, active: true, skin: whiteSkin, name: "locateItemColumn",
         contents: [
-                //new navigation()
         ]
 });
  
 var locateItemContainer = new Container({
-        left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
-        contents: [
-                new Column({
-                        //left: 0, right: 0, top: 5, bottom: 0,
-                        left: 0, right: 0, top: 0, bottom: 0,
-                        contents: [
-                				new navigation(),
-                                new smartShelfLogo(),  
-                                locateItemColumn,
-                               
-                        ]
-                }),    
-        ]
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+    contents: [
+        new Column({
+            left: 0, right: 0, top: 0, bottom: 0,
+            contents: [
+				new navigation(),
+                new smartShelfLogo(),  
+                locateItemColumn,
+            ]
+        }),    
+    ]
 });
- 
- 
- 
+
 var lowItemColumn = new Column({
 	left: 0, right: 0, top: 10, bottom: 0, active: true, skin: whiteSkin, name: "lowItemColumn",
 	contents: [
-		//new navigation()
 	]
 });
 
@@ -636,67 +518,20 @@ Handler.bind("/getNewItem", {
 				if (currentScreenName == "scanInventoryPlaceItem") {
 					itemDetectedShelfNumber = json.newShelf;
 					trace("New item detected on ", json.newShelf);
-					switch (itemDetectedShelfNumber) {
-						case 0: box[0].first.next.skin = itemDetectedSkin;
-								mainShelf.insert(box[0], mainShelf.last);
-								box[0][2].string = currScannedItem.name;
-								box[0][3].string = currScannedItem.individualWeight;
-								shelfDic[currScannedItem.name] = 0;
-								break;
-						case 1: box[1].first.next.skin = itemDetectedSkin;
-								mainShelf.insert(box[1], mainShelf.last);
-								box[1][2].string = currScannedItem.name;
-								box[1][3].string = currScannedItem.individualWeight;
-								shelfDic[currScannedItem.name] = 1;
-								break;
-						case 2: box[2].first.next.skin = itemDetectedSkin;
-								mainShelf.insert(box[2], mainShelf.last);
-								box[2][2].string = currScannedItem.name;
-								box[2][3].string = currScannedItem.individualWeight;
-								shelfDic[currScannedItem.name] = 2;
-								break;
-						case 3: box[3].first.next.skin = itemDetectedSkin;
-								mainShelf.insert(box[3], mainShelf.last);
-								box[3][2].string = currScannedItem.name;
-								box[3][3].string = currScannedItem.individualWeight;
-								shelfDic[currScannedItem.name] = 3;
-								break;
-						case 4: box[4].first.next.skin = itemDetectedSkin;
-								mainShelf.insert(box[4], mainShelf.last);
-								box[4][2].string = currScannedItem.name;
-								box[4][3].string = currScannedItem.individualWeight;
-								shelfDic[currScannedItem.name] = 4;
-								break;
-						case 5: box[5].first.next.skin = itemDetectedSkin;
-								mainShelf.insert(box[5], mainShelf.last);
-								box[5][2].string = currScannedItem.name;
-								box[5][3].string = currScannedItem.individualWeight;
-								shelfDic[currScannedItem.name] = 5;
-								break;
+					
+					box[itemDetectedShelfNumber].first.next.skin = itemDetectedSkin;
+					mainShelf.insert(box[itemDetectedShelfNumber], mainShelf.last);
+					box[itemDetectedShelfNumber][2].string = currScannedItem.name;
+					box[itemDetectedShelfNumber][3].string = currScannedItem.individualWeight;
+					shelfDic[currScannedItem.name] = itemDetectedShelfNumber;
+					
+					for (i = 0; i < items.length; i++) {
+						if (items[i] == currScannedItem.name) {
+							locateItemColumn.add(itemButtons[i]);
+							break;
+						}
 					}
 					
-					switch(currScannedItem.name) {
-						case "Apples":
-									locateItemColumn.add(appleButton);
-									break;
-						case "Bananas":
-									locateItemColumn.add(bananaButton);
-									break;
-						case "Carrots":
-									locateItemColumn.add(carrotButton);
-									break;
-						case "Potatoes":
-									locateItemColumn.add(potatoButton);
-									break;
-						case "Celery":
-									locateItemColumn.add(celeryButton);
-									break;
-						case "Oranges":
-									locateItemColumn.add(orangeButton);
-									break;
-					}
-					
-
 					mainContainer.remove(mainContainer.last);
 					mainContainer.add(mainShelf);
 					previousScreenName = currentScreenName;
@@ -706,20 +541,7 @@ Handler.bind("/getNewItem", {
 			else {
 				if (currentScreenName != "mainShelf" && itemDetectedShelfNumber != -1) {
 					box[1].first.next.skin = boxSkin;
-					switch (itemDetectedShelfNumber) {
-						case 0: box[0].first.next.skin = boxSkin;
-								break;
-						case 1: box[1].first.next.skin = boxSkin;
-								break;
-						case 2: box[2].first.next.skin = boxSkin;
-								break;
-						case 3: box[3].first.next.skin = boxSkin;
-								break;
-						case 4: box[4].first.next.skin = boxSkin;
-								break;
-						case 5: box[5].first.next.skin = boxSkin;
-								break;
-					}
+					box[itemDetectedShelfNumber].first.next.skin = boxSkin;
 					itemDetectedShelfNumber = -1;
 				}
 			}
@@ -782,12 +604,10 @@ var newLocateFunc = function(content) {
 }
 
 var newBackFunc = function(content) {
-	box[0].skin = noHighlight;
-	box[1].skin = noHighlight;
-	box[2].skin = noHighlight;
-	box[3].skin = noHighlight;
-	box[4].skin = noHighlight;
-	box[5].skin = noHighlight;
+	for (i = 0; i < 6; i++) {
+		box[i].skin = noHighlight
+	}
+	
 	switch(previousScreenName) {
 		case "scanInventory":
 			mainContainer.remove(mainContainer.last);
@@ -838,47 +658,19 @@ var newLowFunc = function(content) {
     lowItemColumn.empty(0);                                
     for (i = 0; i < keyNames.length; i++) {
 	    trace("My Key Name: " + keyNames[i] + "\n");
-	    if (keyNames[i] == "Apples"){
-            if (lowDic["Apples"][0] == true){
-                appleLabel.string = "Apples left: " + lowDic["Apples"][1];        
-                lowItemColumn.add(appleLabel);        
-            }
-	    }
-	    if (keyNames[i] == "Bananas"){
-            if (lowDic["Bananas"][0] == true){
-                bananaLabel.string = "Bananas left: " + lowDic["Bananas"][1];        
-                lowItemColumn.add(bananaLabel);        
-            }                              
-	    }
-	    if (keyNames[i] == "Carrots"){
-            if (lowDic["Carrots"][0] == true){
-                carrotLabel.string = "Carrots left: " + lowDic["Carrots"][1];        
-                lowItemColumn.add(carrotLabel);        
-            }                              
-	    }
-	    if (keyNames[i] == "Potatoes"){
-            if (lowDic["Potatoes"][0] == true){
-                potatoLabel.string = "Potatoes left: " + lowDic["Potatoes"][1];        
-                lowItemColumn.add(potatoLabel);        
-            }                              
-	    }              
-	    if (keyNames[i] == "Celery"){
-            if (lowDic["Celery"][0] == true){
-                celeryLabel.string = "Celery left: " + lowDic["Celery"][1];        
-                lowItemColumn.add(celeryLabel);        
-            }                              
-	    }
-	    if (keyNames[i] == "Oranges"){
-            if (lowDic["Oranges"][0] == true){
-                orangeLabel.string = "Oranges left: " + lowDic["Oranges"][1];        
-                lowItemColumn.add(orangeLabel);        
-            }                              
-	    }                                                                                                                                                                                                                                              
+	    
+	    for (var j = 0; j < items.length; j++) {
+	    	if (keyNames[i] == items[j]){
+	            if (lowDic[items[j]][0] == true){
+	                itemLabels[j].string = items[j] + " left: " + lowDic[items[j]][1];        
+	                lowItemColumn.add(itemLabels[j]);        
+	            }
+		    }
+		}                                                                                                                                                                                                                             
 	}
-    //this should be adding a low items list container
 }
 
-var newScanButton = new newButtonTemplate({textForLabel:"Scan Item", name: "newScanButton", textFormat: appStyle, 
+var newScanButton = new newButtonTemplate({textForLabel:"Add Item", name: "newScanButton", textFormat: appStyle, 
 					buttonSkin:skinType[10], imageurl: "scan_white.png", buttonFunc: newScanFunc, imageSize:100});
 var newMainShelfButton = new newButtonTemplate({textForLabel:"Shelf View", name: "newMainShelfButton", textFormat: appStyle, 
 					buttonSkin:skinType[11], imageurl: "shelf_white.png", buttonFunc: newMainShelfFunc, imageSize:100});
@@ -892,10 +684,10 @@ var bottom_navigation =  Container.template(function($) { return{
   left:0, right:0, height:50, bottom:0, name: "navBar",
   skin: redSkin,
   contents: [
-    new newButtonBottomNavTemplate({left:0, buttonFunc: newMainShelfFunc, name:"shelf", bottom:0, left_logo: 0, url:"storage.png", name_logo:'shelf_icon', size: 45}),
-    new newButtonBottomNavTemplate({left:80, buttonFunc: newScanFunc, name:"scan", bottom: 0, left_logo:0,  url:"scan.png", name_logo: 'scan_icon', size: 50}),
-    new newButtonBottomNavTemplate({left:160, buttonFunc:newLowFunc, name:"low", bottom:0, left_logo: 0, url:"low.png", name_logo:'low_icon', size: 50}),
-    new newButtonBottomNavTemplate({left:240, buttonFunc: newLocateFunc, name:"search", bottom:5, left_logo: 5, url:"locate.png", name_logo:'locate_icon', size: 40}),
+    new newButtonBottomNavTemplate({left:0, buttonFunc: newMainShelfFunc, name:"shelf", bottom:0, left_logo: 0, url:"shelf_white.png", name_logo:'shelf_icon', size: 45}),
+    new newButtonBottomNavTemplate({left:80, buttonFunc: newScanFunc, name:"scan", bottom: 0, left_logo:0,  url:"scan_white.png", name_logo: 'scan_icon', size: 50}),
+    new newButtonBottomNavTemplate({left:160, buttonFunc:newLowFunc, name:"low", bottom:0, left_logo: 0, url:"low_white.png", name_logo:'low_icon', size: 50}),
+    new newButtonBottomNavTemplate({left:240, buttonFunc: newLocateFunc, name:"search", bottom:5, left_logo: 5, url:"locate_white.png", name_logo:'locate_icon', size: 40}),
 	]
 }});
 
@@ -941,31 +733,30 @@ var homeWidget = new Container({
         }),
     ]
 });
-/*******Ji-hern**********/
  
 var mainContainer = new Container({
-        left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
-        contents: [
-                homeWidget
-        ],
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+    contents: [
+        homeWidget
+    ],
 });
  
 var ApplicationBehavior = Behavior.template({
-        onDisplayed: function(application) {
-                application.discover("bluetoothscanner");
-                application.discover("smartshelfdevice");
-        },
-        onLaunch: function(application) {
-                application.shared = true;
-                application.invoke(new Message("/getScannerData"));
-                application.invoke(new Message("/getNewItem"));
-                application.invoke(new Message("/getItemData"));
-        },
-        onQuit: function(application) {
-                application.forget("bluetoothscanner");
-                applicaiton.forget("smartshelfdevice");
-                application.shared = true;
-        },
+    onDisplayed: function(application) {
+        application.discover("bluetoothscanner");
+        application.discover("smartshelfdevice");
+    },
+    onLaunch: function(application) {
+        application.shared = true;
+        application.invoke(new Message("/getScannerData"));
+        application.invoke(new Message("/getNewItem"));
+        application.invoke(new Message("/getItemData"));
+    },
+    onQuit: function(application) {
+        application.forget("bluetoothscanner");
+        applicaiton.forget("smartshelfdevice");
+        application.shared = true;
+    },
 })
  
  
