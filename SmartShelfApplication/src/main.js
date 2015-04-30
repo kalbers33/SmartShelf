@@ -113,7 +113,6 @@ var mainShelf = new Container({
 	    new Container({left:20, right:20, top: 180, height: 15, skin:blackSkin}),
 	    new Container({left:20, right:20, top:300, height: 15, skin:blackSkin}),
 	    new Container({left:20, right:20, top:420, height: 15, skin:blackSkin}),
-    //
   ]
 });
 
@@ -132,7 +131,7 @@ var newBoxTemplate = Container.template(function($){ return{
 
 var box = new Array(10);
 
-box[0] = new newBoxTemplate({left:20, width: 90, height: 80, top:100, name: "box0"})
+box[0] = new newBoxTemplate({left:20, width: 90, height: 80, top:100, name: "box[0]"})
 box[1] = new newBoxTemplate({left:115, width: 90, height: 80, top:100, name: "box[1]"})
 box[2] = new newBoxTemplate({left:210, width: 90, height: 80, top:100, name: "box[2]"})
 box[3] = new newBoxTemplate({left:20, width: 90, height: 80, top:220, name: "box[3]"})
@@ -284,13 +283,9 @@ Handler.bind("/delayItemData", {
 });
 
 var newBackFunc = function(content) {
-	trace("in back function");
-	box[0].skin = noHighlight;
-	box[1].skin = noHighlight;
-	box[2].skin = noHighlight;
-	box[3].skin = noHighlight;
-	box[4].skin = noHighlight;
-	box[5].skin = noHighlight;
+	for (i = 0; i < 6; i++) {
+		box[i].skin = noHighlight;
+	}
 	switch(previousScreenName) {
 		case "scanInventory":
 			mainContainer.remove(mainContainer.last);
@@ -331,13 +326,9 @@ var newBackFunc = function(content) {
 }
 
 var newHomeFunc = function(content) {
-	trace("in home function");
-	box[0].skin = noHighlight;
-	box[1].skin = noHighlight;
-	box[2].skin = noHighlight;
-	box[3].skin = noHighlight;
-	box[4].skin = noHighlight;
-	box[5].skin = noHighlight;
+	for (i = 0; i < 6; i++) {
+		box[i].skin = noHighlight;
+	}
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(homeWidget);
 	previousScreenName = currentScreenName;
@@ -385,7 +376,6 @@ var newButtonBottomNavTemplate = BUTTONS.Button.template(function($){ return{
             //content.skin = name_to_skin[content.name];
             $.buttonFunc(content)
         }}
-
     })
 }});
 
@@ -426,7 +416,6 @@ var scanInventoryPlaceItem = new Container({
 			contents: [
 				new navigation(),
 				new smartShelfLogo(),
-				//scanInventoryText,
 				placeItemText,
 				itemTypeText,
 				itemWeightText,
@@ -436,32 +425,30 @@ var scanInventoryPlaceItem = new Container({
 	]
 });
 
-/*******Ji-hern**********/
-//Locate Item
 var labelStyle = new Style({ font:"bold 20px", color:"white"});
  
 var whiteSkin = new Skin( { fill:"white" } );
 
 var inventoryTemplate = BUTTONS.Button.template(function($){ return{
-        left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
-        contents: [
-                new Label({left:0, right:0, string:$.displayName, style: labelStyle}),
-        ],
-        behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
-                onTap: { value: function(content){
-                		for (var key in shelfDic) {
-                			box[shelfDic[key]].skin = whiteSkin;
-                		}
-                        box[shelfDic[$.itemName]].skin = highlightSkin;
-                        mainContainer.remove(mainContainer.last);
-                        mainContainer.add(mainShelf);
-                        previousScreenName = currentScreenName;
-                        currentScreenName = "mainShelf";
-                }},
-                onComplete: { value: function(content, message, json){
-               
-                }}
-        })
+    left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
+    contents: [
+    	new Label({left:0, right:0, string:$.displayName, style: labelStyle}),
+    ],
+    behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+        onTap: { value: function(content){
+        		for (var key in shelfDic) {
+        			box[shelfDic[key]].skin = whiteSkin;
+        		}
+                box[shelfDic[$.itemName]].skin = highlightSkin;
+                mainContainer.remove(mainContainer.last);
+                mainContainer.add(mainShelf);
+                previousScreenName = currentScreenName;
+                currentScreenName = "mainShelf";
+        }},
+        onComplete: { value: function(content, message, json){
+       
+        }}
+    })
 }});
 
 var itemButtons = new Array(items.length);
@@ -473,32 +460,26 @@ for (i = 0; i < itemButtons.length; i++) {
 var locateItemColumn = new Column({
         left: 0, right: 0, top: 10, active: true, skin: whiteSkin, name: "locateItemColumn",
         contents: [
-                //new navigation()
         ]
 });
  
 var locateItemContainer = new Container({
-        left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
-        contents: [
-                new Column({
-                        //left: 0, right: 0, top: 5, bottom: 0,
-                        left: 0, right: 0, top: 0, bottom: 0,
-                        contents: [
-                				new navigation(),
-                                new smartShelfLogo(),  
-                                locateItemColumn,
-                               
-                        ]
-                }),    
-        ]
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+    contents: [
+        new Column({
+            left: 0, right: 0, top: 0, bottom: 0,
+            contents: [
+				new navigation(),
+                new smartShelfLogo(),  
+                locateItemColumn,
+            ]
+        }),    
+    ]
 });
- 
- 
- 
+
 var lowItemColumn = new Column({
 	left: 0, right: 0, top: 10, bottom: 0, active: true, skin: whiteSkin, name: "lowItemColumn",
 	contents: [
-		//new navigation()
 	]
 });
 
@@ -519,44 +500,12 @@ Handler.bind("/getNewItem", {
 				if (currentScreenName == "scanInventoryPlaceItem") {
 					itemDetectedShelfNumber = json.newShelf;
 					trace("New item detected on ", json.newShelf);
-					switch (itemDetectedShelfNumber) {
-						case 0: box[0].first.next.skin = itemDetectedSkin;
-								mainShelf.insert(box[0], mainShelf.last);
-								box[0][2].string = currScannedItem.name;
-								box[0][3].string = currScannedItem.individualWeight;
-								shelfDic[currScannedItem.name] = 0;
-								break;
-						case 1: box[1].first.next.skin = itemDetectedSkin;
-								mainShelf.insert(box[1], mainShelf.last);
-								box[1][2].string = currScannedItem.name;
-								box[1][3].string = currScannedItem.individualWeight;
-								shelfDic[currScannedItem.name] = 1;
-								break;
-						case 2: box[2].first.next.skin = itemDetectedSkin;
-								mainShelf.insert(box[2], mainShelf.last);
-								box[2][2].string = currScannedItem.name;
-								box[2][3].string = currScannedItem.individualWeight;
-								shelfDic[currScannedItem.name] = 2;
-								break;
-						case 3: box[3].first.next.skin = itemDetectedSkin;
-								mainShelf.insert(box[3], mainShelf.last);
-								box[3][2].string = currScannedItem.name;
-								box[3][3].string = currScannedItem.individualWeight;
-								shelfDic[currScannedItem.name] = 3;
-								break;
-						case 4: box[4].first.next.skin = itemDetectedSkin;
-								mainShelf.insert(box[4], mainShelf.last);
-								box[4][2].string = currScannedItem.name;
-								box[4][3].string = currScannedItem.individualWeight;
-								shelfDic[currScannedItem.name] = 4;
-								break;
-						case 5: box[5].first.next.skin = itemDetectedSkin;
-								mainShelf.insert(box[5], mainShelf.last);
-								box[5][2].string = currScannedItem.name;
-								box[5][3].string = currScannedItem.individualWeight;
-								shelfDic[currScannedItem.name] = 5;
-								break;
-					}
+					
+					box[itemDetectedShelfNumber].first.next.skin = itemDetectedSkin;
+					mainShelf.insert(box[itemDetectedShelfNumber], mainShelf.last);
+					box[itemDetectedShelfNumber][2].string = currScannedItem.name;
+					box[itemDetectedShelfNumber][3].string = currScannedItem.individualWeight;
+					shelfDic[currScannedItem.name] = itemDetectedShelfNumber;
 					
 					for (i = 0; i < items.length; i++) {
 						if (items[i] == currScannedItem.name) {
@@ -574,20 +523,7 @@ Handler.bind("/getNewItem", {
 			else {
 				if (currentScreenName != "mainShelf" && itemDetectedShelfNumber != -1) {
 					box[1].first.next.skin = boxSkin;
-					switch (itemDetectedShelfNumber) {
-						case 0: box[0].first.next.skin = boxSkin;
-								break;
-						case 1: box[1].first.next.skin = boxSkin;
-								break;
-						case 2: box[2].first.next.skin = boxSkin;
-								break;
-						case 3: box[3].first.next.skin = boxSkin;
-								break;
-						case 4: box[4].first.next.skin = boxSkin;
-								break;
-						case 5: box[5].first.next.skin = boxSkin;
-								break;
-					}
+					box[itemDetectedShelfNumber].first.next.skin = boxSkin;
 					itemDetectedShelfNumber = -1;
 				}
 			}
@@ -650,12 +586,10 @@ var newLocateFunc = function(content) {
 }
 
 var newBackFunc = function(content) {
-	box[0].skin = noHighlight;
-	box[1].skin = noHighlight;
-	box[2].skin = noHighlight;
-	box[3].skin = noHighlight;
-	box[4].skin = noHighlight;
-	box[5].skin = noHighlight;
+	for (i = 0; i < 6; i++) {
+		box[i].skin = noHighlight
+	}
+	
 	switch(previousScreenName) {
 		case "scanInventory":
 			mainContainer.remove(mainContainer.last);
@@ -782,31 +716,30 @@ var homeWidget = new Container({
         }),
     ]
 });
-/*******Ji-hern**********/
  
 var mainContainer = new Container({
-        left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
-        contents: [
-                homeWidget
-        ],
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+    contents: [
+        homeWidget
+    ],
 });
  
 var ApplicationBehavior = Behavior.template({
-        onDisplayed: function(application) {
-                application.discover("bluetoothscanner");
-                application.discover("smartshelfdevice");
-        },
-        onLaunch: function(application) {
-                application.shared = true;
-                application.invoke(new Message("/getScannerData"));
-                application.invoke(new Message("/getNewItem"));
-                application.invoke(new Message("/getItemData"));
-        },
-        onQuit: function(application) {
-                application.forget("bluetoothscanner");
-                applicaiton.forget("smartshelfdevice");
-                application.shared = true;
-        },
+    onDisplayed: function(application) {
+        application.discover("bluetoothscanner");
+        application.discover("smartshelfdevice");
+    },
+    onLaunch: function(application) {
+        application.shared = true;
+        application.invoke(new Message("/getScannerData"));
+        application.invoke(new Message("/getNewItem"));
+        application.invoke(new Message("/getItemData"));
+    },
+    onQuit: function(application) {
+        application.forget("bluetoothscanner");
+        applicaiton.forget("smartshelfdevice");
+        application.shared = true;
+    },
 })
  
  
