@@ -1,5 +1,11 @@
-var THEME = require("themes/flat/theme");
+var CONTROLS_THEME = require('themes/flat/theme');
+var THEME = require('themes/sample/theme');
+for ( var i in CONTROLS_THEME ){
+    THEME[i] = CONTROLS_THEME[i]
+}
 var BUTTONS = require("controls/buttons");
+var SCREEN = require('mobile/screen');
+var SCROLLER = require('mobile/scroller');
  
 var labelStyle2 = new Style({ font:"bold 20px", color:"black"});
 
@@ -19,7 +25,38 @@ skinType[11] = new Skin({fill:"#00bcd4"});
 skinType[12] = new Skin({fill:"#b2ebf2"});
 skinType[13] = new Skin({fill:"#009688"});
 
+var background_photo = new Texture("background.png");
+var background_skin = new Skin({
+  width:400,
+  height:500,
+  texture: background_photo,
+  fill:"white"
+});
+
+var transparent_skin = new Skin({});
 var appStyle = new Style({color:"#FFFFFF", font:"25px Roboto"});
+
+
+//Scroller template
+
+var ScreenContainer = Container.template(function($) { return {
+	left:0, right:0, height:200,
+	contents: [
+	   		/* Note that the scroller is declared as having only an empty
+	   		 * Column and a scrollbar.  All the entries will be added 
+	   		 * programmatically. */ 
+	   		SCROLLER.VerticalScroller($, { 
+	   			contents: [
+              			Column($, { left: 0, right: 0, height:100, top:10, bottom: 2, name: 'menu', }),
+              			SCROLLER.VerticalScrollbar($, { }),
+              			]
+	   		})
+	   		]
+	}});
+	
+var data = new Object();
+var locateItemColumn = new ScreenContainer(data);
+//locateItemColumn.first.reveal({height: 200});
  
 var items = ["Bar Soap", "Coca Cola", "Pringles Original", "Lays Sweet Onion", 
 			"Whole Milk", "Low Fat Milk", "Sugar 500g", "Sugar 1kg", "Oats",
@@ -411,7 +448,7 @@ var shelfNavigationButton = new navigation();
 mainShelf.add(shelfNavigationButton);
 
 var scanInventory = new Container({
-	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
 	contents: [
 		new Column({
 			left: 0, right: 0, top: 0, bottom: 0,
@@ -427,7 +464,7 @@ var scanInventory = new Container({
 });
 
 var scanInventoryPlaceItem = new Container({
-	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
 	contents: [
 		new Column({
 			left: 0, right: 0, top: 0, bottom: 5,
@@ -448,7 +485,8 @@ var labelStyle = new Style({ font:"bold 20px", color:"white"});
 var whiteSkin = new Skin( { fill:"white" } );
 
 var inventoryTemplate = BUTTONS.Button.template(function($){ return{
-    left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
+    //left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
+    left: 20, right: 20, height: 50, skin: new Skin({ fill: $.color }),
     contents: [
     	new Label({left:0, right:0, string:$.displayName, style: labelStyle}),
     ],
@@ -471,32 +509,44 @@ var inventoryTemplate = BUTTONS.Button.template(function($){ return{
 
 var itemButtons = new Array(items.length);
 
+var button_colors = ["#CCFFCC", "#FFCC66", "#99CCFF", "#ffc3a0", "#fa877a", "#7aedfa"]
 for (i = 0; i < itemButtons.length; i++) {
-	itemButtons[i] = new inventoryTemplate({itemName:items[i], displayName: items[i]});
+	var chosen_color = i % 6;
+	trace(chosen_color);
+	itemButtons[i] = new inventoryTemplate({itemName:items[i], displayName: items[i], color: button_colors[chosen_color]});
 }
  
-var locateItemColumn = new Column({
+//var locateItemColumn = new Column({
+/*
+var locateItemColumn = new Scroller({
         left: 0, right: 0, top: 10, active: true, skin: whiteSkin, name: "locateItemColumn",
         contents: [
         ]
-});
+});*/
  
 var locateItemContainer = new Container({
-    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
     contents: [
+    	
+               // new smartShelfLogo(),  
+                locateItemColumn,
+                new navigation(),
+    /*
         new Column({
             left: 0, right: 0, top: 0, bottom: 0,
             contents: [
+            	
 				new navigation(),
                 new smartShelfLogo(),  
                 locateItemColumn,
+                
             ]
-        }),    
+        }),   */ 
     ]
 });
 
 var lowItemColumn = new Column({
-	left: 0, right: 0, top: 10, bottom: 0, active: true, skin: whiteSkin, name: "lowItemColumn",
+	left: 0, right: 0, top: 10, bottom: 0, active: true, skin: transparent_skin, name: "lowItemColumn",
 	contents: [
 	]
 });
@@ -527,7 +577,9 @@ Handler.bind("/getNewItem", {
 					
 					for (i = 0; i < items.length; i++) {
 						if (items[i] == currScannedItem.name) {
-							locateItemColumn.add(itemButtons[i]);
+							//locateItemColumn.add(itemButtons[i]);
+							//screen.first.menu.add(itemButtons[i]);
+							locateItemColumn.first.menu.add(itemButtons[i]);
 							break;
 						}
 					}
@@ -563,7 +615,7 @@ Handler.bind("/delayNewItem", {
  
 var lowItemContainer = new Container({
     //left: 0, right: 0, top: 5, bottom: 0, active: true, skin: whiteSkin,
-    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
     contents: [
         new Column({
             left: 0, right: 0, top: 0, bottom: 0,
