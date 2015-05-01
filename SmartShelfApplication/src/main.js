@@ -1,5 +1,11 @@
-var THEME = require("themes/flat/theme");
+var CONTROLS_THEME = require('themes/flat/theme');
+var THEME = require('themes/sample/theme');
+for ( var i in CONTROLS_THEME ){
+    THEME[i] = CONTROLS_THEME[i]
+}
 var BUTTONS = require("controls/buttons");
+var SCREEN = require('mobile/screen');
+var SCROLLER = require('mobile/scroller');
  
 var labelStyle2 = new Style({ font:"bold 20px", color:"black"});
 
@@ -19,7 +25,38 @@ skinType[11] = new Skin({fill:"#009688"});
 skinType[12] = new Skin({fill:"#b2dfdb"});
 skinType[13] = new Skin({fill:"#cddc39"});
 
+var background_photo = new Texture("background.png");
+var background_skin = new Skin({
+  width:400,
+  height:500,
+  texture: background_photo,
+  fill:"white"
+});
+
+var transparent_skin = new Skin({});
 var appStyle = new Style({color:"#FFFFFF", font:"25px Roboto"});
+
+
+//Scroller template
+
+var ScreenContainer = Container.template(function($) { return {
+	left:0, right:0, height:200,
+	contents: [
+	   		/* Note that the scroller is declared as having only an empty
+	   		 * Column and a scrollbar.  All the entries will be added 
+	   		 * programmatically. */ 
+	   		SCROLLER.VerticalScroller($, { 
+	   			contents: [
+              			Column($, { left: 0, right: 0, height:100, top:10, bottom: 2, name: 'menu', }),
+              			SCROLLER.VerticalScrollbar($, { }),
+              			]
+	   		})
+	   		]
+	}});
+	
+var data = new Object();
+var locateItemColumn = new ScreenContainer(data);
+//locateItemColumn.first.reveal({height: 200});
  
 var items = ["Bar Soap", "Coca Cola", "Pringles Original", "Lays Sweet Onion", 
 			"Whole Milk", "Low Fat Milk", "Sugar 500g", "Sugar 1kg", "Oats",
@@ -163,7 +200,7 @@ var smartShelfLogo = Picture.template(function($){ return {
 };
 });
 
-var scanInventoryText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Scan Item", 
+var scanInventoryText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Scan Inventory", 
 								style: new Style({font:"30px", color:"black"}), name:"scanInventoryText"});
 var waitingforScannerText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Waiting for scanner...", skin: new Skin({fill: "#FFFFFF"}), 
 									style: new Style({font:"25px", color:"black"}), name:"waitingforScannerText"});
@@ -411,7 +448,7 @@ var shelfNavigationButton = new navigation();
 mainShelf.add(shelfNavigationButton);
 
 var scanInventory = new Container({
-	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
 	contents: [
 		new Column({
 			left: 0, right: 0, top: 0, bottom: 0,
@@ -427,7 +464,7 @@ var scanInventory = new Container({
 });
 
 var scanInventoryPlaceItem = new Container({
-	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
 	contents: [
 		new Column({
 			left: 0, right: 0, top: 0, bottom: 5,
@@ -448,7 +485,8 @@ var labelStyle = new Style({ font:"bold 20px", color:"white"});
 var whiteSkin = new Skin( { fill:"white" } );
 
 var inventoryTemplate = BUTTONS.Button.template(function($){ return{
-    left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
+    //left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
+    left: 20, right: 20, height: 50, skin: new Skin({ fill: $.color }),
     contents: [
     	new Label({left:0, right:0, string:$.displayName, style: labelStyle}),
     ],
@@ -471,32 +509,44 @@ var inventoryTemplate = BUTTONS.Button.template(function($){ return{
 
 var itemButtons = new Array(items.length);
 
+var button_colors = ["#CCFFCC", "#FFCC66", "#99CCFF", "#ffc3a0", "#fa877a", "#7aedfa"]
 for (i = 0; i < itemButtons.length; i++) {
-	itemButtons[i] = new inventoryTemplate({itemName:items[i], displayName: items[i]});
+	var chosen_color = i % 6;
+	trace(chosen_color);
+	itemButtons[i] = new inventoryTemplate({itemName:items[i], displayName: items[i], color: button_colors[chosen_color]});
 }
  
-var locateItemColumn = new Column({
+//var locateItemColumn = new Column({
+/*
+var locateItemColumn = new Scroller({
         left: 0, right: 0, top: 10, active: true, skin: whiteSkin, name: "locateItemColumn",
         contents: [
         ]
-});
+});*/
  
 var locateItemContainer = new Container({
-    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
     contents: [
+    	
+               // new smartShelfLogo(),  
+                locateItemColumn,
+                new navigation(),
+    /*
         new Column({
             left: 0, right: 0, top: 0, bottom: 0,
             contents: [
+            	
 				new navigation(),
                 new smartShelfLogo(),  
                 locateItemColumn,
+                
             ]
-        }),    
+        }),   */ 
     ]
 });
 
 var lowItemColumn = new Column({
-	left: 0, right: 0, top: 10, bottom: 0, active: true, skin: whiteSkin, name: "lowItemColumn",
+	left: 0, right: 0, top: 10, bottom: 0, active: true, skin: transparent_skin, name: "lowItemColumn",
 	contents: [
 	]
 });
@@ -527,7 +577,9 @@ Handler.bind("/getNewItem", {
 					
 					for (i = 0; i < items.length; i++) {
 						if (items[i] == currScannedItem.name) {
-							locateItemColumn.add(itemButtons[i]);
+							//locateItemColumn.add(itemButtons[i]);
+							//screen.first.menu.add(itemButtons[i]);
+							locateItemColumn.first.menu.add(itemButtons[i]);
 							break;
 						}
 					}
@@ -563,7 +615,7 @@ Handler.bind("/delayNewItem", {
  
 var lowItemContainer = new Container({
     //left: 0, right: 0, top: 5, bottom: 0, active: true, skin: whiteSkin,
-    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
     contents: [
         new Column({
             left: 0, right: 0, top: 0, bottom: 0,
@@ -668,9 +720,10 @@ var newLowFunc = function(content) {
 		    }
 		}                                                                                                                                                                                                                             
 	}
+    //this should be adding a low items list container
 }
 
-var newScanButton = new newButtonTemplate({textForLabel:"Add Item", name: "newScanButton", textFormat: appStyle, 
+var newScanButton = new newButtonTemplate({textForLabel:"Scan Item", name: "newScanButton", textFormat: appStyle, 
 					buttonSkin:skinType[10], imageurl: "scan_white.png", buttonFunc: newScanFunc, imageSize:100});
 var newMainShelfButton = new newButtonTemplate({textForLabel:"Shelf View", name: "newMainShelfButton", textFormat: appStyle, 
 					buttonSkin:skinType[11], imageurl: "shelf_white.png", buttonFunc: newMainShelfFunc, imageSize:100});
@@ -684,10 +737,10 @@ var bottom_navigation =  Container.template(function($) { return{
   left:0, right:0, height:50, bottom:0, name: "navBar",
   skin: redSkin,
   contents: [
-    new newButtonBottomNavTemplate({left:0, buttonFunc: newMainShelfFunc, name:"shelf", bottom:0, left_logo: 0, url:"shelf_white.png", name_logo:'shelf_icon', size: 45}),
-    new newButtonBottomNavTemplate({left:80, buttonFunc: newScanFunc, name:"scan", bottom: 0, left_logo:0,  url:"scan_white.png", name_logo: 'scan_icon', size: 50}),
-    new newButtonBottomNavTemplate({left:160, buttonFunc:newLowFunc, name:"low", bottom:0, left_logo: 0, url:"low_white.png", name_logo:'low_icon', size: 50}),
-    new newButtonBottomNavTemplate({left:240, buttonFunc: newLocateFunc, name:"search", bottom:5, left_logo: 5, url:"locate_white.png", name_logo:'locate_icon', size: 40}),
+    new newButtonBottomNavTemplate({left:0, buttonFunc: newMainShelfFunc, name:"shelf", bottom:0, left_logo: 0, url:"storage.png", name_logo:'shelf_icon', size: 45}),
+    new newButtonBottomNavTemplate({left:80, buttonFunc: newScanFunc, name:"scan", bottom: 0, left_logo:0,  url:"scan.png", name_logo: 'scan_icon', size: 50}),
+    new newButtonBottomNavTemplate({left:160, buttonFunc:newLowFunc, name:"low", bottom:0, left_logo: 0, url:"low.png", name_logo:'low_icon', size: 50}),
+    new newButtonBottomNavTemplate({left:240, buttonFunc: newLocateFunc, name:"search", bottom:5, left_logo: 5, url:"locate.png", name_logo:'locate_icon', size: 40}),
 	]
 }});
 
