@@ -196,11 +196,11 @@ var data = {
 };
 
 var smartShelfLogo = Picture.template(function($){ return {
-	height:500, name:"smartShelfLogo", url:"app_home2.png"
+	height:200, name:"smartShelfLogo", url:"app_home1.png"
 };
 });
 
-var scanInventoryText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Scan Item", 
+var scanInventoryText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Scan Inventory", 
 								style: new Style({font:"30px", color:"black"}), name:"scanInventoryText"});
 var waitingforScannerText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Waiting for scanner...", skin: new Skin({fill: "#FFFFFF"}), 
 									style: new Style({font:"25px", color:"black"}), name:"waitingforScannerText"});
@@ -720,9 +720,10 @@ var newLowFunc = function(content) {
 		    }
 		}                                                                                                                                                                                                                             
 	}
+    //this should be adding a low items list container
 }
 
-var newScanButton = new newButtonTemplate({textForLabel:"Add Item", name: "newScanButton", textFormat: appStyle, 
+var newScanButton = new newButtonTemplate({textForLabel:"Scan Item", name: "newScanButton", textFormat: appStyle, 
 					buttonSkin:skinType[10], imageurl: "scan_white.png", buttonFunc: newScanFunc, imageSize:100});
 var newMainShelfButton = new newButtonTemplate({textForLabel:"Shelf View", name: "newMainShelfButton", textFormat: appStyle, 
 					buttonSkin:skinType[11], imageurl: "shelf_white.png", buttonFunc: newMainShelfFunc, imageSize:100});
@@ -736,10 +737,10 @@ var bottom_navigation =  Container.template(function($) { return{
   left:0, right:0, height:50, bottom:0, name: "navBar",
   skin: redSkin,
   contents: [
-    new newButtonBottomNavTemplate({left:0, buttonFunc: newMainShelfFunc, name:"shelf", bottom:0, left_logo: 0, url:"shelf_white.png", name_logo:'shelf_icon', size: 45}),
-    new newButtonBottomNavTemplate({left:80, buttonFunc: newScanFunc, name:"scan", bottom: 0, left_logo:0,  url:"scan_white.png", name_logo: 'scan_icon', size: 50}),
-    new newButtonBottomNavTemplate({left:160, buttonFunc:newLowFunc, name:"low", bottom:0, left_logo: 0, url:"low_white.png", name_logo:'low_icon', size: 50}),
-    new newButtonBottomNavTemplate({left:240, buttonFunc: newLocateFunc, name:"search", bottom:5, left_logo: 5, url:"locate_white.png", name_logo:'locate_icon', size: 40}),
+    new newButtonBottomNavTemplate({left:0, buttonFunc: newMainShelfFunc, name:"shelf", bottom:0, left_logo: 0, url:"storage.png", name_logo:'shelf_icon', size: 45}),
+    new newButtonBottomNavTemplate({left:80, buttonFunc: newScanFunc, name:"scan", bottom: 0, left_logo:0,  url:"scan.png", name_logo: 'scan_icon', size: 50}),
+    new newButtonBottomNavTemplate({left:160, buttonFunc:newLowFunc, name:"low", bottom:0, left_logo: 0, url:"low.png", name_logo:'low_icon', size: 50}),
+    new newButtonBottomNavTemplate({left:240, buttonFunc: newLocateFunc, name:"search", bottom:5, left_logo: 5, url:"locate.png", name_logo:'locate_icon', size: 40}),
 	]
 }});
 
