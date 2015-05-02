@@ -80,7 +80,8 @@ var shelfDic = {};
 var lowDic = {};
  
 //Normal Highlight moved for code order issues
-var noHighlight = new Skin( { fill:"white" } );
+//var noHighlight = new Skin( { fill:"white" } );
+var noHighlight = transparent_skin;
  
 var currentScreenName = "";
 var previousScreenName = "";
@@ -107,7 +108,8 @@ var highlightSkin = new Skin( { fill:"yellow" } );
 var redSkin = new Skin( { fill:"red" } );
 var itemDetectedSkin = new Skin( { fill:"green" } );
 var LEDSkin = new Skin( { fill:"blue" } );
-var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
+//var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
+var labelStyle = new Style( { font: "bold 18px", color:"white" } );
 var stockStyle = new Style( { font: "bold 25px", color:"#778899" } );
 var titleStyle = new Style( { font: "bold 40px", color:"black" } );
 
@@ -152,7 +154,7 @@ var newButtonOnlyTemplate = BUTTONS.Button.template(function($){ return{
 
 var mainShelf = new Container({
   left:0, right:0, top:0, bottom:0,
-  skin: whiteSkin,
+  skin: background_skin,
   contents:[
 	    new Container({left:20, right:20, top: 180, height: 15, skin:blackSkin}),
 	    new Container({left:20, right:20, top:300, height: 15, skin:blackSkin}),
