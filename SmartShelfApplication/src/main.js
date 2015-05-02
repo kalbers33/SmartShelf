@@ -296,7 +296,8 @@ Handler.bind("/delayScanner", {
 });
  
 var itemInformationObjects = [];
- 
+var locatedItem = 0; 
+
 Handler.bind("/getItemData", {
         onInvoke: function(handler, message){
         if(deviceURL != "") handler.invoke(new Message(deviceURL + "getAllItemInformation"), Message.JSON);
@@ -304,7 +305,7 @@ Handler.bind("/getItemData", {
         },
         onComplete: function(handler, message, json){
                 itemInformationObjects = json;
-                for (i = 0; i < itemInformationObjects.length; i++) {
+                for (var i = 0; i < itemInformationObjects.length; i++) {
                         var lowCount = false;
                         if (itemInformationObjects[i].status === "low"){
                                 lowCount = true;
@@ -316,6 +317,8 @@ Handler.bind("/getItemData", {
                         box[i][3].string = json[i].count;
                         if (itemInformationObjects[i].status === "low") {
                                 box[i][0].skin = highlightSkin;
+                                //locatedItem = i;
+                                //handler.invoke(new Message("/locateItem"));
                         } else if (itemInformationObjects[i].status === "out") {
                                 box[i][0].skin = redSkin
                         } else {
@@ -334,6 +337,15 @@ Handler.bind("/delayItemData", {
     onComplete: function(handler, message){
         handler.invoke(new Message("/getItemData"));
     }
+});
+
+Handler.bind("/locateItem", {
+	onInvoke: function(handler, message){
+		//This will highlight the item on the shelf, put this somewhere.
+		var msg = new Message(deviceURL + "locateItem");
+		msg.requestText = JSON.stringify({value: locatedItem, locating: true});
+		if(deviceURL != "") handler.invoke(msg, Message.JSON);
+	}
 });
 
 var newBackFunc = function(content) {
