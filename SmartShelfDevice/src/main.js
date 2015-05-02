@@ -14,9 +14,11 @@ var addShelfSkin = new Skin({fill: "blue"});
 
 var numberOfShelves = 9;
 var Shelves = [];
+var boxes = []
 for(i = 0; i <numberOfShelves; i++)
 {
 	Shelves[i] = new Label({left:0, right:0, bottom: 0, height:20, string:"0", style: labelStyle, skin: outSkin});
+	boxes[i] = new Picture({left:0, right:0, height: 60,  url: "./box/GIF/256_581949.gif"});
 }
 
 var itemInformationObjects = [];
@@ -39,6 +41,7 @@ var ItemInformation = function($){
 	this.lowThreshold = 0.25; //25% item is low!
 	this.outThreshold = 0.1; //10% is essentially out (empty box)
 	this.status = "out"; //"out", "low", "ok"
+	this.locating = false;
 }
 
 ItemInformation.prototype.updateItemWeight = function(itemIndex, weight){
@@ -59,17 +62,30 @@ ItemInformation.prototype.updateItemWeight = function(itemIndex, weight){
 	this.lastWeight = weight;
 	if(this.individualWeight > 0) this.count = Math.round(weight/this.individualWeight);
 	if(this.maxWeight > 0) this.percentFull = this.totalWeight/this.maxWeight;
-	if(this.percentFull < this.lowThreshold) {
-		this.status = "low";
-		Shelves[itemIndex].skin = lowSkin;
+	if(this.locating == true)
+	{
+		Shelves[itemIndex].skin = addShelfSkin;
 	}
-	else {
-		this.status = "ok";
-		Shelves[itemIndex].skin = okSkin;
+	else{
+		
+		if(this.percentFull < this.lowThreshold) {
+			this.status = "low";
+			Shelves[itemIndex].skin = lowSkin;
+		}
+		else {
+			this.status = "ok";
+			Shelves[itemIndex].skin = okSkin;
+		}
+		if(this.percentFull < this.outThreshold) {
+			this.status = "out";
+			Shelves[itemIndex].skin = outSkin;
+		}
 	}
 	if(this.percentFull < this.outThreshold) {
-		this.status = "out";
-		Shelves[itemIndex].skin = outSkin;
+		boxes[itemIndex].opacity = 0;
+	}else
+	{
+		boxes[itemIndex].opacity = 1;
 	}
 	
 }
@@ -94,6 +110,14 @@ Handler.bind("/newItem", Behavior({
 	}
 }));
 
+Handler.bind("/locateItem", Behavior({
+	onInvoke: function(handler, message){
+		var item = JSON.parse(message.requestText);
+		itemInformationObjects[item.value].locating = item.locating;
+		//message.status = 200;
+	}
+}));
+
 
 Handler.bind("/respond", Behavior({
 	onInvoke: function(handler, message){
@@ -110,30 +134,30 @@ Handler.bind("/weightResults", Object.create(Behavior.prototype, {
 }));
 
 
-
-/*Shelves[0] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: greenSkin});
-Shelves[1] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: redSkin});
-Shelves[2] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: blueSkin});
-
-Shelves[3] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: greenSkin});
-Shelves[4] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: redSkin});
-Shelves[5] = new Label({left:0, right:0, bottom: 0, height:40, string:"0", style: labelStyle, skin: blueSkin}); //*/
-
 var topContents = new Line({
-	left:0, right:0, top: 0, bottom: 0, skin: whiteSkin,
+	left:0, right:0, height:60, skin: whiteSkin,
 	contents: [
+	boxes[0],
+	boxes[1],
+	boxes[2]
 	]
 });
 
 var middleContents = new Line({
-	left:0, right:0, top: 0, bottom: 0, skin: whiteSkin,
+	left:0, right:0, height:60, skin: whiteSkin,
 	contents: [
+	boxes[3],
+	boxes[4],
+	boxes[5]
 	]
 });
 
 var bottomContents = new Line({
-	left:0, right:0, top: 0, bottom: 0, skin: whiteSkin,
+	left:0, right:0,  height:60, skin: whiteSkin,
 	contents: [
+	boxes[6],
+	boxes[7],
+	boxes[8]
 	]
 });
 var topShelf = new Line({
@@ -166,17 +190,14 @@ var bottomShelf = new Line({
 var mainColumn = new Column({
 	left:0, right:0, top: 0, bottom: 0, skin: whiteSkin,
 	contents: [
-	new Picture({left:0, right:0, height: 60,  url: "./box/GIF/256_581949.gif"}),
-	//new  Label({left:0, right:0, height:40, string:"", style: labelStyle}),
+	topContents,
 	topShelf,
-	new  Label({left:0, right:0, height:60, string:"", style: labelStyle}),
+	middleContents,
 	middleShelf,
-	new  Label({left:0, right:0, height:60, string:"", style: labelStyle}),
+	bottomContents,
 	bottomShelf
 	]
 });
-
-
 
 
 var ApplicationBehavior = Behavior.template({
