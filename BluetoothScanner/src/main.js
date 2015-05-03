@@ -8,7 +8,7 @@ var data = {
 var whiteSkin = new Skin( { fill:"white" } );
 
 var smartShelfLogo = Picture.template(function($){ return {
-	height: 100, name:"smartShelfLogo", url:"../../SmartShelfLogo.png"
+	height: 50, name:"smartShelfLogo", url:"logoblack.png"
 };
 });
 
