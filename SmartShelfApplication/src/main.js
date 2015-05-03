@@ -194,7 +194,7 @@ var stockStyle = new Style( { font: "bold 30px", color:"white"} );
 var titleStyle = new Style( { font: "bold 40px", color:"black" } );
 
 var buttonLogoTemplate = Picture.template(function($){ return {
-						top: 5, height: $.imageSize, name:$.name, url:$.url
+						top: 20, height: $.imageSize, name:$.name, url:$.url
 					};
 				});
 				
@@ -293,11 +293,10 @@ var smartShelfLogo = Picture.template(function($){ return {
 
 
 
-var scanInventoryText = new Text({left: 20, right: 0, top: 20, height: 40, string: "Please scan the item you wish       to add on the shelf", 
+var scanInventoryText = new Text({left: 20, right: 0, top: 20, height: 40, string: "Please scan the item you wish to add on the shelf", 
 								style: new Style({font:"25px", color:"white", horizontal: "center"}), name:"scanInventoryText"});
 var waitingforScannerText = new Text({left: 60, right: 0, top: -10, height: 40, string: "Waiting for scanner...", horizontal: "center",
 									style: new Style({font:"25px", color:"white"}), name:"waitingforScannerText"});
-
 var placeItemText = new Label({top: -220, height: 40, string: "", //Item Type: 
 									style: new Style({font:"30px", color:"white"}), name:"placeItemText"});
 var itemTypeText = new Label({top: 40, height: 40, string: "", //Item Type: 
