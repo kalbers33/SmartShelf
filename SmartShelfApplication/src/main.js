@@ -885,7 +885,7 @@ scanInventoryPlaceItem.last[1].skin = nav_scan_skin;
 
 
 var homeWidget = new Container({
-    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
     contents: [
         new Column({
             left: 0, right: 0, top: 0, bottom: 0,
@@ -916,7 +916,7 @@ var homeWidget = new Container({
 });
  
 var mainContainer = new Container({
-    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
     contents: [
         homeWidget
     ],
