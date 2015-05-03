@@ -11,7 +11,12 @@ var SCROLLER = require('mobile/scroller');
  
  
  var black_rectange = Picture.template(function($){ return {
-	top: $.top, left: $.left, height:200, name:"black_rectange", url:"black.png",
+	top: $.top, left: $.left, height:70, name:"black_rectange", url:"black.png",
+};
+});
+
+var placeItemImage = Picture.template(function($){ return {
+	top:30, height:100, name:"place_item", url:"PlaceItem.png",
 };
 });
 
@@ -289,14 +294,16 @@ var scanInventoryText = new Text({left: 20, right: 0, top: 20, height: 40, strin
 								style: new Style({font:"25px", color:"white", horizontalAlignment: "center"}), name:"scanInventoryText"});
 var waitingforScannerText = new Text({left: 20, right: 0, top: 10, height: 40, string: "Waiting for scanner...", 
 									style: new Style({font:"25px", color:"white"}), name:"waitingforScannerText"});
-var itemTypeText = new Label({top: -290, height: 100, string: "", //Item Type: 
-									style: new Style({font:"40px", color:"white"}), name:"itemTypeText"});
-var itemWeightText = new Label({top: 70 , height: 40, string: "",  //Item Weight: 
-									style: new Style({font:"40px", color:"white"}), name:"itemWeightText"});
+var placeItemText = new Label({top: -220, height: 40, string: "", //Item Type: 
+									style: new Style({font:"30px", color:"white"}), name:"placeItemText"});
+var itemTypeText = new Label({top: 40, height: 40, string: "", //Item Type: 
+									style: new Style({font:"30px", color:"white"}), name:"itemTypeText"});
+var itemWeightText = new Label({top: 60 , height: 40, string: "",  //Item Weight: 
+									style: new Style({font:"30px", color:"white"}), name:"itemWeightText"});
 var detectedText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Item detected", skin: new Skin({fill: "#FFFFFF"}), 
 									style: new Style({font:"25px", color:"black"}), name:"detectedText"});
-var placeItemText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Place item on shelf", skin: new Skin({fill: "#FFFFFF"}), 
-									style: new Style({font:"25px", color:"black"}), name:"placeItemText"});
+//var placeItemText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Place item on shelf", skin: new Skin({fill: "#FFFFFF"}), 
+//									style: new Style({font:"25px", color:"black"}), name:"placeItemText"});
 var bigText = new Style({font:"20px", color:"#FFFFFF"});
 var buttonSkin = new Skin({fill:"#00AA44"});
 var greySkin = new Skin({fill:"#AAAAAA"});
@@ -351,6 +358,7 @@ Handler.bind("/getScannerData", {
 				itemTypeText.string = currScannedItem.name;
 				//itemWeightText.string = "Item Weight: " + currScannedItem.individualWeight + "g";
 				itemWeightText.string = currScannedItem.individualWeight + "g";
+				placeItemText.string = "Place item on any shelf";
 				if (currentScreenName == "scanInventory") {
 					mainContainer.remove(mainContainer.last);
 					mainContainer.add(scanInventoryPlaceItem);
@@ -558,8 +566,9 @@ var scanInventory = new Container({
 	]
 });
 
+var scan_place_item_label = new black_rectange({top: 20, left: 20});
 var scan_item_name_label = new black_rectange({top: 10, left: 15});
-var scan_item_weight_label = new black_rectange({top: -60, left: 90});
+var scan_item_weight_label = new black_rectange({top: 20, left: 90});
 scan_item_name_label.opacity = 0.7;
 scan_item_weight_label.opacity = 0.7;
 scan_item_weight_label.scale = {x:.5,y:1};
@@ -572,19 +581,13 @@ var scanInventoryPlaceItem = new Container({
 			left: 0, right: 0, top: 0, bottom: 5,
 			contents: [
 				new navigation({displayName: "Scan Inventory"}),
-				//new smartShelfLogo(),
-				placeItemText,
+				scan_place_item_label,
 				scan_item_name_label,
 				scan_item_weight_label,
+				placeItemText,
 				itemTypeText,
-				
-				
 				itemWeightText,
-				
-				
-				
-				
-				
+				new placeItemImage(),
 			]
 		}),
 	]
