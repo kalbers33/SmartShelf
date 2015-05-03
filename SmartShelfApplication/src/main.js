@@ -115,14 +115,14 @@ emptyBoxList[8] = new emptyBox({left: 205, top:340, name:"ebox8"}),
 //Scroller template
 
 var ScreenContainer = Container.template(function($) { return {
-	left:0, right:0, height:200,
+	left:0, right:0, height:200, top:60, //200
 	contents: [
 	   		/* Note that the scroller is declared as having only an empty
 	   		 * Column and a scrollbar.  All the entries will be added 
 	   		 * programmatically. */ 
 	   		SCROLLER.VerticalScroller($, { 
 	   			contents: [
-              			Column($, { left: 0, right: 0, height:100, top:10, bottom: 2, name: 'menu', }),
+              			Column($, { left: 0, right: 0, height:0, top:10, bottom: 2, name: 'menu', }),
               			SCROLLER.VerticalScrollbar($, { }),
               			]
 	   		})
@@ -184,7 +184,7 @@ var redSkin = new Skin( { fill:"red" } );
 var itemDetectedSkin = new Skin( { fill:"green" } );
 var LEDSkin = new Skin( { fill:"blue" } );
 //var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
-var labelStyle_shelf = new Style( { font: "bold 18px", color:"white", horizontalAlignment:"center"} );
+var labelStyle_shelf = new Style( { font: "bold 18px", color:"white", horizontal:"center"} );
 var stockStyle = new Style( { font: "bold 30px", color:"white"} );
 var titleStyle = new Style( { font: "bold 40px", color:"black" } );
 
@@ -247,24 +247,24 @@ var newBoxTemplate = Container.template(function($){ return{
 	  skin: noHighlight,
 	  name: $.name,
 	  contents: [
-	  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
-	  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
-	  	new Text({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle_shelf}),
-	  	new Label({top: 30, height: 45, string: "5", style: stockStyle}),
+	  	new Container({left:25, width:40, top: 60, height: 15, skin:LEDSkin}),
+	  	new Container({left:10, width:70, top: 10, height: 50, skin:boxSkin}),
+	  	new Text({left: 0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle_shelf}),
+	  	new Label({top: 15, height: 45, string: "5", style: stockStyle}),
 	  ]
 }});
 
 var box = new Array(10);
 
-box[0] = new newBoxTemplate({left:20, width: 90, height: 80, top:100, name: "box[0]"})
-box[1] = new newBoxTemplate({left:115, width: 90, height: 80, top:100, name: "box[1]"})
-box[2] = new newBoxTemplate({left:210, width: 90, height: 80, top:100, name: "box[2]"})
-box[3] = new newBoxTemplate({left:20, width: 90, height: 80, top:220, name: "box[3]"})
-box[4] = new newBoxTemplate({left:115, width: 90, height: 80, top:220, name: "box[4]"})
-box[5] = new newBoxTemplate({left:210, width: 90, height: 80, top:220, name: "box[5]"})
-box[6] = new newBoxTemplate({left:20, width: 90, height: 80, top:340, name: "box[6]"})
-box[7] = new newBoxTemplate({left:115, width: 90, height: 80, top:340, name: "box[7]"})
-box[8] = new newBoxTemplate({left:210, width: 90, height: 80, top:340, name: "box[8]"})
+box[0] = new newBoxTemplate({left:20, width: 90, height: 60, top:120, name: "box[0]"})
+box[1] = new newBoxTemplate({left:115, width: 90, height: 60, top:120, name: "box[1]"})
+box[2] = new newBoxTemplate({left:210, width: 90, height: 60, top:120, name: "box[2]"})
+box[3] = new newBoxTemplate({left:20, width: 90, height: 60, top:240, name: "box[3]"})
+box[4] = new newBoxTemplate({left:115, width: 90, height: 60, top:240, name: "box[4]"})
+box[5] = new newBoxTemplate({left:210, width: 90, height: 60, top:240, name: "box[5]"})
+box[6] = new newBoxTemplate({left:20, width: 90, height: 60, top:360, name: "box[6]"})
+box[7] = new newBoxTemplate({left:115, width: 90, height: 60, top:360, name: "box[7]"})
+box[8] = new newBoxTemplate({left:210, width: 90, height: 60, top:360, name: "box[8]"})
 
 
 
@@ -287,14 +287,14 @@ var smartShelfLogo = Picture.template(function($){ return {
 
 
 var scanInventoryText = new Text({left: 20, right: 0, top: 20, height: 40, string: "Please scan the item you wish       to add on the shelf", 
-								style: new Style({font:"25px", color:"white", horizontalAlignment: "center"}), name:"scanInventoryText"});
-var waitingforScannerText = new Text({left: 20, right: 0, top: 10, height: 40, string: "Waiting for scanner...", 
+								style: new Style({font:"25px", color:"white", horizontal: "center"}), name:"scanInventoryText"});
+var waitingforScannerText = new Text({left: 60, right: 0, top: -10, height: 40, string: "Waiting for scanner...", horizontal: "center",
 									style: new Style({font:"25px", color:"white"}), name:"waitingforScannerText"});
 var itemTypeText = new Label({top: -290, height: 100, string: "", //Item Type: 
 									style: new Style({font:"40px", color:"white"}), name:"itemTypeText"});
 var itemWeightText = new Label({top: 70 , height: 40, string: "",  //Item Weight: 
 									style: new Style({font:"40px", color:"white"}), name:"itemWeightText"});
-var detectedText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Item detected", skin: new Skin({fill: "#FFFFFF"}), 
+var detectedText = new Text({width:100, top: 10, height: 40, string: "Item detected", skin: new Skin({fill: "#FFFFFF"}), 
 									style: new Style({font:"25px", color:"black"}), name:"detectedText"});
 var placeItemText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Place item on shelf", skin: new Skin({fill: "#FFFFFF"}), 
 									style: new Style({font:"25px", color:"black"}), name:"placeItemText"});
@@ -399,7 +399,7 @@ Handler.bind("/getItemData", {
                         }
                         lowDic[itemInformationObjects[i].name] = [lowCount, itemInformationObjects[i].count];
                 }                      
-                for (var i = 0; i < 6; i++) {
+                for (var i = 0; i < 9; i++) {
                         //var count = json[i].count;
                         box[i][3].string = json[i].count;
                         if (itemInformationObjects[i].status === "low") {
@@ -616,7 +616,8 @@ var inventoryTemplate = BUTTONS.Button.template(function($){ return{
         		trace(shelfDic[$.itemName]);
         		//handler.invoke(new Message("/locateItem"));
         		for (var key in shelfDic) {
-        			box[shelfDic[key]].skin = whiteSkin;
+        			//box[shelfDic[key]].skin = whiteSkin;
+        			box[shelfDic[key]].skin = transparent_skin;
         		}
                 box[shelfDic[$.itemName]].skin = highlightSkin;
                 
@@ -785,7 +786,7 @@ var newLocateFunc = function(content) {
 }
 
 var newBackFunc = function(content) {
-	for (i = 0; i < 6; i++) {
+	for (i = 0; i < 9; i++) {
 		box[i].skin = noHighlight
 	}
 	
