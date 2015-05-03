@@ -91,8 +91,8 @@ var appStyle = new Style({color:"#FFFFFF", font:"20px Roboto"});
 
 var emptyBoxBehavior = Object.create(Behavior.prototype, {
   onTouchEnded: {value:  function(container, id, x, y, ticks){
-    trace("You touched at: " + x + ", " + y + "\n");
-    trace(container.name + "\n");
+ //   trace("You touched at: " + x + ", " + y + "\n");
+ //   trace(container.name + "\n");
     //container.opacity = .5;
     newScanFunc(container)
   }}
@@ -395,7 +395,7 @@ Handler.bind("/delayScanner", {
 });
  
 var itemInformationObjects = [];
-var locatedItem = 0; 
+var locatedItem = -1; 
 
 Handler.bind("/getItemData", {
         onInvoke: function(handler, message){
@@ -416,15 +416,12 @@ Handler.bind("/getItemData", {
                         box[i][3].string = json[i].count;
                         if (itemInformationObjects[i].status === "low") {
                                 box[i][0].skin = highlightSkin;
-                                //locatedItem = i;
-                                //handler.invoke(new Message("/locateItem"));
                         } else if (itemInformationObjects[i].status === "out") {
                                 box[i][0].skin = redSkin
                         } else {
                                 box[i][0].skin = LEDSkin
                         }
                 }
-        trace("App Side: " + json[0].status + "\n" );
         handler.invoke(new Message("/delayItemData"));
         }
 });
@@ -525,7 +522,6 @@ var newButtonBottomNavTemplate = BUTTONS.Button.template(function($){ return{
     behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
         onTouchEnded: {
           value: function(content) {
-            trace("CONTENT NAME:" + content.name + '\n');
             for (var key in name_to_skin) {
               nav = content.container
               if (key != content.name) {
@@ -603,14 +599,28 @@ var labelStyle = new Style({ font:"bold 20px", color:"white", horizontalAlignmen
  
 var whiteSkin = new Skin( { fill:"white" } );
 
-Handler.bind("/locateItem", {
+Handler.bind("/locateItemDevice", {
 	onInvoke: function(handler, message){
 		//This will highlight the item on the shelf, put this somewhere.
 		var msg = new Message(deviceURL + "locateItem");
-		msg.requestText = JSON.stringify({value: locatedItem, locating: true});
+		msg.requestText = JSON.stringify({value: locatedItem});
 		if(deviceURL != "") handler.invoke(msg, Message.JSON);
+		else handler.invoke(new Message("/locateItemDelay"));
+	},
+	onComplete: function(handler, message, json){
+		handler.invoke(new Message("/locateItemDelay"));
 	}
 });
+
+Handler.bind("/locateItemDelay", {
+	onInvoke: function(handler, message){
+		handler.wait(1000);
+	},
+	onComplete: function(handler, message){
+		handler.invoke(new Message("/locateItemDevice"));
+	}
+});
+
 
 var inventoryTemplate = BUTTONS.Button.template(function($){ return{
     //left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
@@ -622,7 +632,6 @@ var inventoryTemplate = BUTTONS.Button.template(function($){ return{
         onTap: { value: function(content){
         		locatedItem = shelfDic[$.itemName];
         		trace(shelfDic[$.itemName]);
-        		//handler.invoke(new Message("/locateItem"));
         		for (var key in shelfDic) {
         			//box[shelfDic[key]].skin = whiteSkin;
         			box[shelfDic[key]].skin = transparent_skin;
@@ -648,7 +657,6 @@ var itemButtons = new Array(items.length);
 var button_colors = ["#CCFFCC", "#FFCC66", "#99CCFF", "#ffc3a0", "#fa877a", "#7aedfa"]
 for (i = 0; i < itemButtons.length; i++) {
 	var chosen_color = i % 6;
-	trace(chosen_color);
 	itemButtons[i] = new inventoryTemplate({itemName:items[i], displayName: items[i], color: button_colors[chosen_color]});
 }
  
@@ -699,11 +707,11 @@ Handler.bind("/getNewItem", {
     },
     onComplete: function(handler, message, json){
     	if (deviceURL != "") {
-			trace("Item detected on shelf: " +json.newShelf + "\n");
+			//trace("Item detected on shelf: " +json.newShelf + "\n");
 			if (json.newShelf != -1) {
 				if (currentScreenName == "scanInventoryPlaceItem") {
 					itemDetectedShelfNumber = json.newShelf;
-					trace("New item detected on ", json.newShelf);
+					//trace("New item detected on ", json.newShelf);
 					
 					box[itemDetectedShelfNumber].first.next.skin = itemDetectedSkin;
 					//mainShelf.insert(box[itemDetectedShelfNumber], mainShelf.last);
@@ -767,7 +775,6 @@ var lowItemContainer = new Container({
 });
 
 var newScanFunc = function(content) {
-	trace('newScanFunc\n');
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(scanInventory);
 	previousScreenName = currentScreenName;
@@ -776,7 +783,6 @@ var newScanFunc = function(content) {
 }
 
 var newMainShelfFunc = function(content) {
-	trace('newMainShelfFunc\n');
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(mainShelf);
 	previousScreenName = currentScreenName;
@@ -785,7 +791,6 @@ var newMainShelfFunc = function(content) {
 }
 
 var newLocateFunc = function(content) {
-	trace('newLocateFunc\n');
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(locateItemContainer);		
 	previousScreenName = currentScreenName;
@@ -838,7 +843,6 @@ var newBackFunc = function(content) {
 }
 
 var newLowFunc = function(content) {
-	trace('newLowFunc\n');
 	lowItemContainer.last[2].skin = nav_low_skin
 	mainContainer.remove(mainContainer.last);
     mainContainer.add(lowItemContainer);
@@ -847,7 +851,7 @@ var newLowFunc = function(content) {
     var keyNames = Object.keys(lowDic);
     lowItemColumn.empty(0);                                
     for (i = 0; i < keyNames.length; i++) {
-	    trace("My Key Name: " + keyNames[i] + "\n");
+	  //  trace("My Key Name: " + keyNames[i] + "\n");
 	    
 	    for (var j = 0; j < items.length; j++) {
 	    	if (keyNames[i] == items[j]){
@@ -950,6 +954,7 @@ var ApplicationBehavior = Behavior.template({
         application.invoke(new Message("/getScannerData"));
         application.invoke(new Message("/getNewItem"));
         application.invoke(new Message("/getItemData"));
+        application.invoke(new Message("/locateItemDevice"));
     },
     onQuit: function(application) {
         application.forget("bluetoothscanner");
