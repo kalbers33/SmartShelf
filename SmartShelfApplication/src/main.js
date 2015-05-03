@@ -7,11 +7,16 @@ var BUTTONS = require("controls/buttons");
 var SCREEN = require('mobile/screen');
 var SCROLLER = require('mobile/scroller');
  
- var transparent_skin = new Skin({});
+var transparent_skin = new Skin({});
  
  
- var black_rectange = Picture.template(function($){ return {
+var black_rectange = Picture.template(function($){ return {
 	top: $.top, left: $.left, height:70, name:"black_rectange", url:"black.png",
+};
+});
+
+var black_long_rectange = Picture.template(function($){ return {
+	top: $.top, left: $.left, height:70, name:"black_long_rectange", url:"black_long.png",
 };
 });
 
@@ -566,9 +571,10 @@ var scanInventory = new Container({
 	]
 });
 
-var scan_place_item_label = new black_rectange({top: 20, left: 20});
+var scan_place_item_label = new black_long_rectange({top: 20, left: -100});
 var scan_item_name_label = new black_rectange({top: 10, left: 15});
 var scan_item_weight_label = new black_rectange({top: 20, left: 90});
+scan_place_item_label.opacity = 0.7;
 scan_item_name_label.opacity = 0.7;
 scan_item_weight_label.opacity = 0.7;
 scan_item_weight_label.scale = {x:.5,y:1};
@@ -587,7 +593,6 @@ var scanInventoryPlaceItem = new Container({
 				placeItemText,
 				itemTypeText,
 				itemWeightText,
-				new placeItemImage(),
 			]
 		}),
 	]
