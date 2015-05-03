@@ -68,7 +68,7 @@ var labelStyle2 = new Style({ font:"bold 20px", color:"black"});
 var skinType = new Array(14);
 skinType[0] = new Skin({fill:"#5856d6"});
 skinType[1] = new Skin({fill:"#007aff"});
-skinType[2] = new Skin({fill:"#34aadc"});
+skinType[2] = new Skin({fill:"#2B2B2A"});
 skinType[3] = new Skin({fill:"#5ac8fa"});
 skinType[4] = new Skin({fill:"#4cd964"});
 skinType[5] = new Skin({fill:"#ff2d55"});
@@ -211,10 +211,10 @@ var loadingImageTemplate = Picture.template(function($){ return {
 var loadingImageWidget = new loadingImageTemplate({url: "barcode_0.png"});
 
 var newButtonTemplate = BUTTONS.Button.template(function($){ return{
-    left: 10, right: 10, top:10, bottom:10, skin: $.buttonSkin,
+    left: 3, right: 3, top:3, bottom:3, skin: $.buttonSkin,
     contents: [
 		new buttonLogoTemplate({name:$.name, url:$.imageurl, imageSize:$.imageSize}),
-        new Label({left:0, right:0, bottom: 5, string:$.textForLabel, style: $.textFormat})
+        new Label({left:0, right:0, bottom: 10, string:$.textForLabel, style: $.textFormat})
     ],
     behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
         onTap: {
@@ -290,9 +290,11 @@ var data = {
 };
 
 var smartShelfLogo = Picture.template(function($){ return {
-	height:150, name:"smartShelfLogo", url:"logo.png"
+	top:-25, height:160, name:"smartShelfLogo", url:"logo.png"
 };
 });
+
+
 
 
 
@@ -496,12 +498,7 @@ var newHomeFunc = function(content) {
 }
 
 //Bottom navigation bar: skins, logo template, botton template
-var nav_skin = new Skin({fill:"black"});
-
-/*skinType[10] = new Skin({fill:"#0297A7"});
-skinType[11] = new Skin({fill:"#A7D3D6"});
-skinType[12] = new Skin({fill:"#B6E2EB"});
-skinType[13] = new Skin({fill:"#CDDC34"});*/
+var nav_skin = new Skin({fill:"#686868"});
 
 var nav_scan_skin = new Skin({fill:"#0297A7", 
 	//borders:{left:2, right:2, top:2, bottom:2}, stroke:"white"
@@ -512,7 +509,7 @@ var nav_shelf_skin = new Skin({fill:"#A7D3D6",
 var nav_search_skin = new Skin({fill:"#B6E2EB", 
 	//borders:{left:2, right:2, top:2, bottom:2}, stroke:"white"
   }); 
-var nav_low_skin = new Skin({fill:"#E3E77C", 
+var nav_low_skin = new Skin({fill:"#CDDC34", 
 	//borders:{left:2, right:2, top:2, bottom:2}, stroke:"white"
   });
 
@@ -902,9 +899,17 @@ scanInventoryPlaceItem.add(new bottom_navigation());
 scanInventoryPlaceItem.last[1].skin = nav_scan_skin;
 
 
+var logoSkin = new Skin({fill:"#2B2B2A"});
+var logoBack = new Container({
+  left:0, right:0, top:0, bottom:422,
+  skin: logoSkin,
+  contents:[
+  ]
+});
 var homeWidget = new Container({
     left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
     contents: [
+        logoBack,             
         new Column({
             left: 0, right: 0, top: 0, bottom: 0,
             contents: [
@@ -913,14 +918,14 @@ var homeWidget = new Container({
                 	left:0, right:0, top:0, bottom:0,
                 	contents: [
                 		new Line({
-                			left:40, right:40, top:40, bottom:0,
+                			left:20, right:20, top:60, bottom:0,
                 			contents: [
                         		newScanButton,
                         		newMainShelfButton,
                         	]
                 		}),
                 		new Line({
-                			left:40, right:40, top:0, bottom:40,
+                			left:20, right:20, top:0, bottom:60,
                 			contents: [
                     			newLocateButton,
                     			newLowButton
