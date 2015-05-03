@@ -113,8 +113,11 @@ Handler.bind("/newItem", Behavior({
 Handler.bind("/locateItem", Behavior({
 	onInvoke: function(handler, message){
 		var item = JSON.parse(message.requestText);
-		itemInformationObjects[item.value].locating = item.locating;
-		//message.status = 200;
+		for(var i = 0; i < numberOfShelves; i++){
+			itemInformationObjects[i].locating = false;
+		}
+		if(item.value >= 0 && item.value < numberOfShelves) itemInformationObjects[item.value].locating = true;
+		message.status = 200;
 	}
 }));
 
