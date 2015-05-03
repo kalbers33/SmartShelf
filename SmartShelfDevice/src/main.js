@@ -9,8 +9,8 @@ var labelStyle = new Style({font:"bold 20px", color:"black"});
 
 var okSkin = new Skin({fill: "white"});
 var lowSkin = new Skin({fill: "yellow"});
-var outSkin = new Skin({fill: "red"});
-var addShelfSkin = new Skin({fill: "blue"});
+var outSkin = new Skin({fill: "#FF584E"});
+var addShelfSkin = new Skin({fill: "#B6E2EB"});
 
 var numberOfShelves = 9;
 var Shelves = [];
@@ -52,15 +52,14 @@ ItemInformation.prototype.updateItemWeight = function(itemIndex, weight){
 		if(currentlyLookingForItem) {
 			currentlyLookingForItem = false;
 			lastItemAdded = itemIndex;
-			//TODO: Now Add the item!
 			this.name = itemToAdd.name;
 			this.individualWeight = itemToAdd.individualWeight;
 			this.maxWeight = weight;
-			//trace("New Item Named: " + this.name + " to shelf "+ itemIndex.toString() +  "\n");
 		}
 	}
 	this.lastWeight = weight;
 	if(this.individualWeight > 0) this.count = Math.round(weight/this.individualWeight);
+	Shelves[i].string = this.count;
 	if(this.maxWeight > 0) this.percentFull = this.totalWeight/this.maxWeight;
 	if(this.locating == true)
 	{
@@ -220,7 +219,7 @@ var ApplicationBehavior = Behavior.template({
 	weightRecord : function(params, data) {
 		for(i = 0; i < numberOfShelves; i++)
 		{
-			Shelves[i].string = data["Shelf"+i.toString()];
+			//Shelves[i].string = data["Shelf"+i.toString()];
 			itemInformationObjects[i].updateItemWeight(i, data["Shelf"+i.toString()]);
 		}
 	}
