@@ -71,15 +71,16 @@ skinType[6] = new Skin({fill:"#ff3b30"});
 skinType[7] = new Skin({fill:"#ff9500"});
 skinType[8] = new Skin({fill:"#ffcc00"});
 skinType[9] = new Skin({fill:"#8e8e93"});
-skinType[10] = new Skin({fill:"#00796b"});
-skinType[11] = new Skin({fill:"#009688"});
-skinType[12] = new Skin({fill:"#b2dfdb"});
-skinType[13] = new Skin({fill:"#cddc39"});
+skinType[10] = new Skin({fill:"#0297A7"});
+skinType[11] = new Skin({fill:"#A7D3D6"});
+skinType[12] = new Skin({fill:"#B6E2EB"});
+skinType[13] = new Skin({fill:"#CDDC34"});
 
 var background_photo = new Texture("background.png");
 var background_skin = new Skin({
-  width:400,
-  height:500,
+  width:350,
+  height:550,
+  right:50,
   texture: background_photo,
   fill:"white"
 });
@@ -490,18 +491,24 @@ var newHomeFunc = function(content) {
 //Bottom navigation bar: skins, logo template, botton template
 var nav_skin = new Skin({fill:"black"});
 
-var nav_shelf_skin = new Skin({fill:"#5AC8FB", 
+/*skinType[10] = new Skin({fill:"#0297A7"});
+skinType[11] = new Skin({fill:"#A7D3D6"});
+skinType[12] = new Skin({fill:"#B6E2EB"});
+skinType[13] = new Skin({fill:"#CDDC34"});*/
+
+var nav_scan_skin = new Skin({fill:"#0297A7", 
 	//borders:{left:2, right:2, top:2, bottom:2}, stroke:"white"
   });
-var nav_scan_skin = new Skin({fill:"#FFCD02", 
+var nav_shelf_skin = new Skin({fill:"#A7D3D6", 
 	//borders:{left:2, right:2, top:2, bottom:2}, stroke:"white"
   });
-var nav_low_skin = new Skin({fill:"#007AFF", 
+var nav_search_skin = new Skin({fill:"#B6E2EB", 
+	//borders:{left:2, right:2, top:2, bottom:2}, stroke:"white"
+  }); 
+var nav_low_skin = new Skin({fill:"#E3E77C", 
 	//borders:{left:2, right:2, top:2, bottom:2}, stroke:"white"
   });
-var nav_search_skin = new Skin({fill:"#4CD964", 
-	//borders:{left:2, right:2, top:2, bottom:2}, stroke:"white"
-  });
+
 
 var name_to_skin = {"shelf": nav_shelf_skin, "scan": nav_scan_skin, "low": nav_low_skin, "search": nav_search_skin};
 
