@@ -289,7 +289,7 @@ var data = {
 };
 
 var smartShelfLogo = Picture.template(function($){ return {
-	top:-25, height:160, name:"smartShelfLogo", url:"logo.png"
+	top:-3, height:160, name:"smartShelfLogo", url:"logo.png"
 };
 });
 
@@ -904,15 +904,16 @@ scanInventoryPlaceItem.last[1].skin = nav_scan_skin;
 
 var logoSkin = new Skin({fill:"#2B2B2A"});
 var logoBack = new Container({
-  left:0, right:0, top:0, bottom:422,
+  left:0, right:0, top: 20, bottom:400,
   skin: logoSkin,
   contents:[
   ]
 });
+
 var homeWidget = new Container({
     left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
     contents: [
-        logoBack,             
+        logoBack,     
         new Column({
             left: 0, right: 0, top: 0, bottom: 0,
             contents: [
@@ -921,14 +922,14 @@ var homeWidget = new Container({
                 	left:0, right:0, top:0, bottom:0,
                 	contents: [
                 		new Line({
-                			left:20, right:20, top:60, bottom:0,
+                			left:10, right:10, top:20, bottom:0,
                 			contents: [
                         		newScanButton,
                         		newMainShelfButton,
                         	]
                 		}),
                 		new Line({
-                			left:20, right:20, top:0, bottom:60,
+                			left:10, right:10, top:0, bottom:80,
                 			contents: [
                     			newLocateButton,
                     			newLowButton
