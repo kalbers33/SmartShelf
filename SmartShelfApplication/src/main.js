@@ -191,7 +191,6 @@ var whiteSkin = new Skin( { fill:"white" } );
 var blackSkin = new Skin( { fill:"black" } );
 var highlightSkin = new Skin( { fill:"yellow" } );
 var redSkin = new Skin( { fill:"red" } );
-var itemDetectedSkin = new Skin( { fill:"green" } );
 var LEDSkin = new Skin( { fill:"blue" } );
 //var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
 var labelStyle_shelf = new Style( { font: "bold 18px", color:"white", horizontal:"center"} );
@@ -717,7 +716,7 @@ Handler.bind("/getNewItem", {
 					itemDetectedShelfNumber = json.newShelf;
 					//trace("New item detected on ", json.newShelf);
 					
-					box[itemDetectedShelfNumber].first.next.skin = itemDetectedSkin;
+					box[itemDetectedShelfNumber].skin = highlightSkin;
 					//mainShelf.insert(box[itemDetectedShelfNumber], mainShelf.last);
 					mainShelf.add(box[itemDetectedShelfNumber]);
 					mainShelf.remove(emptyBoxList[itemDetectedShelfNumber]);
