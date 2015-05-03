@@ -593,6 +593,7 @@ var scanInventoryPlaceItem = new Container({
 				placeItemText,
 				itemTypeText,
 				itemWeightText,
+				new loading( { speed: 0.4 } ), 
 			]
 		}),
 	]
