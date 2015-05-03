@@ -11,7 +11,12 @@ var SCROLLER = require('mobile/scroller');
  
  
  var black_rectange = Picture.template(function($){ return {
-	top: $.top, left: $.left, height:200, name:"black_rectange", url:"black.png",
+	top: $.top, left: $.left, height:70, name:"black_rectange", url:"black.png",
+};
+});
+
+var placeItemImage = Picture.template(function($){ return {
+	top:30, height:100, name:"place_item", url:"PlaceItem.png",
 };
 });
 
@@ -79,8 +84,7 @@ var background_skin = new Skin({
   fill:"white"
 });
 
-
-var appStyle = new Style({color:"#FFFFFF", font:"25px Roboto"});
+var appStyle = new Style({color:"#FFFFFF", font:"20px Roboto"});
 
 
 
@@ -189,7 +193,7 @@ var stockStyle = new Style( { font: "bold 30px", color:"white"} );
 var titleStyle = new Style( { font: "bold 40px", color:"black" } );
 
 var buttonLogoTemplate = Picture.template(function($){ return {
-						height: $.imageSize, name:$.name, url:$.url
+						top: 5, height: $.imageSize, name:$.name, url:$.url
 					};
 				});
 				
@@ -201,10 +205,10 @@ var loadingImageTemplate = Picture.template(function($){ return {
 var loadingImageWidget = new loadingImageTemplate({url: "barcode_0.png"});
 
 var newButtonTemplate = BUTTONS.Button.template(function($){ return{
-    left: 0, right: 0, top:0, bottom:0, skin: $.buttonSkin,
+    left: 10, right: 10, top:10, bottom:10, skin: $.buttonSkin,
     contents: [
 		new buttonLogoTemplate({name:$.name, url:$.imageurl, imageSize:$.imageSize}),
-        new Label({left:0, right:0, bottom: 10, string:$.textForLabel, style: $.textFormat})
+        new Label({left:0, right:0, bottom: 5, string:$.textForLabel, style: $.textFormat})
     ],
     behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
         onTap: {
@@ -290,14 +294,18 @@ var scanInventoryText = new Text({left: 20, right: 0, top: 20, height: 40, strin
 								style: new Style({font:"25px", color:"white", horizontal: "center"}), name:"scanInventoryText"});
 var waitingforScannerText = new Text({left: 60, right: 0, top: -10, height: 40, string: "Waiting for scanner...", horizontal: "center",
 									style: new Style({font:"25px", color:"white"}), name:"waitingforScannerText"});
-var itemTypeText = new Label({top: -290, height: 100, string: "", //Item Type: 
-									style: new Style({font:"40px", color:"white"}), name:"itemTypeText"});
-var itemWeightText = new Label({top: 70 , height: 40, string: "",  //Item Weight: 
-									style: new Style({font:"40px", color:"white"}), name:"itemWeightText"});
-var detectedText = new Text({width:100, top: 10, height: 40, string: "Item detected", skin: new Skin({fill: "#FFFFFF"}), 
+
+var placeItemText = new Label({top: -220, height: 40, string: "", //Item Type: 
+									style: new Style({font:"30px", color:"white"}), name:"placeItemText"});
+var itemTypeText = new Label({top: 40, height: 40, string: "", //Item Type: 
+									style: new Style({font:"30px", color:"white"}), name:"itemTypeText"});
+var itemWeightText = new Label({top: 60 , height: 40, string: "",  //Item Weight: 
+									style: new Style({font:"30px", color:"white"}), name:"itemWeightText"});
+var detectedText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Item detected", skin: new Skin({fill: "#FFFFFF"}), 
+
 									style: new Style({font:"25px", color:"black"}), name:"detectedText"});
-var placeItemText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Place item on shelf", skin: new Skin({fill: "#FFFFFF"}), 
-									style: new Style({font:"25px", color:"black"}), name:"placeItemText"});
+//var placeItemText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Place item on shelf", skin: new Skin({fill: "#FFFFFF"}), 
+//									style: new Style({font:"25px", color:"black"}), name:"placeItemText"});
 var bigText = new Style({font:"20px", color:"#FFFFFF"});
 var buttonSkin = new Skin({fill:"#00AA44"});
 var greySkin = new Skin({fill:"#AAAAAA"});
@@ -352,6 +360,7 @@ Handler.bind("/getScannerData", {
 				itemTypeText.string = currScannedItem.name;
 				//itemWeightText.string = "Item Weight: " + currScannedItem.individualWeight + "g";
 				itemWeightText.string = currScannedItem.individualWeight + "g";
+				placeItemText.string = "Place item on any shelf";
 				if (currentScreenName == "scanInventory") {
 					mainContainer.remove(mainContainer.last);
 					mainContainer.add(scanInventoryPlaceItem);
@@ -559,8 +568,9 @@ var scanInventory = new Container({
 	]
 });
 
+var scan_place_item_label = new black_rectange({top: 20, left: 20});
 var scan_item_name_label = new black_rectange({top: 10, left: 15});
-var scan_item_weight_label = new black_rectange({top: -60, left: 90});
+var scan_item_weight_label = new black_rectange({top: 20, left: 90});
 scan_item_name_label.opacity = 0.7;
 scan_item_weight_label.opacity = 0.7;
 scan_item_weight_label.scale = {x:.5,y:1};
@@ -573,19 +583,13 @@ var scanInventoryPlaceItem = new Container({
 			left: 0, right: 0, top: 0, bottom: 5,
 			contents: [
 				new navigation({displayName: "Scan Inventory"}),
-				//new smartShelfLogo(),
-				placeItemText,
+				scan_place_item_label,
 				scan_item_name_label,
 				scan_item_weight_label,
+				placeItemText,
 				itemTypeText,
-				
-				
 				itemWeightText,
-				
-				
-				
-				
-				
+				new placeItemImage(),
 			]
 		}),
 	]
@@ -853,14 +857,14 @@ var newLowFunc = function(content) {
     //this should be adding a low items list container
 }
 
-var newScanButton = new newButtonTemplate({textForLabel:"Scan Item", name: "newScanButton", textFormat: appStyle, 
-					buttonSkin:skinType[10], imageurl: "scan_white.png", buttonFunc: newScanFunc, imageSize:100});
+var newScanButton = new newButtonTemplate({textForLabel:"Add Item", name: "newScanButton", textFormat: appStyle, 
+					buttonSkin:skinType[10], imageurl: "scan_white.png", buttonFunc: newScanFunc, imageSize:70});
 var newMainShelfButton = new newButtonTemplate({textForLabel:"Shelf View", name: "newMainShelfButton", textFormat: appStyle, 
-					buttonSkin:skinType[11], imageurl: "shelf_white.png", buttonFunc: newMainShelfFunc, imageSize:100});
+					buttonSkin:skinType[11], imageurl: "shelf_white.png", buttonFunc: newMainShelfFunc, imageSize:70});
 var newLocateButton = new newButtonTemplate({textForLabel:"Locate Item", name: "newLocateButton", textFormat: appStyle, 
-					buttonSkin:skinType[12], imageurl: "locate_white.png", buttonFunc: newLocateFunc, imageSize:100});
+					buttonSkin:skinType[12], imageurl: "locate_white.png", buttonFunc: newLocateFunc, imageSize:70});
 var newLowButton = new newButtonTemplate({textForLabel:"Low Items", name: "newLowButton", textFormat: appStyle, 
-					buttonSkin:skinType[13], imageurl: "low_white.png", buttonFunc: newLowFunc, imageSize:100});
+					buttonSkin:skinType[13], imageurl: "low_white.png", buttonFunc: newLowFunc, imageSize:70});
 					
 //CHANGES -TANISHA (NAV BAR TEMPLATE)					
 var bottom_navigation =  Container.template(function($) { return{
@@ -887,7 +891,7 @@ scanInventoryPlaceItem.last[1].skin = nav_scan_skin;
 
 
 var homeWidget = new Container({
-    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
     contents: [
         new Column({
             left: 0, right: 0, top: 0, bottom: 0,
@@ -897,14 +901,14 @@ var homeWidget = new Container({
                 	left:0, right:0, top:0, bottom:0,
                 	contents: [
                 		new Line({
-                			left:0, right:0, top:0, bottom:0,
+                			left:40, right:40, top:40, bottom:0,
                 			contents: [
                         		newScanButton,
                         		newMainShelfButton,
                         	]
                 		}),
                 		new Line({
-                			left:0, right:0, top:0, bottom:0,
+                			left:40, right:40, top:0, bottom:40,
                 			contents: [
                     			newLocateButton,
                     			newLowButton
@@ -918,7 +922,7 @@ var homeWidget = new Container({
 });
  
 var mainContainer = new Container({
-    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: whiteSkin,
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
     contents: [
         homeWidget
     ],
