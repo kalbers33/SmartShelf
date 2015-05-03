@@ -284,7 +284,7 @@ var data = {
 };
 
 var smartShelfLogo = Picture.template(function($){ return {
-	height:200, name:"smartShelfLogo", url:"app_home1.png"
+	height:150, name:"smartShelfLogo", url:"logo.png"
 };
 });
 
