@@ -7,6 +7,52 @@ var BUTTONS = require("controls/buttons");
 var SCREEN = require('mobile/screen');
 var SCROLLER = require('mobile/scroller');
  
+ var transparent_skin = new Skin({});
+ 
+ 
+ var black_rectange = Picture.template(function($){ return {
+	top: $.top, left: $.left, height:200, name:"black_rectange", url:"black.png",
+};
+});
+
+
+ //loading page
+var BusyPicture = Picture.template(function($) { return { behavior: Object.create((BusyPicture.behaviors[0]).prototype), url: 'waiting.png', }});
+BusyPicture.behaviors = new Array(1);
+BusyPicture.behaviors[0] = Behavior.template({
+//@line 33
+	onCreate: function(picture, data) {
+		this.bump = data.speed * 20;
+				if ( 0 == this.bump )
+					this.bump = 1;
+	},
+//@line 38
+	onLoaded: function(picture) {
+		picture.origin = { x:picture.width >> 1, y:picture.height >> 1 };
+				picture.scale = { x:0.5, y:0.5 };
+				picture.rotation = 0;
+				picture.start();
+	},
+//@line 44
+	onTimeChanged: function(picture) {
+		var rotation = picture.rotation;
+				rotation -= this.bump;
+				if (rotation < 0) rotation = 360;
+				picture.rotation = rotation;
+	},
+})
+
+var loading = Container.template(function($) { return { left: 0, right: 0, top: 0, skin: transparent_skin, contents: [
+//@line 54
+	BusyPicture($, { }),
+	
+], }});
+
+
+ 
+ 
+ 
+ 
 var labelStyle2 = new Style({ font:"bold 20px", color:"black"});
 
 var skinType = new Array(14);
@@ -33,10 +79,39 @@ var background_skin = new Skin({
   fill:"white"
 });
 
-var transparent_skin = new Skin({});
+
 var appStyle = new Style({color:"#FFFFFF", font:"25px Roboto"});
 
 
+
+var emptyBoxBehavior = Object.create(Behavior.prototype, {
+  onTouchEnded: {value:  function(container, id, x, y, ticks){
+    trace("You touched at: " + x + ", " + y + "\n");
+    trace(container.name + "\n");
+    //container.opacity = .5;
+    newScanFunc(container)
+  }}
+});
+
+var emptyBox = Picture.template(function($){ return {
+	left: $.left, top: $.top,  height:80, width: 100, name:$.name, url:"box.png", behavior: emptyBoxBehavior,
+	active: true,
+	
+};
+});
+
+var emptyBoxList = []
+
+emptyBoxList[0] = new emptyBox({left: 15, top:100, name:"ebox0"}),
+emptyBoxList[1] = new emptyBox({left: 110, top:100, name:"ebox1"}),
+emptyBoxList[2] = new emptyBox({left: 205, top:100, name:"ebox2"}),
+emptyBoxList[3] = new emptyBox({left: 15, top:220, name:"ebox3"}),
+emptyBoxList[4] = new emptyBox({left: 110, top:220, name:"ebox4"}),
+emptyBoxList[5] = new emptyBox({left:205, top:220, name:"ebox5"}),     
+	    
+emptyBoxList[6] = new emptyBox({left: 15, top:340, name:"ebox6"}),
+emptyBoxList[7] = new emptyBox({left: 110, top:340, name:"ebox7"}),
+emptyBoxList[8] = new emptyBox({left: 205, top:340, name:"ebox8"}),
 //Scroller template
 
 var ScreenContainer = Container.template(function($) { return {
@@ -109,8 +184,8 @@ var redSkin = new Skin( { fill:"red" } );
 var itemDetectedSkin = new Skin( { fill:"green" } );
 var LEDSkin = new Skin( { fill:"blue" } );
 //var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
-var labelStyle = new Style( { font: "bold 18px", color:"white" } );
-var stockStyle = new Style( { font: "bold 25px", color:"#778899" } );
+var labelStyle_shelf = new Style( { font: "bold 18px", color:"white", horizontalAlignment:"center"} );
+var stockStyle = new Style( { font: "bold 30px", color:"white"} );
 var titleStyle = new Style( { font: "bold 40px", color:"black" } );
 
 var buttonLogoTemplate = Picture.template(function($){ return {
@@ -159,6 +234,10 @@ var mainShelf = new Container({
 	    new Container({left:20, right:20, top: 180, height: 15, skin:blackSkin}),
 	    new Container({left:20, right:20, top:300, height: 15, skin:blackSkin}),
 	    new Container({left:20, right:20, top:420, height: 15, skin:blackSkin}),
+	    emptyBoxList[0],emptyBoxList[1],emptyBoxList[2],emptyBoxList[3], emptyBoxList[4],emptyBoxList[5],
+	    emptyBoxList[6], emptyBoxList[7], emptyBoxList[8],
+	    
+	    
   ]
 });
 
@@ -170,8 +249,8 @@ var newBoxTemplate = Container.template(function($){ return{
 	  contents: [
 	  	new Container({left:25, width:40, top: 80, height: 15, skin:LEDSkin}),
 	  	new Container({left:10, width:70, top: 30, height: 50, skin:boxSkin}),
-	  	new Label({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle}),
-	  	new Label({left:0, right:0, top: 7, height: 20, string: "5", style: stockStyle}),
+	  	new Text({left:0, right:0, bottom:75, height: 20, string: "Hello World", style: labelStyle_shelf}),
+	  	new Label({top: 30, height: 45, string: "5", style: stockStyle}),
 	  ]
 }});
 
@@ -186,6 +265,9 @@ box[5] = new newBoxTemplate({left:210, width: 90, height: 80, top:220, name: "bo
 box[6] = new newBoxTemplate({left:20, width: 90, height: 80, top:340, name: "box[6]"})
 box[7] = new newBoxTemplate({left:115, width: 90, height: 80, top:340, name: "box[7]"})
 box[8] = new newBoxTemplate({left:210, width: 90, height: 80, top:340, name: "box[8]"})
+
+
+
 
 /*******Naren************/
 
@@ -202,14 +284,16 @@ var smartShelfLogo = Picture.template(function($){ return {
 };
 });
 
-var scanInventoryText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Scan Inventory", 
-								style: new Style({font:"30px", color:"black"}), name:"scanInventoryText"});
-var waitingforScannerText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Waiting for scanner...", skin: new Skin({fill: "#FFFFFF"}), 
-									style: new Style({font:"25px", color:"black"}), name:"waitingforScannerText"});
-var itemTypeText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Item Type: ", skin: new Skin({fill: "#FFFFFF"}), 
-									style: new Style({font:"25px", color:"black"}), name:"itemTypeText"});
-var itemWeightText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Item Weight: ", skin: new Skin({fill: "#FFFFFF"}), 
-									style: new Style({font:"25px", color:"black"}), name:"itemWeightText"});
+
+
+var scanInventoryText = new Text({left: 20, right: 0, top: 20, height: 40, string: "Please scan the item you wish       to add on the shelf", 
+								style: new Style({font:"25px", color:"white", horizontalAlignment: "center"}), name:"scanInventoryText"});
+var waitingforScannerText = new Text({left: 20, right: 0, top: 10, height: 40, string: "Waiting for scanner...", 
+									style: new Style({font:"25px", color:"white"}), name:"waitingforScannerText"});
+var itemTypeText = new Label({top: -290, height: 100, string: "", //Item Type: 
+									style: new Style({font:"40px", color:"white"}), name:"itemTypeText"});
+var itemWeightText = new Label({top: 70 , height: 40, string: "",  //Item Weight: 
+									style: new Style({font:"40px", color:"white"}), name:"itemWeightText"});
 var detectedText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Item detected", skin: new Skin({fill: "#FFFFFF"}), 
 									style: new Style({font:"25px", color:"black"}), name:"detectedText"});
 var placeItemText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Place item on shelf", skin: new Skin({fill: "#FFFFFF"}), 
@@ -264,9 +348,10 @@ Handler.bind("/getScannerData", {
 				
 				currScannedItem.name = items[value];
 
-				itemTypeText.string = "Item Type: " + currScannedItem.name;
-				itemWeightText.string = "Item Weight: " + currScannedItem.individualWeight + "g";
-				
+				//itemTypeText.string = "Item Type: " + currScannedItem.name;
+				itemTypeText.string = currScannedItem.name;
+				//itemWeightText.string = "Item Weight: " + currScannedItem.individualWeight + "g";
+				itemWeightText.string = currScannedItem.individualWeight + "g";
 				if (currentScreenName == "scanInventory") {
 					mainContainer.remove(mainContainer.last);
 					mainContainer.add(scanInventoryPlaceItem);
@@ -341,14 +426,6 @@ Handler.bind("/delayItemData", {
     }
 });
 
-Handler.bind("/locateItem", {
-	onInvoke: function(handler, message){
-		//This will highlight the item on the shelf, put this somewhere.
-		var msg = new Message(deviceURL + "locateItem");
-		msg.requestText = JSON.stringify({value: locatedItem, locating: true});
-		if(deviceURL != "") handler.invoke(msg, Message.JSON);
-	}
-});
 
 var newBackFunc = function(content) {
 	for (i = 0; i < 6; i++) {
@@ -447,18 +524,21 @@ var newButtonBottomNavTemplate = BUTTONS.Button.template(function($){ return{
     })
 }});
 
-var navigation = Line.template(function($) { return{
+var navigation_bar_style = new Style({ font:"bold 28px Dotum", color:"white"});
+var navigation = Container.template(function($) { return{
 	height: 50, left: 0, right: 0, top:0,
 	skin: skinType[2],
 	contents:[
+		new Label({string:$.displayName, style: navigation_bar_style}),
 		new newButtonOnlyTemplate({textForLabel:"", name: "back", textFormat: appStyle, 
 					buttonSkin:skinType[2], imageurl: "back_white.png", buttonFunc: newBackFunc, imageSize:20, left: 0 }),
+		
 		new newButtonOnlyTemplate({textForLabel:"", name: "home", textFormat: appStyle, 
-					buttonSkin:skinType[2], imageurl: "home_white.png", buttonFunc: newHomeFunc, imageSize:20, left: 220})
+					buttonSkin:skinType[2], imageurl: "home_white.png", buttonFunc: newHomeFunc, imageSize:20, left: 270})
 	]
 }});
 
-var shelfNavigationButton = new navigation();
+var shelfNavigationButton = new navigation({displayName: "Shelf"});
 mainShelf.add(shelfNavigationButton);
 
 var scanInventory = new Container({
@@ -467,15 +547,24 @@ var scanInventory = new Container({
 		new Column({
 			left: 0, right: 0, top: 0, bottom: 0,
 			contents: [
-				new navigation(),
-				new smartShelfLogo(),
+				new navigation({displayName: "Scan Inventory"}),
+				//new smartShelfLogo(),
 				scanInventoryText,
+				
+				//loadingImageWidget
+				new loading( { speed: 0.4 } ), 
 				waitingforScannerText,
-				loadingImageWidget
 			]
 		}),
 	]
 });
+
+var scan_item_name_label = new black_rectange({top: 10, left: 15});
+var scan_item_weight_label = new black_rectange({top: -60, left: 90});
+scan_item_name_label.opacity = 0.7;
+scan_item_weight_label.opacity = 0.7;
+scan_item_weight_label.scale = {x:.5,y:1};
+
 
 var scanInventoryPlaceItem = new Container({
 	left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
@@ -483,20 +572,37 @@ var scanInventoryPlaceItem = new Container({
 		new Column({
 			left: 0, right: 0, top: 0, bottom: 5,
 			contents: [
-				new navigation(),
-				new smartShelfLogo(),
+				new navigation({displayName: "Scan Inventory"}),
+				//new smartShelfLogo(),
 				placeItemText,
+				scan_item_name_label,
+				scan_item_weight_label,
 				itemTypeText,
+				
+				
 				itemWeightText,
+				
+				
+				
+				
 				
 			]
 		}),
 	]
 });
 
-var labelStyle = new Style({ font:"bold 20px", color:"white"});
+var labelStyle = new Style({ font:"bold 20px", color:"white", horizontalAlignment: "center"});
  
 var whiteSkin = new Skin( { fill:"white" } );
+
+Handler.bind("/locateItem", {
+	onInvoke: function(handler, message){
+		//This will highlight the item on the shelf, put this somewhere.
+		var msg = new Message(deviceURL + "locateItem");
+		msg.requestText = JSON.stringify({value: locatedItem, locating: true});
+		if(deviceURL != "") handler.invoke(msg, Message.JSON);
+	}
+});
 
 var inventoryTemplate = BUTTONS.Button.template(function($){ return{
     //left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
@@ -506,10 +612,14 @@ var inventoryTemplate = BUTTONS.Button.template(function($){ return{
     ],
     behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
         onTap: { value: function(content){
+        		locatedItem = shelfDic[$.itemName];
+        		trace(shelfDic[$.itemName]);
+        		//handler.invoke(new Message("/locateItem"));
         		for (var key in shelfDic) {
         			box[shelfDic[key]].skin = whiteSkin;
         		}
                 box[shelfDic[$.itemName]].skin = highlightSkin;
+                
                 mainContainer.remove(mainContainer.last);
                 mainContainer.add(mainShelf);
                 previousScreenName = currentScreenName;
@@ -520,6 +630,9 @@ var inventoryTemplate = BUTTONS.Button.template(function($){ return{
         }}
     })
 }});
+
+
+
 
 var itemButtons = new Array(items.length);
 
@@ -544,7 +657,7 @@ var locateItemContainer = new Container({
     	
                // new smartShelfLogo(),  
                 locateItemColumn,
-                new navigation(),
+                new navigation({displayName: "Locate Item"}),
     /*
         new Column({
             left: 0, right: 0, top: 0, bottom: 0,
@@ -584,7 +697,9 @@ Handler.bind("/getNewItem", {
 					trace("New item detected on ", json.newShelf);
 					
 					box[itemDetectedShelfNumber].first.next.skin = itemDetectedSkin;
-					mainShelf.insert(box[itemDetectedShelfNumber], mainShelf.last);
+					//mainShelf.insert(box[itemDetectedShelfNumber], mainShelf.last);
+					mainShelf.add(box[itemDetectedShelfNumber]);
+					mainShelf.remove(emptyBoxList[itemDetectedShelfNumber]);
 					box[itemDetectedShelfNumber][2].string = currScannedItem.name;
 					box[itemDetectedShelfNumber][3].string = currScannedItem.individualWeight;
 					shelfDic[currScannedItem.name] = itemDetectedShelfNumber;
@@ -634,7 +749,7 @@ var lowItemContainer = new Container({
         new Column({
             left: 0, right: 0, top: 0, bottom: 0,
             contents: [
-            	new navigation(),
+            	new navigation({displayName: "Low Items"}),
                 new smartShelfLogo(),  
                 lowItemColumn,
             ]
