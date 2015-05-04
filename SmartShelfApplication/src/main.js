@@ -30,8 +30,8 @@ locate_item_banner.opacity = 0.5;
 low_item_banner.opacity = 0.5;
 
 
-var locate_item_banner_text = new Text({left: 20, right: 0, top: 225, height: 40, string: "No items to locate", 
-								style: new Style({font:"25px", color:"white", horizontal: "center"}), name:"low item"});
+var locate_item_banner_text = new Text({left: 20, right: 0, top: 220, height: 40, string: "No items to locate", 
+								style: new Style({font:"30px", color:"white", horizontal: "center"}), name:"low item"});
 var low_item_banner_text = new Text({left: 20, right: 0, top: -50, height: 40, string: "No low items", 
 								style: new Style({font:"30px", color:"white", horizontal: "center"}), name:"low item"});
 
