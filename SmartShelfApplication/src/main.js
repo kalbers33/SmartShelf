@@ -22,15 +22,15 @@ var black_long_rectange = Picture.template(function($){ return {
 
 
 var locate_item_banner = new black_long_rectange({top: 200, left: -100});
-var low_item_banner = new black_long_rectange({top: 20, left: -100});
+var low_item_banner = new black_long_rectange({top: 150, left: -100});
 locate_item_banner.opacity = 0.5;
 low_item_banner.opacity = 0.5;
 
 
-var locate_item_banner_text = new Text({left: 20, right: 0, top: 225, height: 40, string: "No items to locate.", 
+var locate_item_banner_text = new Text({left: 20, right: 0, top: 225, height: 40, string: "No items to locate", 
 								style: new Style({font:"25px", color:"white", horizontal: "center"}), name:"low item"});
-var low_item_banner_text = new Text({left: 20, right: 0, top: 50, height: 40, string: "No low items.", 
-								style: new Style({font:"25px", color:"white", horizontal: "center"}), name:"low item"});
+var low_item_banner_text = new Text({left: 20, right: 0, top: -50, height: 40, string: "No low items", 
+								style: new Style({font:"30px", color:"white", horizontal: "center"}), name:"low item"});
 
 
 
@@ -158,7 +158,7 @@ var locateItemColumn = new ScreenContainer(data);
 //locateItemColumn.first.reveal({height: 200});
  
 var items = ["Bar Soap", "Coca Cola", "Pringles Original", "Lays Sweet Onion", 
-			"Whole Milk", "Low Fat Milk", "Sugar 500g", "Sugar 1kg", "Oats",
+			"Whole Milk", "Low Fat Milk", "Sugar", "Nutella", "Oats",
 			"Cereal", "Olive Oil", "Sunflower Oil", "Charmin Toilet Paper",
 			"Bounty Paper Towels", "Cascade Dish Detergent", "Downy Fabric Softner",
 			"Vitamin C Tablets", "Pita Chips", "Salter Butter", "Plain Butter"];
@@ -312,7 +312,7 @@ var smartShelfLogo = Picture.template(function($){ return {
 
 
 
-var scanInventoryText = new Text({left: 20, right: 0, top: 20, height: 40, string: "Please scan the item you wish to add on the shelf", 
+var scanInventoryText = new Text({left: 10, right: 0, top: 20, height: 40, string: "Please scan the item you wish to add on the shelf", 
 								style: new Style({font:"25px", color:"white", horizontal: "center"}), name:"scanInventoryText"});
 var waitingforScannerText = new Text({left: 60, right: 0, top: -10, height: 40, string: "Waiting for scanner...", horizontal: "center",
 									style: new Style({font:"25px", color:"white"}), name:"waitingforScannerText"});
@@ -643,7 +643,7 @@ Handler.bind("/locateItemDelay", {
 
 var inventoryTemplate = BUTTONS.Button.template(function($){ return{
     //left: 20, right: 20, height: 50, skin: new Skin({ fill: "#CCFFCC" }),
-    left: 20, right: 20, height: 50, skin: new Skin({ fill: $.color }),
+    top:6, left: 20, right: 20, height: 50, skin: new Skin({ fill: $.color }),
     contents: [
     	new Label({left:0, right:0, string:$.displayName, style: labelStyle}),
     ],
@@ -792,6 +792,7 @@ var lowItemContainer = new Container({
             left: 0, right: 0, top: 0, bottom: 0, name:"lowItemContainer",
             contents: [
             	new navigation({displayName: "Low Items"}),
+                
                 low_item_banner,
                 low_item_banner_text,
                 lowItemColumn,
@@ -802,6 +803,9 @@ var lowItemContainer = new Container({
 });
 
 var newScanFunc = function(content) {
+	for (i = 0; i < 6; i++) {
+		box[i].skin = noHighlight;
+	}
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(scanInventory);
 	previousScreenName = currentScreenName;
@@ -810,6 +814,9 @@ var newScanFunc = function(content) {
 }
 
 var newMainShelfFunc = function(content) {
+	for (i = 0; i < 6; i++) {
+		box[i].skin = noHighlight;
+	}
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(mainShelf);
 	previousScreenName = currentScreenName;
@@ -818,6 +825,9 @@ var newMainShelfFunc = function(content) {
 }
 
 var newLocateFunc = function(content) {
+	for (i = 0; i < 6; i++) {
+		box[i].skin = noHighlight;
+	}
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(locateItemContainer);		
 	previousScreenName = currentScreenName;
@@ -870,6 +880,9 @@ var newBackFunc = function(content) {
 }
 
 var newLowFunc = function(content) {
+	for (i = 0; i < 6; i++) {
+		box[i].skin = noHighlight;
+	}
 	lowItemContainer.last[2].skin = nav_low_skin
 	mainContainer.remove(mainContainer.last);
     mainContainer.add(lowItemContainer);
@@ -900,8 +913,8 @@ var newLowFunc = function(content) {
     	//lowItemContainer.last.remove("black_long_rectange");
     	//lowItemContainer.last.remove("low item");
     }else if(lowItemContainer[0].length < 4 && !low ) {
-    	lowItemContainer.first.add(low_item_banner);
-    	lowItemContainer.first.add(low_item_banner_text);
+    	lowItemContainer.first.insert(low_item_banner,lowItemColumn);
+    	lowItemContainer.first.insert(low_item_banner_text,lowItemColumn);
     }
     //this should be adding a low items list container
 }
