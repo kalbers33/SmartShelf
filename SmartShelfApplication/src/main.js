@@ -699,7 +699,7 @@ var lowItemColumn = new Column({
 /************Handler: get new item*************/
 Handler.bind("/getNewItem", {
     onInvoke: function(handler, message){
-    	if(deviceURL != "") {
+    	if(deviceURL != "" && currentScreenName == "scanInventoryPlaceItem") {
 	    	var msg = new Message(deviceURL + "newItem");
 	    	msg.requestText = JSON.stringify(currScannedItem);
 	    	handler.invoke(msg, Message.JSON);
