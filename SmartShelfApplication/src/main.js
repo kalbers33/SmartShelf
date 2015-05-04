@@ -791,7 +791,6 @@ var lowItemContainer = new Container({
             left: 0, right: 0, top: 0, bottom: 0, name:"lowItemContainer",
             contents: [
             	new navigation({displayName: "Low Items"}),
-                new smartShelfLogo(),  
                 low_item_banner,
                 low_item_banner_text,
                 lowItemColumn,
