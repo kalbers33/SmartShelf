@@ -37,24 +37,30 @@ var ItemInformation = function($){
 	this.totalWeight = 0;
 	this.maxWeight = 0;
 	this.percentFull = 0.0;
-	this.lastWeight = this.totalWeight;
+	this.lastWeight = 0; //this.totalWeight;
 	this.lowThreshold = 0.25; //25% item is low!
 	this.outThreshold = 0.1; //10% is essentially out (empty box)
 	this.status = "out"; //"out", "low", "ok"
 	this.locating = false;
+	this.maxSet = false;
 }
 
 ItemInformation.prototype.updateItemWeight = function(itemIndex, weight){
 	this.totalWeight = weight;
-	if(this.maxWeight < weight){
+	if(this.maxWeight < weight && this.maxSet == false){
 		this.maxWeight = weight;
-	}if(this.lastWeight < weight){
+	}
+	else if(this.maxWeight > weight + 50){
+		this.maxSet = true;
+	}
+	if(this.lastWeight < weight){
 		if(currentlyLookingForItem) {
 			currentlyLookingForItem = false;
 			lastItemAdded = itemIndex;
 			this.name = itemToAdd.name;
 			this.individualWeight = itemToAdd.individualWeight;
 			this.maxWeight = weight;
+			this.maxSet = false;
 		}
 	}
 	this.lastWeight = weight;
