@@ -186,12 +186,13 @@ var valueReceived = false;
  
 /*******Jamie************/
 /*******Tanisha**********/
-var boxSkin = new Skin( { fill:"#CD853F" } );
+var boxSkin = new Skin( { fill:"#E5C695" } );
 var whiteSkin = new Skin( { fill:"white" } );
 var blackSkin = new Skin( { fill:"black" } );
-var highlightSkin = new Skin( { fill:"yellow" } );
-var redSkin = new Skin( { fill:"red" } );
-var LEDSkin = new Skin( { fill:"blue" } );
+var highlightSkin = new Skin( { fill:"#BBF2FF" } );
+var yellowSkin = new Skin( { fill:"#F9F570" } );
+var redSkin = new Skin( { fill:"#FF717F" } );
+var LEDSkin = new Skin( { fill:"#AFF0F9" } );
 //var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
 var labelStyle_shelf = new Style( { font: "bold 18px", color:"white", horizontal:"center"} );
 var stockStyle = new Style( { font: "bold 30px", color:"white"} );
@@ -418,7 +419,7 @@ Handler.bind("/getItemData", {
                         //var count = json[i].count;
                         box[i][3].string = json[i].count;
                         if (itemInformationObjects[i].status === "low") {
-                                box[i][0].skin = highlightSkin;
+                                box[i][0].skin = yellowSkin;
                         } else if (itemInformationObjects[i].status === "out") {
                                 box[i][0].skin = redSkin
                         } else {
@@ -559,7 +560,7 @@ var scanInventory = new Container({
 		new Column({
 			left: 0, right: 0, top: 0, bottom: 0,
 			contents: [
-				new navigation({displayName: "Scan Inventory"}),
+				new navigation({displayName: "Add Inventory"}),
 				//new smartShelfLogo(),
 				scanInventoryText,
 				
@@ -586,7 +587,7 @@ var scanInventoryPlaceItem = new Container({
 		new Column({
 			left: 0, right: 0, top: 0, bottom: 5,
 			contents: [
-				new navigation({displayName: "Scan Inventory"}),
+				new navigation({displayName: "Add Inventory"}),
 				scan_place_item_label,
 				scan_item_name_label,
 				scan_item_weight_label,
@@ -658,7 +659,7 @@ var inventoryTemplate = BUTTONS.Button.template(function($){ return{
 
 var itemButtons = new Array(items.length);
 
-var button_colors = ["#CCFFCC", "#FFCC66", "#99CCFF", "#ffc3a0", "#fa877a", "#7aedfa"]
+var button_colors = ["#B6E2EB", "#B6E2EB", "#B6E2EB", "#B6E2EB", "#B6E2EB", "#B6E2EB"]
 for (i = 0; i < itemButtons.length; i++) {
 	var chosen_color = i % 6;
 	itemButtons[i] = new inventoryTemplate({itemName:items[i], displayName: items[i], color: button_colors[chosen_color]});
