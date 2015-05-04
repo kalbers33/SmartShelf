@@ -8,6 +8,9 @@ var SCREEN = require('mobile/screen');
 var SCROLLER = require('mobile/scroller');
  
 var transparent_skin = new Skin({});
+
+var whiteSkin = new Skin( { fill:"white" } );
+var redSkin = new Skin( { fill:"red" } );
  
  
 var black_rectange = Picture.template(function($){ return {
@@ -31,7 +34,6 @@ var locate_item_banner_text = new Text({left: 20, right: 0, top: 225, height: 40
 								style: new Style({font:"25px", color:"white", horizontal: "center"}), name:"low item"});
 var low_item_banner_text = new Text({left: 20, right: 0, top: -50, height: 40, string: "No low items", 
 								style: new Style({font:"30px", color:"white", horizontal: "center"}), name:"low item"});
-
 
 
 var placeItemImage = Picture.template(function($){ return {
@@ -201,13 +203,11 @@ var valueReceived = false;
 /*******Jamie************/
 /*******Tanisha**********/
 var boxSkin = new Skin( { fill:"#E5C695" } );
-var whiteSkin = new Skin( { fill:"white" } );
 var blackSkin = new Skin( { fill:"black" } );
 var highlightSkin = new Skin( { fill:"#BBF2FF" } );
 var yellowSkin = new Skin( { fill:"#F9F570" } );
 var redSkin = new Skin( { fill:"#FF717F" } );
 var LEDSkin = new Skin( { fill:"#AFF0F9" } );
-//var labelStyle = new Style( { font: "bold 18px", color:"black" } ); //#32CD32
 var labelStyle_shelf = new Style( { font: "bold 18px", color:"white", horizontal:"center"} );
 var stockStyle = new Style( { font: "bold 30px", color:"white"} );
 var titleStyle = new Style( { font: "bold 40px", color:"black" } );
@@ -316,7 +316,7 @@ var scanInventoryText = new Text({left: 10, right: 0, top: 20, height: 40, strin
 								style: new Style({font:"25px", color:"white", horizontal: "center"}), name:"scanInventoryText"});
 var waitingforScannerText = new Text({left: 60, right: 0, top: -10, height: 40, string: "Waiting for scanner...", horizontal: "center",
 									style: new Style({font:"25px", color:"white"}), name:"waitingforScannerText"});
-var placeItemText = new Label({top: -220, height: 40, string: "", //Item Type: 
+var placeItemText = new Label({top: -220, height: 40, string: "Place item on any shelf", //Item Type: 
 									style: new Style({font:"30px", color:"white"}), name:"placeItemText"});
 var itemTypeText = new Label({top: 40, height: 40, string: "", //Item Type: 
 									style: new Style({font:"30px", color:"white"}), name:"itemTypeText"});
@@ -381,7 +381,8 @@ Handler.bind("/getScannerData", {
 				itemTypeText.string = currScannedItem.name;
 				//itemWeightText.string = "Item Weight: " + currScannedItem.individualWeight + "g";
 				itemWeightText.string = currScannedItem.individualWeight + "g";
-				placeItemText.string = "Place item on any shelf";
+				//placeItemText.string = "Place item on any shelf";
+				//placeItemText.style = new Style({font:"30px", color:"white"});
 				if (currentScreenName == "scanInventory") {
 					mainContainer.remove(mainContainer.last);
 					mainContainer.add(scanInventoryPlaceItem);
@@ -408,6 +409,19 @@ Handler.bind("/delayScanner", {
         handler.wait(1000); //will call onComplete after 1 seconds
     },
     onComplete: function(handler, message){
+        handler.invoke(new Message("/getScannerData"));
+    }
+});
+
+Handler.bind("/delayScanner2", {
+    onInvoke: function(handler, message){
+    	placeItemText.string = "Item already exists";
+		placeItemText.style = new Style({font:"30px", color:"red"});
+        handler.wait(2000); //will call onComplete after 1 seconds
+    },
+    onComplete: function(handler, message){
+    	placeItemText.string = "Place item on any shelf";
+		placeItemText.style = new Style({font:"30px", color:"white"});
         handler.invoke(new Message("/getScannerData"));
     }
 });
@@ -608,8 +622,10 @@ var scanInventoryPlaceItem = new Container({
 				placeItemText,
 				itemTypeText,
 				itemWeightText,
+				
 				new loading( { speed: 0.4 } ), 
-			]
+			],
+			
 		}),
 	]
 });
@@ -730,7 +746,10 @@ Handler.bind("/getNewItem", {
     	if (deviceURL != "") {
 			//trace("Item detected on shelf: " +json.newShelf + "\n");
 			if (json.newShelf != -1) {
-				if (currentScreenName == "scanInventoryPlaceItem") {
+				if (currScannedItem.name in shelfDic) {//
+					handler.invoke( new Message("/delayScanner2"));
+				}
+				else if (currentScreenName == "scanInventoryPlaceItem") {
 					itemDetectedShelfNumber = json.newShelf;
 					//trace("New item detected on ", json.newShelf);
 					
@@ -806,6 +825,7 @@ var newScanFunc = function(content) {
 	for (i = 0; i < 6; i++) {
 		box[i].skin = noHighlight;
 	}
+	locatedItem = -1;
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(scanInventory);
 	previousScreenName = currentScreenName;
@@ -817,6 +837,7 @@ var newMainShelfFunc = function(content) {
 	for (i = 0; i < 6; i++) {
 		box[i].skin = noHighlight;
 	}
+	locatedItem = -1;
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(mainShelf);
 	previousScreenName = currentScreenName;
@@ -839,7 +860,7 @@ var newBackFunc = function(content) {
 	for (i = 0; i < 9; i++) {
 		box[i].skin = noHighlight
 	}
-	
+	locatedItem = -1;
 	switch(previousScreenName) {
 		case "scanInventory":
 			mainContainer.remove(mainContainer.last);
@@ -883,6 +904,7 @@ var newLowFunc = function(content) {
 	for (i = 0; i < 6; i++) {
 		box[i].skin = noHighlight;
 	}
+	locatedItem = -1;
 	lowItemContainer.last[2].skin = nav_low_skin
 	mainContainer.remove(mainContainer.last);
     mainContainer.add(lowItemContainer);
