@@ -20,6 +20,20 @@ var black_long_rectange = Picture.template(function($){ return {
 };
 });
 
+
+var locate_item_banner = new black_long_rectange({top: 200, left: -100});
+var low_item_banner = new black_long_rectange({top: 20, left: -100});
+locate_item_banner.opacity = 0.5;
+low_item_banner.opacity = 0.5;
+
+
+var locate_item_banner_text = new Text({left: 20, right: 0, top: 225, height: 40, string: "No items to locate.", 
+								style: new Style({font:"25px", color:"white", horizontal: "center"}), name:"low item"});
+var low_item_banner_text = new Text({left: 20, right: 0, top: 50, height: 40, string: "No low items.", 
+								style: new Style({font:"25px", color:"white", horizontal: "center"}), name:"low item"});
+
+
+
 var placeItemImage = Picture.template(function($){ return {
 	top:30, height:100, name:"place_item", url:"PlaceItem.png",
 };
@@ -198,7 +212,7 @@ var stockStyle = new Style( { font: "bold 30px", color:"white"} );
 var titleStyle = new Style( { font: "bold 40px", color:"black" } );
 
 var buttonLogoTemplate = Picture.template(function($){ return {
-						top: 20, height: $.imageSize, name:$.name, url:$.url
+						top: 15, height: $.imageSize, name:$.name, url:$.url
 					};
 				});
 				
@@ -679,6 +693,8 @@ var locateItemContainer = new Container({
                // new smartShelfLogo(),  
                 locateItemColumn,
                 new navigation({displayName: "Locate Item"}),
+                locate_item_banner,
+                locate_item_banner_text,
     /*
         new Column({
             left: 0, right: 0, top: 0, bottom: 0,
@@ -724,7 +740,10 @@ Handler.bind("/getNewItem", {
 					box[itemDetectedShelfNumber][2].string = currScannedItem.name;
 					box[itemDetectedShelfNumber][3].string = currScannedItem.individualWeight;
 					shelfDic[currScannedItem.name] = itemDetectedShelfNumber;
-					
+					if (items.length > 0) {
+						locateItemContainer.remove(locate_item_banner);
+						locateItemContainer.remove(locate_item_banner_text);
+					}
 					for (i = 0; i < items.length; i++) {
 						if (items[i] == currScannedItem.name) {
 							//locateItemColumn.add(itemButtons[i]);
@@ -765,14 +784,17 @@ Handler.bind("/delayNewItem", {
  
 var lowItemContainer = new Container({
     //left: 0, right: 0, top: 5, bottom: 0, active: true, skin: whiteSkin,
-    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin,
+    left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin, 
     contents: [
         new Column({
-            left: 0, right: 0, top: 0, bottom: 0,
+            left: 0, right: 0, top: 0, bottom: 0, name:"lowItemContainer",
             contents: [
             	new navigation({displayName: "Low Items"}),
                 new smartShelfLogo(),  
+                low_item_banner,
+                low_item_banner_text,
                 lowItemColumn,
+                
             ]
         }),    
     ]
@@ -853,7 +875,14 @@ var newLowFunc = function(content) {
 	previousScreenName = currentScreenName;
 	currentScreenName = "lowItemContainer";
     var keyNames = Object.keys(lowDic);
-    lowItemColumn.empty(0);                                
+    lowItemColumn.empty(0);   
+    if  (keyNames.length > 0) {
+    	trace("Correcting\n");
+    	lowItemContainer.first.remove(low_item_banner);
+    	lowItemContainer.first.remove(low_item_banner_text);
+    	//lowItemContainer.last.remove("black_long_rectange");
+    	//lowItemContainer.last.remove("low item");
+    }                            
     for (i = 0; i < keyNames.length; i++) {
 	  //  trace("My Key Name: " + keyNames[i] + "\n");
 	    
