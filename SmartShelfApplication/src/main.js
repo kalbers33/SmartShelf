@@ -955,8 +955,8 @@ var bottom_navigation =  Container.template(function($) { return{
   left:0, right:0, height:50, bottom:0, name: "navBar",
   skin: redSkin,
   contents: [
-    new newButtonBottomNavTemplate({left:80, buttonFunc: newMainShelfFunc, name:"shelf", bottom:0, left_logo: 0, url:"storage.png", name_logo:'shelf_icon', size: 45}),
-    new newButtonBottomNavTemplate({left:0, buttonFunc: newScanFunc, name:"scan", bottom: 0, left_logo:0,  url:"scan.png", name_logo: 'scan_icon', size: 50}),
+    new newButtonBottomNavTemplate({left:80, buttonFunc: newMainShelfFunc, name:"shelf", bottom:0, left_logo: 0, url:"shelf_white.png", name_logo:'shelf_icon', size: 45}),
+    new newButtonBottomNavTemplate({left:0, buttonFunc: newScanFunc, name:"scan", bottom: 0, left_logo:0,  url:"scan_white.png", name_logo: 'scan_icon', size: 50}),
     new newButtonBottomNavTemplate({left:240, buttonFunc:newLowFunc, name:"low", bottom:0, left_logo: 0, url:"low.png", name_logo:'low_icon', size: 50}),
     new newButtonBottomNavTemplate({left:160, buttonFunc: newLocateFunc, name:"search", bottom:5, left_logo: 5, url:"locate.png", name_logo:'locate_icon', size: 40}),
 	]
