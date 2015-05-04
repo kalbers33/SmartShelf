@@ -740,7 +740,8 @@ Handler.bind("/getNewItem", {
 					box[itemDetectedShelfNumber][2].string = currScannedItem.name;
 					box[itemDetectedShelfNumber][3].string = currScannedItem.individualWeight;
 					shelfDic[currScannedItem.name] = itemDetectedShelfNumber;
-					if (items.length > 0) {
+					if (items.length > 0 && locateItemContainer.length > 3) { //
+						trace("locateItem: " + locateItemContainer.length + "\n");
 						locateItemContainer.remove(locate_item_banner);
 						locateItemContainer.remove(locate_item_banner_text);
 					}
@@ -876,25 +877,32 @@ var newLowFunc = function(content) {
 	currentScreenName = "lowItemContainer";
     var keyNames = Object.keys(lowDic);
     lowItemColumn.empty(0);   
-    if  (keyNames.length > 0) {
-    	trace("Correcting\n");
-    	lowItemContainer.first.remove(low_item_banner);
-    	lowItemContainer.first.remove(low_item_banner_text);
-    	//lowItemContainer.last.remove("black_long_rectange");
-    	//lowItemContainer.last.remove("low item");
-    }                            
+    trace("length of low column: " + lowItemContainer[0].length + "\n")
+    
+    var low = false;                       
     for (i = 0; i < keyNames.length; i++) {
 	  //  trace("My Key Name: " + keyNames[i] + "\n");
-	    
 	    for (var j = 0; j < items.length; j++) {
 	    	if (keyNames[i] == items[j]){
 	            if (lowDic[items[j]][0] == true){
+	            	low = true;
 	                itemLabels[j].string = items[j] + " left: " + lowDic[items[j]][1];        
 	                lowItemColumn.add(itemLabels[j]);        
 	            }
 		    }
 		}                                                                                                                                                                                                                             
 	}
+    if  (lowItemContainer[0].length > 3 && low) {//
+    	trace("Correcting\n");
+    	trace(lowItemContainer.length);
+    	lowItemContainer.first.remove(low_item_banner);
+    	lowItemContainer.first.remove(low_item_banner_text);
+    	//lowItemContainer.last.remove("black_long_rectange");
+    	//lowItemContainer.last.remove("low item");
+    }else if(lowItemContainer[0].length < 4 && !low ) {
+    	lowItemContainer.first.add(low_item_banner);
+    	lowItemContainer.first.add(low_item_banner_text);
+    }
     //this should be adding a low items list container
 }
 
