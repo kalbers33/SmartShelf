@@ -837,11 +837,11 @@ var lowItemContainer = new Container({
     //left: 0, right: 0, top: 5, bottom: 0, active: true, skin: whiteSkin,
     left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin, 
     contents: [
+    			lowItemColumn,
             	new navigation({displayName: "Low Items"}),
-                
                 low_item_banner,
                 low_item_banner_text,
-                lowItemColumn,
+                
     
     ]
 });
