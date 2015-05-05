@@ -168,9 +168,11 @@ var items = ["Bar Soap", "Coca Cola", "Pringles Original", "Lays Sweet Onion",
 			"Carrot", "Celery"];*/
 
 //Low Items
+var labelStyle3 = new Style({ font:"bold 20px", color:"white", horizontalAlignment: "left"});
+
 var itemLabels = new Array(items.length)
 for (var i = 0; i < itemLabels.length; i++) {
-	itemLabels[i] = new Label({left:0, right:0, string: items[i], style: labelStyle2});
+	itemLabels[i] = new Label({left:0, right:0, string: items[i], style: labelStyle3});
 } 
 
 //list of box containers
@@ -726,11 +728,16 @@ var locateItemContainer = new Container({
     ]
 });
 
-var lowItemColumn = new Column({
+
+/*var lowItemColumn = new Column({
 	left: 0, right: 0, top: 10, bottom: 0, active: true, skin: transparent_skin, name: "lowItemColumn",
 	contents: [
 	]
-});
+});*/
+
+
+var data2 = new Object();
+var lowItemColumn = new ScreenContainer(data2);
 
 
 /************Handler: get new item*************/
@@ -911,7 +918,7 @@ var newLowFunc = function(content) {
 	previousScreenName = currentScreenName;
 	currentScreenName = "lowItemContainer";
     var keyNames = Object.keys(lowDic);
-    lowItemColumn.empty(0);   
+    lowItemColumn.first.menu.empty(0);   
     trace("length of low column: " + lowItemContainer[0].length + "\n")
     
     var low = false;                       
@@ -922,7 +929,8 @@ var newLowFunc = function(content) {
 	            if (lowDic[items[j]][0] == true){
 	            	low = true;
 	                itemLabels[j].string = items[j] + " left: " + lowDic[items[j]][1];        
-	                lowItemColumn.add(itemLabels[j]);        
+	                //lowItemColumn.add(itemLabels[j]);        
+	                lowItemColumn.first.menu.add(itemLabels[j]);
 	            }
 		    }
 		}                                                                                                                                                                                                                             
