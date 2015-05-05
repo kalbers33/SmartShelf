@@ -169,10 +169,11 @@ var items = ["Bar Soap", "Coca Cola", "Pringles Original", "Lays Sweet Onion",
 
 //Low Items
 var labelStyle3 = new Style({ font:"bold 20px", color:"white", horizontalAlignment: "left"});
+var borderSkin = new Skin({fill:"#aebb2c", height: 15});
 
-var itemLabels = new Array(items.length)
+var itemLabels = new Array(items.length);
 for (var i = 0; i < itemLabels.length; i++) {
-	itemLabels[i] = new Label({left:0, right:0, string: items[i], style: labelStyle3});
+	itemLabels[i] = new Label({left:1, right:1, top: 1, bottom: 1, height:15, string: items[i], skin: borderSkin, style: labelStyle3});
 } 
 
 //list of box containers
@@ -735,9 +736,23 @@ var locateItemContainer = new Container({
 	]
 });*/
 
+var ScreenContainerLow = Container.template(function($) { return {
+	left:0, right:0, height: 200, top:60,
+	contents: [
+	   		/* Note that the scroller is declared as having only an empty
+	   		 * Column and a scrollbar.  All the entries will be added 
+	   		 * programmatically. */ 
+	   		SCROLLER.VerticalScroller($, { 
+	   			contents: [
+              			Column($, { left: 0, right: 0, top:0, bottom: 0, name: 'menu', }),
+              			SCROLLER.VerticalScrollbar($, { }),
+              			]
+	   		})
+	   		]
+	}});
 
 var data2 = new Object();
-var lowItemColumn = new ScreenContainer(data2);
+var lowItemColumn = new ScreenContainerLow(data2);
 
 
 /************Handler: get new item*************/
