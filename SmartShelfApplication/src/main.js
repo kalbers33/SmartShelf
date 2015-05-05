@@ -32,7 +32,7 @@ low_item_banner.opacity = 0.5;
 
 var locate_item_banner_text = new Text({left: 20, right: 0, top: 220, height: 40, string: "No items to locate", 
 								style: new Style({font:"30px", color:"white", horizontal: "center"}), name:"low item"});
-var low_item_banner_text = new Text({left: 20, right: 0, top: -50, height: 40, string: "No low items", 
+var low_item_banner_text = new Text({left: 20, right: 0, top: 175, height: 40, string: "No low items", 
 								style: new Style({font:"30px", color:"white", horizontal: "center"}), name:"low item"});
 
 
@@ -173,7 +173,7 @@ var borderSkin = new Skin({fill:"#aebb2c", height: 15});
 
 var itemLabels = new Array(items.length);
 for (var i = 0; i < itemLabels.length; i++) {
-	itemLabels[i] = new Label({left:1, right:1, top: 1, bottom: 1, height:15, string: items[i], skin: borderSkin, style: labelStyle3});
+	itemLabels[i] = new Label({left:20, right:20, top: 6, height:50, string: items[i], skin: borderSkin, style: labelStyle3});
 } 
 
 //list of box containers
@@ -441,18 +441,26 @@ Handler.bind("/getItemData", {
                 itemInformationObjects = json;
                 for (var i = 0; i < itemInformationObjects.length; i++) {
                         var lowCount = false;
-                        if (itemInformationObjects[i].status === "low"){
+                        if (itemInformationObjects[i].status === "low" ||itemInformationObjects[i].status === "out"){
                                 lowCount = true;
                         }
                         lowDic[itemInformationObjects[i].name] = [lowCount, itemInformationObjects[i].count];
+                        trace("LOW ITEM ADDED: " + itemInformationObjects[i].name  + "STATUS: " + itemInformationObjects[i].status+ '\n');
                 }                      
                 for (var i = 0; i < 9; i++) {
+                		
                         //var count = json[i].count;
+                        trace("MY COUNT IS: " + json[i].count + "////\n");
                         box[i][3].string = json[i].count;
+                        var string_num = json[i].count.toString();
                         if (itemInformationObjects[i].status === "low") {
                                 box[i][0].skin = yellowSkin;
                         } else if (itemInformationObjects[i].status === "out") {
                                 box[i][0].skin = redSkin
+                                trace("MY STAT IS LOW AND COUNT IS: " + json[i].count + "//\n");
+                                //if (box[i][3].string = json[i].count == 0) {
+                                	box[i][3].string = string_num;
+                                //}
                         } else {
                                 box[i][0].skin = LEDSkin
                         }
@@ -744,7 +752,7 @@ var ScreenContainerLow = Container.template(function($) { return {
 	   		 * programmatically. */ 
 	   		SCROLLER.VerticalScroller($, { 
 	   			contents: [
-              			Column($, { left: 0, right: 0, top:0, bottom: 0, name: 'menu', }),
+              			Column($, { left: 0, right: 0, height: 0, top:10, bottom: 2, name: 'menu', }),
               			SCROLLER.VerticalScrollbar($, { }),
               			]
 	   		})
@@ -780,7 +788,7 @@ Handler.bind("/getNewItem", {
 					mainShelf.add(box[itemDetectedShelfNumber]);
 					mainShelf.remove(emptyBoxList[itemDetectedShelfNumber]);
 					box[itemDetectedShelfNumber][2].string = currScannedItem.name;
-					box[itemDetectedShelfNumber][3].string = currScannedItem.individualWeight;
+					//box[itemDetectedShelfNumber][3].string = currScannedItem.individualWeight;
 					shelfDic[currScannedItem.name] = itemDetectedShelfNumber;
 					if (items.length > 0 && locateItemContainer.length > 3) { //
 						trace("locateItem: " + locateItemContainer.length + "\n");
@@ -829,17 +837,12 @@ var lowItemContainer = new Container({
     //left: 0, right: 0, top: 5, bottom: 0, active: true, skin: whiteSkin,
     left: 0, right: 0, top: 0, bottom: 0, active: true, skin: background_skin, 
     contents: [
-        new Column({
-            left: 0, right: 0, top: 0, bottom: 0, name:"lowItemContainer",
-            contents: [
             	new navigation({displayName: "Low Items"}),
                 
                 low_item_banner,
                 low_item_banner_text,
                 lowItemColumn,
-                
-            ]
-        }),    
+    
     ]
 });
 
@@ -934,7 +937,7 @@ var newLowFunc = function(content) {
 	currentScreenName = "lowItemContainer";
     var keyNames = Object.keys(lowDic);
     lowItemColumn.first.menu.empty(0);   
-    trace("length of low column: " + lowItemContainer[0].length + "\n")
+    trace("length of low column: " + lowItemContainer.length + "\n")
     
     var low = false;                       
     for (i = 0; i < keyNames.length; i++) {
@@ -946,20 +949,21 @@ var newLowFunc = function(content) {
 	                itemLabels[j].string = items[j] + " left: " + lowDic[items[j]][1];        
 	                //lowItemColumn.add(itemLabels[j]);        
 	                lowItemColumn.first.menu.add(itemLabels[j]);
+	                trace("LOW ITEM DETECTED: " + itemLabels[j].string + "\n")
 	            }
 		    }
 		}                                                                                                                                                                                                                             
 	}
-    if  (lowItemContainer[0].length > 3 && low) {//
+    if  (lowItemContainer.length > 3 && low) {//
     	trace("Correcting\n");
     	trace(lowItemContainer.length);
-    	lowItemContainer.first.remove(low_item_banner);
-    	lowItemContainer.first.remove(low_item_banner_text);
+    	lowItemContainer.remove(low_item_banner);
+    	lowItemContainer.remove(low_item_banner_text);
     	//lowItemContainer.last.remove("black_long_rectange");
     	//lowItemContainer.last.remove("low item");
-    }else if(lowItemContainer[0].length < 4 && !low ) {
-    	lowItemContainer.first.insert(low_item_banner,lowItemColumn);
-    	lowItemContainer.first.insert(low_item_banner_text,lowItemColumn);
+    }else if(lowItemContainer.length < 4 && !low ) {
+    	lowItemContainer.insert(low_item_banner,lowItemColumn);
+    	lowItemContainer.insert(low_item_banner_text,lowItemColumn);
     }
     //this should be adding a low items list container
 }
