@@ -7,7 +7,7 @@ var blueSkin = new Skin({fill: "blue"});
 var yellowSkin = new Skin({fill: "yellow"});
 var labelStyle = new Style({font:"bold 20px", color:"black"});
 
-var okSkin = new Skin({fill: "white"});
+var okSkin = new Skin({fill: "#75FF47"});
 var lowSkin = new Skin({fill: "yellow"});
 var outSkin = new Skin({fill: "#FF584E"});
 var addShelfSkin = new Skin({fill: "#B6E2EB"});

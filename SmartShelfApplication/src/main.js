@@ -168,7 +168,7 @@ var items = ["Bar Soap", "Coca Cola", "Pringles Original", "Lays Sweet Onion",
 			"Carrot", "Celery"];*/
 
 //Low Items
-var labelStyle3 = new Style({ font:"bold 20px", color:"white", horizontalAlignment: "left"});
+var labelStyle3 = new Style({ font:"bold 20px", color:"white", horizontal: "center"});
 var borderSkin = new Skin({fill:"#aebb2c", height: 15});
 
 var itemLabels = new Array(items.length);
@@ -210,7 +210,7 @@ var blackSkin = new Skin( { fill:"black" } );
 var highlightSkin = new Skin( { fill:"#BBF2FF" } );
 var yellowSkin = new Skin( { fill:"#F9F570" } );
 var redSkin = new Skin( { fill:"#FF717F" } );
-var LEDSkin = new Skin( { fill:"#AFF0F9" } );
+var LEDSkin = new Skin( { fill:"#75FF47" } );
 var labelStyle_shelf = new Style( { font: "bold 18px", color:"white", horizontal:"center"} );
 var stockStyle = new Style( { font: "bold 30px", color:"white"} );
 var titleStyle = new Style( { font: "bold 40px", color:"black" } );
@@ -874,6 +874,7 @@ var newLocateFunc = function(content) {
 	for (i = 0; i < 6; i++) {
 		box[i].skin = noHighlight;
 	}
+	locatedItem = -1;
 	mainContainer.remove(mainContainer.last);
 	mainContainer.add(locateItemContainer);		
 	previousScreenName = currentScreenName;
@@ -946,7 +947,7 @@ var newLowFunc = function(content) {
 	    	if (keyNames[i] == items[j]){
 	            if (lowDic[items[j]][0] == true){
 	            	low = true;
-	                itemLabels[j].string = items[j] + " left: " + lowDic[items[j]][1];        
+	                itemLabels[j].string = items[j] + " - " + lowDic[items[j]][1];        
 	                //lowItemColumn.add(itemLabels[j]);        
 	                lowItemColumn.first.menu.add(itemLabels[j]);
 	                trace("LOW ITEM DETECTED: " + itemLabels[j].string + "\n")
