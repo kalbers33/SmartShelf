@@ -14,7 +14,7 @@ var redSkin = new Skin( { fill:"red" } );
  
  
 var black_rectange = Picture.template(function($){ return {
-	top: $.top, left: $.left, height:70, name:"black_rectange", url:"black.png",
+	top: $.top, left: $.left, height:70, name:"black_rectange", url:"black_medium.png",
 };
 });
 
@@ -161,9 +161,9 @@ var locateItemColumn = new ScreenContainer(data);
  
 var items = ["Bar Soap", "Coca Cola", "Pringles Original", "Lays Sweet Onion", 
 			"Whole Milk", "Low Fat Milk", "Sugar", "Nutella", "Oats",
-			"Cereal", "Olive Oil", "Sunflower Oil", "Charmin Toilet Paper",
-			"Bounty Paper Towels", "Cascade Dish Detergent", "Downy Fabric Softner",
-			"Vitamin C Tablets", "Pita Chips", "Salter Butter", "Plain Butter"];
+			"Cereal", "Olive Oil", "Sunflower Oil", "Toilet Paper",
+			"Paper Towels", "Dish Detergent", "Downy Softner",
+			"Vitamin C", "Pita Chips", "Salter Butter", "Plain Butter"];
 /*var items = ["Apple", "Orange", "Banana", "Potato", 
 			"Carrot", "Celery"];*/
 
@@ -323,7 +323,7 @@ var placeItemText = new Label({top: -220, height: 40, string: "Place item on any
 									style: new Style({font:"30px", color:"white"}), name:"placeItemText"});
 var itemTypeText = new Label({top: 40, height: 40, string: "", //Item Type: 
 									style: new Style({font:"30px", color:"white"}), name:"itemTypeText"});
-var itemWeightText = new Label({top: 60 , height: 40, string: "",  //Item Weight: 
+var itemWeightText = new Label({top: 50 , height: 40, string: "",  //Item Weight: 
 									style: new Style({font:"30px", color:"white"}), name:"itemWeightText"});
 var detectedText = new Text({left: 0, right: 0, top: 10, height: 40, string: "Item detected", skin: new Skin({fill: "#FFFFFF"}), 
 
@@ -612,8 +612,8 @@ var scanInventory = new Container({
 });
 
 var scan_place_item_label = new black_long_rectange({top: 20, left: -100});
-var scan_item_name_label = new black_rectange({top: 10, left: 15});
-var scan_item_weight_label = new black_rectange({top: 20, left: 90});
+var scan_item_name_label = new black_rectange({top: 10, left: -8});
+var scan_item_weight_label = new black_rectange({top: 20, left: 75});
 scan_place_item_label.opacity = 0.7;
 scan_item_name_label.opacity = 0.7;
 scan_item_weight_label.opacity = 0.7;
