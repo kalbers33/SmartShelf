@@ -37,7 +37,7 @@ exports.configure = function() {
 					valueID : "scannedValue",
 					defaultControl : PinsSimulators.SLIDER,
 					minValue : 0,
-					maxValue : 10,
+					maxValue : 19,
 					value : 0
 				}
 			),
